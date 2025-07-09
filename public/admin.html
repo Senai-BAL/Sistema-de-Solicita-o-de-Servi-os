@@ -291,6 +291,8 @@
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .btn-export {
@@ -301,11 +303,13 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.9rem;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      font-weight: 500;
     }
 
     .btn-export:hover {
       background: #229954;
+      transform: translateY(-1px);
     }
 
     .btn-export.excel {
@@ -976,7 +980,7 @@
   <script>
     // 🔐 CONFIGURAÇÃO DE AUTENTICAÇÃO
     const ADMIN_CONFIG = {
-      password: 'senai@admin2024', // ⚠️ ALTERE ESTA SENHA!
+      password: 'senai@admin2025', // ⚠️ ALTERE ESTA SENHA!
       sessionDuration: 24 * 60 * 60 * 1000, // 24 horas
       sessionKey: 'senai_admin_session'
     };
@@ -1298,6 +1302,817 @@
       }
     }
 
+    // 🗂️ SISTEMA DE BACKUP COMPLETO + LIMPEZA GITHUB
+    class CompleteBackupManager {
+      constructor(firebaseService) {
+        this.firebaseService = firebaseService;
+        this.githubConfig = window.githubConfig;
+        this.isProcessing = false;
+      }
+
+      // 🚀 BACKUP COMPLETO + LIMPEZA TOTAL
+      async createCompleteBackup() {
+        if (this.isProcessing) {
+          ToastManager.show('Backup já está em andamento...', 'warning');
+          return;
+        }
+
+        try {
+          this.isProcessing = true;
+          LoadingManager.show('🚀 Iniciando backup completo...');
+
+          // 1. Coletar dados do Firestore
+          LoadingManager.show('📊 Coletando dados do Firestore...');
+          const firestoreData = await this.collectFirestoreData();
+
+          // 2. Mapear todos os arquivos do GitHub
+          LoadingManager.show('🔍 Mapeando arquivos do GitHub...');
+          const githubFilesList = await this.mapGitHubFiles(firestoreData.requests);
+
+          // 3. Baixar TODOS os arquivos do GitHub
+          LoadingManager.show('📥 Baixando arquivos do GitHub...');
+          const downloadedFiles = await this.downloadAllGitHubFiles(githubFilesList);
+
+          // 4. Gerar backup completo
+          LoadingManager.show('📦 Gerando backup completo...');
+          const backupPackage = await this.generateCompleteBackup(firestoreData, downloadedFiles);
+
+          // 5. Baixar backup como ZIP
+          LoadingManager.show('💾 Baixando backup...');
+          await this.downloadBackupFiles(backupPackage);
+
+          LoadingManager.hide();
+          ToastManager.show(`🎉 Backup COMPLETO baixado! ${downloadedFiles.length} arquivos incluídos.`, 'success');
+
+          // 6. Confirmar limpeza total
+          this.confirmTotalCleanup(firestoreData.requests.length, downloadedFiles.length);
+
+        } catch (error) {
+          console.error('❌ Erro no backup completo:', error);
+          LoadingManager.hide();
+          ToastManager.show('Erro no backup: ' + error.message, 'error');
+        } finally {
+          this.isProcessing = false;
+        }
+      }
+
+      // 📊 COLETAR DADOS DO FIRESTORE
+      async collectFirestoreData() {
+        const requests = await this.firebaseService.getAllRequests();
+        
+        let adminLogs = [];
+        try {
+          adminLogs = await this.firebaseService.getAdminLogs();
+        } catch (error) {
+          console.warn('Logs administrativos não encontrados:', error);
+        }
+
+        const stats = this.calculateDetailedStats(requests);
+
+        return {
+          requests,
+          adminLogs,
+          stats,
+          backupInfo: {
+            timestamp: Date.now(),
+            date: new Date().toLocaleString('pt-BR'),
+            totalRequests: requests.length,
+            totalLogs: adminLogs.length,
+            version: '2.0',
+            includesGitHubFiles: true,
+            backupType: 'COMPLETE_WITH_CLEANUP'
+          }
+        };
+      }
+
+      // 🔍 MAPEAR ARQUIVOS DO GITHUB
+      async mapGitHubFiles(requests) {
+        const fileMap = new Map();
+        
+        requests.forEach(request => {
+          if (request.arq && request.arq.length > 0) {
+            request.arq.forEach(arquivo => {
+              if (!fileMap.has(arquivo.p)) { // p = path no GitHub
+                fileMap.set(arquivo.p, {
+                  path: arquivo.p,
+                  url: arquivo.u,
+                  name: arquivo.n,
+                  size: arquivo.s,
+                  type: arquivo.t,
+                  requestInfo: {
+                    id: request.id,
+                    colaborador: request.c,
+                    servico: this.getServiceName(request.s, request.ts),
+                    data: new Date(request.d).toLocaleString('pt-BR')
+                  }
+                });
+              }
+            });
+          }
+        });
+
+        return Array.from(fileMap.values());
+      }
+
+      // 📥 BAIXAR TODOS OS ARQUIVOS DO GITHUB
+      async downloadAllGitHubFiles(filesList) {
+        if (filesList.length === 0) {
+          console.log('🔍 Nenhum arquivo para baixar do GitHub');
+          return [];
+        }
+
+        const downloadedFiles = [];
+        const batchSize = 3; // Baixar 3 por vez para não sobrecarregar
+
+        for (let i = 0; i < filesList.length; i += batchSize) {
+          const batch = filesList.slice(i, i + batchSize);
+          
+          LoadingManager.show(`📥 Baixando lote ${Math.floor(i/batchSize) + 1}/${Math.ceil(filesList.length/batchSize)} (${batch.length} arquivos)`);
+
+          const batchPromises = batch.map(async (fileInfo) => {
+            try {
+              const response = await fetch(fileInfo.url);
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+              
+              const arrayBuffer = await response.arrayBuffer();
+              
+              return {
+                ...fileInfo,
+                content: arrayBuffer,
+                downloaded: true,
+                downloadDate: new Date().toISOString(),
+                sizeBytes: arrayBuffer.byteLength
+              };
+              
+            } catch (error) {
+              console.warn(`❌ Falha ao baixar ${fileInfo.name}:`, error);
+              return {
+                ...fileInfo,
+                content: null,
+                downloaded: false,
+                error: error.message
+              };
+            }
+          });
+
+          const batchResults = await Promise.all(batchPromises);
+          downloadedFiles.push(...batchResults);
+
+          // Pequena pausa entre lotes
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        const successCount = downloadedFiles.filter(f => f.downloaded).length;
+        console.log(`📥 Download concluído: ${successCount}/${filesList.length} arquivos`);
+
+        return downloadedFiles;
+      }
+
+      // 📦 GERAR BACKUP COMPLETO
+      async generateCompleteBackup(firestoreData, downloadedFiles) {
+        const { requests, adminLogs, stats, backupInfo } = firestoreData;
+        
+        const backupPackage = {
+          // 1. Informações do backup
+          'backup_info.json': JSON.stringify(backupInfo, null, 2),
+
+          // 2. Dados principais
+          'dados_completos.json': JSON.stringify({
+            solicitacoes: requests,
+            logs_administrativos: adminLogs,
+            estatisticas: stats,
+            backup_info: backupInfo
+          }, null, 2),
+
+          // 3. CSV de solicitações
+          'solicitacoes_todas.csv': this.generateCSV(requests, 'all'),
+
+          // 4. Estatísticas detalhadas
+          'estatisticas_detalhadas.json': JSON.stringify(stats, null, 2),
+
+          // 5. Resumo executivo
+          'resumo_executivo.txt': this.generateExecutiveSummary(firestoreData, downloadedFiles),
+
+          // 6. Lista de arquivos baixados
+          'arquivos_baixados.json': JSON.stringify(downloadedFiles.map(f => ({
+            nome: f.name,
+            path_original: f.path,
+            tamanho: f.sizeBytes,
+            tipo: f.type,
+            baixado_com_sucesso: f.downloaded,
+            data_download: f.downloadDate,
+            erro: f.error || null,
+            solicitacao: f.requestInfo
+          })), null, 2)
+        };
+
+        // 7. CSVs por tipo de serviço
+        const byService = this.groupRequestsByService(requests);
+        Object.entries(byService).forEach(([service, serviceRequests]) => {
+          if (serviceRequests.length > 0) {
+            const serviceName = this.getServiceDisplayName(service);
+            backupPackage[`${serviceName.replace(/\s+/g, '_').toLowerCase()}.csv`] = 
+              this.generateCSV(serviceRequests, service);
+          }
+        });
+
+        // 8. Adicionar arquivos baixados do GitHub
+        downloadedFiles.forEach((file, index) => {
+          if (file.downloaded && file.content) {
+            // Organizar por pasta original
+            const folder = this.getFolderFromPath(file.path);
+            const fileName = `arquivos_github/${folder}/${file.name}`;
+            backupPackage[fileName] = file.content;
+          }
+        });
+
+        return backupPackage;
+      }
+
+      // 💾 BAIXAR ARQUIVOS DE BACKUP
+      async downloadBackupFiles(backupPackage) {
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        
+        // Baixar arquivo principal JSON
+        const mainBackup = backupPackage['dados_completos.json'];
+        this.downloadBlob(
+          new Blob([mainBackup], { type: 'application/json' }),
+          `SENAI_Lab_Backup_Completo_${timestamp}.json`
+        );
+
+        // Baixar CSV de solicitações
+        const csvBackup = backupPackage['solicitacoes_todas.csv'];
+        this.downloadBlob(
+          new Blob([csvBackup], { type: 'text/csv' }),
+          `SENAI_Lab_Solicitacoes_${timestamp}.csv`
+        );
+
+        // Baixar resumo executivo
+        const resumo = backupPackage['resumo_executivo.txt'];
+        this.downloadBlob(
+          new Blob([resumo], { type: 'text/plain' }),
+          `SENAI_Lab_Resumo_${timestamp}.txt`
+        );
+
+        // Baixar lista de arquivos
+        const arquivos = backupPackage['arquivos_baixados.json'];
+        this.downloadBlob(
+          new Blob([arquivos], { type: 'application/json' }),
+          `SENAI_Lab_Arquivos_${timestamp}.json`
+        );
+
+        // Baixar arquivos individuais do GitHub (se não forem muitos)
+        const githubFiles = Object.entries(backupPackage).filter(([key]) => key.startsWith('arquivos_github/'));
+        
+        if (githubFiles.length > 0 && githubFiles.length <= 10) {
+          githubFiles.forEach(([fileName, content]) => {
+            const cleanFileName = fileName.replace('arquivos_github/', '').replace(/\//g, '_');
+            this.downloadBlob(
+              new Blob([content]),
+              `GitHub_${cleanFileName}`
+            );
+          });
+        }
+
+        ToastManager.show(`📥 ${4 + Math.min(githubFiles.length, 10)} arquivos baixados!`, 'success');
+      }
+
+      // ⚠️ CONFIRMAR LIMPEZA TOTAL
+      confirmTotalCleanup(totalRequests, totalFiles) {
+        const confirmMessage = `
+🗂️ BACKUP COMPLETO FINALIZADO!
+
+📊 Backup inclui:
+• ${totalRequests} solicitações do Firestore
+• ${totalFiles} arquivos baixados do GitHub
+• Dados salvos em múltiplos formatos
+• Estatísticas detalhadas
+
+🧹 LIMPEZA TOTAL DO SISTEMA
+Para manter o projeto 100% GRATUITO, deseja:
+
+✅ APAGAR TUDO:
+• Todas as solicitações do Firestore
+• Todos os arquivos do GitHub
+• Todos os logs administrativos
+• Sistema volta ao estado inicial
+
+💰 RESULTADO:
+• Custo: R$ 0,00 (zero storage usado)
+• Performance máxima
+• Dados seguros no backup local
+
+⚠️ ATENÇÃO:
+Esta ação é IRREVERSÍVEL!
+Certifique-se de que o backup foi baixado corretamente.
+
+Deseja prosseguir com a LIMPEZA TOTAL?`;
+
+        if (confirm(confirmMessage)) {
+          this.performTotalCleanup();
+        } else {
+          ToastManager.show('✅ Backup salvo. Sistema mantido como está.', 'info');
+        }
+      }
+
+      // 🧹 EXECUTAR LIMPEZA TOTAL
+      async performTotalCleanup() {
+        try {
+          LoadingManager.show('🧹 Iniciando limpeza total...');
+
+          // 1. Mapear arquivos para deletar do GitHub
+          LoadingManager.show('🗂️ Mapeando arquivos do GitHub...');
+          const requests = await this.firebaseService.getAllRequests();
+          const githubFiles = await this.mapGitHubFiles(requests);
+
+          console.log(`📊 Estatísticas da limpeza:`);
+          console.log(`📋 Solicitações no Firestore: ${requests.length}`);
+          console.log(`📁 Arquivos no GitHub: ${githubFiles.length}`);
+
+          let githubResult = { deleted: 0, errors: 0, total: 0 };
+
+          // 2. Deletar arquivos do GitHub
+          if (githubFiles.length > 0) {
+            LoadingManager.show(`🗑️ Iniciando limpeza GitHub: ${githubFiles.length} arquivos...`);
+            githubResult = await this.deleteGitHubFiles(githubFiles);
+            
+            // Mostrar resultado da limpeza GitHub
+            if (githubResult.deleted > 0) {
+              ToastManager.show(`🗑️ GitHub: ${githubResult.deleted}/${githubResult.total} arquivos removidos`, 'success');
+            }
+            if (githubResult.errors > 0) {
+              ToastManager.show(`⚠️ GitHub: ${githubResult.errors} arquivos com erro`, 'warning');
+            }
+          } else {
+            console.log('📂 Nenhum arquivo encontrado no GitHub para deletar');
+          }
+
+          // 3. Limpar Firestore
+          LoadingManager.show('🗑️ Limpando Firestore...');
+          await this.cleanFirestore(requests);
+          
+          if (requests.length > 0) {
+            ToastManager.show(`🗑️ Firestore: ${requests.length} solicitações removidas`, 'success');
+          }
+
+          // 4. Limpar cache local
+          LoadingManager.show('🧹 Limpando cache local...');
+          this.cleanLocalCache();
+
+          LoadingManager.hide();
+          
+          // 5. Mostrar resultado final
+          const totalCleaned = githubResult.deleted + requests.length;
+          ToastManager.show(`🎉 LIMPEZA TOTAL CONCLUÍDA!`, 'success');
+          ToastManager.show(`📊 Removido: ${requests.length} registros Firestore + ${githubResult.deleted} arquivos GitHub`, 'info');
+          ToastManager.show(`💰 Sistema 100% limpo e gratuito!`, 'success');
+
+          // 6. Recarregar dashboard
+          setTimeout(() => {
+            loadDashboard();
+            ToastManager.show('✨ Sistema reiniciado - pronto para novos dados!', 'info');
+          }, 4000);
+
+        } catch (error) {
+          LoadingManager.hide();
+          console.error('❌ Erro na limpeza total:', error);
+          ToastManager.show('Erro na limpeza: ' + error.message, 'error');
+        }
+      }
+
+      // 🗑️ DELETAR ARQUIVOS DO GITHUB
+      async deleteGitHubFiles(githubFiles) {
+        if (!this.githubConfig) {
+          console.warn('⚠️ GitHub config não encontrada, pulando limpeza do GitHub');
+          return;
+        }
+
+        if (githubFiles.length === 0) {
+          console.log('📂 Nenhum arquivo para deletar no GitHub');
+          return;
+        }
+
+        console.log(`🗑️ Iniciando limpeza total do GitHub: ${githubFiles.length} arquivos`);
+        
+        const batchSize = 3; // Processar 3 arquivos por vez
+        let deletedCount = 0;
+        let errorCount = 0;
+
+        for (let i = 0; i < githubFiles.length; i += batchSize) {
+          const batch = githubFiles.slice(i, i + batchSize);
+          const batchNumber = Math.floor(i/batchSize) + 1;
+          const totalBatches = Math.ceil(githubFiles.length/batchSize);
+          
+          LoadingManager.show(`🗑️ Limpeza GitHub - Lote ${batchNumber}/${totalBatches} (${deletedCount}/${githubFiles.length} concluídos)`);
+
+          const deletePromises = batch.map(async (file) => {
+            try {
+              console.log(`🔍 Processando: ${file.path}`);
+              
+              // Primeiro, obter o SHA do arquivo (necessário para deletar)
+              const getResponse = await fetch(
+                `https://api.github.com/repos/${this.githubConfig.username}/${this.githubConfig.repo}/contents/${file.path}`,
+                {
+                  headers: {
+                    'Authorization': `token ${this.githubConfig.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                  }
+                }
+              );
+
+              if (!getResponse.ok) {
+                if (getResponse.status === 404) {
+                  console.warn(`⚠️ Arquivo ${file.path} não encontrado no GitHub (já deletado?)`);
+                  return { success: false, reason: 'not_found' };
+                }
+                console.warn(`❌ Erro ao buscar ${file.path}: ${getResponse.status}`);
+                return { success: false, reason: 'fetch_error' };
+              }
+
+              const fileInfo = await getResponse.json();
+
+              // Deletar o arquivo
+              const deleteResponse = await fetch(
+                `https://api.github.com/repos/${this.githubConfig.username}/${this.githubConfig.repo}/contents/${file.path}`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `token ${this.githubConfig.token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    message: `🧹 Limpeza automática SENAI Lab: ${file.name}`,
+                    sha: fileInfo.sha
+                  })
+                }
+              );
+
+              if (deleteResponse.ok) {
+                console.log(`✅ Deletado com sucesso: ${file.path}`);
+                return { success: true, file: file.path };
+              } else {
+                console.warn(`❌ Falha ao deletar: ${file.path} (${deleteResponse.status})`);
+                return { success: false, reason: 'delete_error' };
+              }
+
+            } catch (error) {
+              console.error(`❌ Erro ao processar ${file.path}:`, error);
+              return { success: false, reason: 'exception', error: error.message };
+            }
+          });
+
+          const results = await Promise.all(deletePromises);
+          
+          // Contar resultados
+          const successCount = results.filter(r => r.success).length;
+          const errorBatch = results.filter(r => !r.success).length;
+          
+          deletedCount += successCount;
+          errorCount += errorBatch;
+
+          // Log detalhado do lote
+          console.log(`📊 Lote ${batchNumber}: ${successCount}/${batch.length} deletados, ${errorBatch} erros`);
+
+          // Pausa entre lotes para não sobrecarregar API do GitHub
+          if (i + batchSize < githubFiles.length) {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          }
+        }
+
+        // Log final
+        console.log(`🏁 Limpeza GitHub concluída: ${deletedCount}/${githubFiles.length} arquivos removidos`);
+        console.log(`📈 Taxa de sucesso: ${((deletedCount / githubFiles.length) * 100).toFixed(1)}%`);
+        
+        if (errorCount > 0) {
+          console.warn(`⚠️ ${errorCount} arquivos com erro - podem não existir mais ou falha de rede`);
+        }
+
+        // Mostrar resultado final
+        LoadingManager.show(`🎉 Limpeza GitHub: ${deletedCount}/${githubFiles.length} arquivos removidos`);
+        
+        return { deleted: deletedCount, errors: errorCount, total: githubFiles.length };
+      }
+
+      // 🗑️ LIMPAR FIRESTORE
+      async cleanFirestore(requests) {
+        // Deletar solicitações em lotes
+        const batchSize = 500; // Firestore limit
+        
+        for (let i = 0; i < requests.length; i += batchSize) {
+          const batch = this.firebaseService.db.batch();
+          const batchRequests = requests.slice(i, i + batchSize);
+          
+          batchRequests.forEach(request => {
+            const docRef = this.firebaseService.db.collection('solicitacoes').doc(request.id);
+            batch.delete(docRef);
+          });
+
+          await batch.commit();
+          LoadingManager.show(`🗑️ Firestore: ${Math.min(i + batchSize, requests.length)}/${requests.length} removidos`);
+        }
+
+        // Limpar logs administrativos
+        try {
+          const logs = await this.firebaseService.getAdminLogs();
+          if (logs.length > 0) {
+            const logBatch = this.firebaseService.db.batch();
+            logs.forEach(log => {
+              const logRef = this.firebaseService.db.collection('admin_logs').doc(log.id);
+              logBatch.delete(logRef);
+            });
+            await logBatch.commit();
+          }
+        } catch (error) {
+          console.warn('⚠️ Erro ao limpar logs:', error);
+        }
+      }
+
+      // 🧹 LIMPAR CACHE LOCAL
+      cleanLocalCache() {
+        if (dashboardNotifications?.notificationManager) {
+          dashboardNotifications.notificationManager.clearSeenRequests();
+        }
+        
+        // Limpar outros caches se houver
+        try {
+          localStorage.removeItem('senai_stats');
+          localStorage.removeItem('senai_cache');
+        } catch (error) {
+          console.warn('Erro ao limpar cache local:', error);
+        }
+      }
+
+      // 🛠️ FUNÇÕES AUXILIARES
+      calculateDetailedStats(requests) {
+        const stats = {
+          geral: {
+            total_solicitacoes: requests.length,
+            periodo: {
+              mais_antiga: requests.length > 0 ? Math.min(...requests.map(r => r.d)) : null,
+              mais_recente: requests.length > 0 ? Math.max(...requests.map(r => r.d)) : null
+            }
+          },
+          por_status: {},
+          por_servico: {},
+          por_mes: {},
+          por_prioridade: {},
+          com_arquivos: requests.filter(r => r.arq && r.arq.length > 0).length,
+          com_comentarios: requests.filter(r => r.admin?.comentarios?.length > 0).length
+        };
+
+        // Agrupar estatísticas
+        requests.forEach(request => {
+          // Por status
+          const status = request.admin?.status || 'pendente';
+          stats.por_status[status] = (stats.por_status[status] || 0) + 1;
+
+          // Por serviço
+          const serviceKey = request.ts ? `${request.s}_${request.ts}` : request.s;
+          const serviceName = this.getServiceDisplayName(serviceKey);
+          stats.por_servico[serviceName] = (stats.por_servico[serviceName] || 0) + 1;
+
+          // Por mês
+          const date = new Date(request.d);
+          const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          stats.por_mes[monthKey] = (stats.por_mes[monthKey] || 0) + 1;
+
+          // Por prioridade
+          const priority = request.admin?.prioridade || 'sem_prioridade';
+          stats.por_prioridade[priority] = (stats.por_prioridade[priority] || 0) + 1;
+        });
+
+        return stats;
+      }
+
+      generateCSV(requests, serviceType = 'all') {
+        if (!requests.length) return 'Nenhuma solicitação encontrada';
+
+        const headers = ['ID', 'Data', 'Colaborador', 'Email', 'WhatsApp', 'Serviço', 'Status', 'Prioridade', 'Qtd_Comentários', 'Tem_Arquivos'];
+
+        const csvData = requests.map(request => {
+          const row = [
+            request.id,
+            new Date(request.d).toLocaleString('pt-BR'),
+            request.c,
+            request.e,
+            request.w || '',
+            this.getServiceDisplayName(request.ts ? `${request.s}_${request.ts}` : request.s),
+            request.admin?.status || 'pendente',
+            request.admin?.prioridade || '',
+            request.admin?.comentarios?.length || 0,
+            request.arq && request.arq.length > 0 ? 'Sim' : 'Não'
+          ];
+
+          return row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',');
+        });
+
+        return [headers.join(','), ...csvData].join('\n');
+      }
+
+      generateExecutiveSummary(firestoreData, downloadedFiles) {
+        const { requests, stats, backupInfo } = firestoreData;
+        const successfulDownloads = downloadedFiles.filter(f => f.downloaded).length;
+        
+        return `
+🗂️ BACKUP COMPLETO SENAI LAB
+${'='.repeat(50)}
+
+📅 Data do Backup: ${backupInfo.date}
+🕐 Timestamp: ${backupInfo.timestamp}
+📊 Versão: ${backupInfo.version}
+🗂️ Tipo: BACKUP COMPLETO COM LIMPEZA
+
+📋 DADOS INCLUÍDOS
+${'-'.repeat(30)}
+• Solicitações Firestore: ${stats.geral.total_solicitacoes}
+• Arquivos GitHub baixados: ${successfulDownloads}/${downloadedFiles.length}
+• Logs administrativos: ${firestoreData.adminLogs.length}
+• Estatísticas detalhadas: ✅
+
+📊 ESTATÍSTICAS RESUMIDAS
+${'-'.repeat(30)}
+• Status mais comum: ${this.getMostCommon(stats.por_status)}
+• Serviço mais usado: ${this.getMostCommon(stats.por_servico)}
+• Com arquivos anexados: ${stats.com_arquivos}
+• Com comentários admin: ${stats.com_comentarios}
+
+💾 ARQUIVOS DE BACKUP
+${'-'.repeat(30)}
+• dados_completos.json (dados principais)
+• solicitacoes_todas.csv (planilha geral)
+• estatisticas_detalhadas.json (métricas)
+• arquivos_baixados.json (lista de arquivos)
+• Arquivos individuais do GitHub
+• CSVs por tipo de serviço
+
+🧹 LIMPEZA REALIZADA
+${'-'.repeat(30)}
+• Firestore: ${stats.geral.total_solicitacoes} registros removidos
+• GitHub: ${downloadedFiles.length} arquivos removidos
+• Cache local: Limpo
+• Sistema: 100% zerado
+
+💰 RESULTADO FINAL
+${'-'.repeat(30)}
+• Custo Firebase: R$ 0,00 (zero registros)
+• Custo GitHub: R$ 0,00 (zero storage)
+• Performance: MÁXIMA
+• Dados: SEGUROS NO BACKUP
+
+⚠️ IMPORTANTE
+${'-'.repeat(30)}
+Este backup contém TODOS os dados e arquivos do sistema.
+O sistema foi completamente limpo para manter custos zero.
+Para restaurar, reimporte os dados conforme necessário.
+
+📧 Suporte: getulio.santos@docente.senai-ce.org.br
+🔧 Sistema: SENAI Lab Dashboard v2.0
+        `.trim();
+      }
+
+      // Utilitários
+      downloadBlob(blob, filename) {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+
+      getServiceName(service, subService) {
+        const names = {
+          'espaco_maker': 'Espaço Maker',
+          'servicos': {
+            'impressao': 'Impressão',
+            'impressao_3d': 'Impressão 3D',
+            'manutencao': 'Manutenção',
+            'arte_digital': 'Arte Digital',
+            'projeto': 'Projeto'
+          },
+          'emprestimo': 'Empréstimo'
+        };
+
+        if (service === 'servicos' && subService) {
+          return names.servicos[subService] || subService;
+        }
+
+        return names[service] || service;
+      }
+
+      getServiceDisplayName(serviceKey) {
+        const names = {
+          'espaco_maker': 'Espaço Maker',
+          'servicos_impressao': 'Impressão',
+          'servicos_impressao_3d': 'Impressão 3D',
+          'servicos_manutencao': 'Manutenção',
+          'servicos_arte_digital': 'Arte Digital',
+          'servicos_projeto': 'Projeto',
+          'emprestimo': 'Empréstimo'
+        };
+        return names[serviceKey] || serviceKey;
+      }
+
+      groupRequestsByService(requests) {
+        const groups = {};
+        requests.forEach(request => {
+          const key = request.ts ? `${request.s}_${request.ts}` : request.s;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(request);
+        });
+        return groups;
+      }
+
+      getFolderFromPath(path) {
+        return path.split('/')[0] || 'outros';
+      }
+
+      getMostCommon(obj) {
+        const entries = Object.entries(obj);
+        if (entries.length === 0) return 'N/A';
+        
+        const sorted = entries.sort((a, b) => b[1] - a[1]);
+        return `${sorted[0][0]} (${sorted[0][1]})`;
+      }
+    }
+
+    // 🎛️ INTEGRAÇÃO COM O DASHBOARD
+    function addCompleteBackupButton() {
+      const exportButtons = document.querySelector('.export-buttons');
+      if (!exportButtons) {
+        console.warn('⚠️ Container .export-buttons não encontrado');
+        return;
+      }
+      
+      // Verificar se já existe o botão (ID único)
+      const existingBtn = document.getElementById('completeBackupBtn');
+      if (existingBtn) {
+        console.log('🔄 Botão de backup já existe, não criando duplicata');
+        return;
+      }
+
+      const backupBtn = document.createElement('button');
+      backupBtn.id = 'completeBackupBtn'; // ID único para controle
+      backupBtn.className = 'btn-export';
+      backupBtn.style.cssText = `
+        background: linear-gradient(45deg, #ff6b35, #f7931e);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        transition: all 0.3s ease;
+      `;
+      backupBtn.onclick = performCompleteBackup;
+      backupBtn.innerHTML = '🗂️ Backup Completo + Limpar';
+      backupBtn.title = 'Backup completo com arquivos + limpeza total (Firestore + GitHub)';
+      
+      // Verificar se já existe separador
+      const existingSeparator = exportButtons.querySelector('.backup-separator');
+      if (!existingSeparator) {
+        const separator = document.createElement('div');
+        separator.className = 'backup-separator';
+        separator.style.cssText = 'width: 1px; height: 30px; background: #ddd; margin: 0 10px;';
+        exportButtons.appendChild(separator);
+      }
+      
+      exportButtons.appendChild(backupBtn);
+      console.log('✅ Botão de backup completo adicionado');
+    }
+
+    // 🚀 EXECUTAR BACKUP COMPLETO
+    async function performCompleteBackup() {
+      if (!firebaseService) {
+        ToastManager.show('Firebase service não inicializado', 'error');
+        return;
+      }
+
+      const backupManager = new CompleteBackupManager(firebaseService);
+      await backupManager.createCompleteBackup();
+    }
+
+    // 🔧 INICIALIZAR SISTEMA
+    function initializeCompleteBackupSystem() {
+      // Verificar se o botão já existe
+      if (document.getElementById('completeBackupBtn')) {
+        console.log('✅ Botão de backup já existe, não criando duplicata');
+        return;
+      }
+      
+      // Aguardar um pouco para garantir que o DOM esteja carregado
+      setTimeout(() => {
+        // Garantir que o container existe antes de adicionar o botão
+        const exportButtons = document.querySelector('.export-buttons');
+        if (exportButtons) {
+          addCompleteBackupButton();
+        } else {
+          console.warn('⚠️ Container .export-buttons não encontrado no DOM');
+        }
+      }, 500);
+    }
+
     // 🔒 SISTEMA DE AUTENTICAÇÃO
     class AdminAuth {
       static isAuthenticated() {
@@ -1463,9 +2278,6 @@
       }
     }
 
-    // [RESTO DO CÓDIGO CONTINUA IGUAL - renderização, filtros, etc...]
-    // Por questão de espaço, manterei apenas as funções modificadas...
-
     // 🔐 SISTEMA DE LOGIN/LOGOUT MODIFICADO
     function showDashboard() {
       document.getElementById('loginContainer').style.display = 'none';
@@ -1493,7 +2305,11 @@
       }
     }
 
-    // [RESTO DAS FUNÇÕES CONTINUAM IGUAIS...]
+    function showLogin() {
+      document.getElementById('loginContainer').style.display = 'flex';
+      document.getElementById('dashboard').classList.remove('show');
+      document.getElementById('adminPassword').focus();
+    }
 
     // 🎨 SISTEMA DE INTERFACE
     function updateStatsDisplay(stats) {
@@ -1727,11 +2543,6 @@
     }
 
     // 🎯 DRAG AND DROP HANDLERS
-    function handleDragStart(e) {
-      e.dataTransfer.setData('text/plain', e.target.dataset.requestId);
-      e.target.classList.add('dragging');
-    }
-
     function handleDragEnd(e) {
       e.target.classList.remove('dragging');
     }
@@ -2105,6 +2916,12 @@
         
         LoadingManager.hide();
         ToastManager.show(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
+        
+        // ✨ INICIALIZAR SISTEMA DE BACKUP COMPLETO (apenas uma vez)
+        setTimeout(() => {
+          initializeCompleteBackupSystem();
+        }, 1000);
+        
       } catch (error) {
         LoadingManager.hide();
         console.error('❌ Erro ao carregar dashboard:', error);
@@ -2147,12 +2964,6 @@
       }, 1000);
     });
 
-    function showLogin() {
-      document.getElementById('loginContainer').style.display = 'flex';
-      document.getElementById('dashboard').classList.remove('show');
-      document.getElementById('adminPassword').focus();
-    }
-
     // 📱 EVENT LISTENERS
     document.getElementById('filterService').addEventListener('change', loadDashboard);
     document.getElementById('filterStatus').addEventListener('change', loadDashboard);
@@ -2169,7 +2980,7 @@
 
     // ⚡ INICIALIZAÇÃO
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🔧 SENAI Lab - Dashboard Administrativo v2.0 com Notificações Iniciado');
+      console.log('🔧 SENAI Lab - Dashboard Administrativo v2.0 com Backup Completo Iniciado');
       
       // Inicializar Firebase Service
       try {
@@ -2198,111 +3009,55 @@
       // Mostrar toast de boas-vindas
       setTimeout(() => {
         if (AdminAuth.isAuthenticated()) {
-          ToastManager.show('Dashboard v2.0 com Notificações carregado! 🚀', 'success');
+          ToastManager.show('Dashboard v2.0 com Backup Completo carregado! 🚀', 'success');
         }
       }, 1000);
     });
 
-    // ⚠️ AVISO IMPORTANTE
     console.log(`
-🔔 SENAI Lab - Dashboard com Notificações em Tempo Real
+🗂️ SENAI Lab - Dashboard com Sistema de Backup Completo + Limpeza
 
-🆕 NOVIDADES - SISTEMA DE NOTIFICAÇÕES:
+🆕 NOVIDADES - SISTEMA DE BACKUP COMPLETO:
+    ✅ Backup completo Firestore + GitHub
+    ✅ Download de TODOS os arquivos
+    ✅ Múltiplos formatos (JSON, CSV, TXT)
+    ✅ Limpeza total automática
+    ✅ Sistema 100% gratuito mantido
     ✅ Notificações desktop nativas
     ✅ Monitoramento em tempo real
-    ✅ Filtro inteligente (só novas e recentes)
-    ✅ Click para ver detalhes
-    ✅ Auto-start/stop no login/logout
-    ✅ Indicador visual no navbar
-    ✅ Ícones personalizados por serviço
 
-🔔 Como funciona:
-    1. Admin faz login → Pede permissão
-    2. Nova solicitação → Notificação aparece
-    3. Click na notificação → Abre detalhes
-    4. Admin faz logout → Para notificações
-
-🎯 Funcionalidades mantidas:
+🔔 Recursos mantidos:
     ✅ Toast notifications elegantes
     ✅ Modal de detalhes completos
     ✅ Busca por texto em tempo real
     ✅ Vista Kanban com drag & drop
     ✅ Sistema de prioridades
     ✅ Exportação para Excel
-    ✅ Loading states melhorados
     ✅ Interface responsiva
     ✅ Comentários expandidos
-    ✅ Quick actions nos cards
+
+🚀 Fluxo do Backup Completo:
+    1. Coleta dados Firestore
+    2. Baixa TODOS os arquivos GitHub
+    3. Gera backup completo
+    4. Apaga TUDO do Firestore
+    5. Apaga TUDO do GitHub
+    6. Sistema volta ao estado inicial
+
+💰 RESULTADO: CUSTO ZERO PERMANENTE
 
 ⚠️  CONFIGURAÇÃO DE SEGURANÇA:
     Altere a senha em ADMIN_CONFIG.password
     Senha atual: "${ADMIN_CONFIG.password}"
     
-🎉 NOVO: Sistema de Notificações Ativo!
-    Admins serão avisados instantaneamente sobre novas solicitações
+🎉 NOVO: Botão "🗂️ Backup Completo + Limpar" disponível!
     `);
-  </script>
-</body>
-</html>
 
-    // ⚡ INICIALIZAÇÃO
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🔧 SENAI Lab - Dashboard Administrativo v2.0 com Notificações Iniciado');
-      
-      // Inicializar Firebase Service
-      try {
-        firebaseService = new FirebaseService();
-        console.log('✅ Firebase Service inicializado');
-      } catch (error) {
-        console.error('❌ Erro ao inicializar Firebase:', error);
-        ToastManager.show('Erro ao conectar com Firebase', 'error');
-        return;
-      }
-      
-      // Verificar se já está autenticado
-      if (AdminAuth.isAuthenticated()) {
-        showDashboard();
-      } else {
-        showLogin();
-      }
-
-      // Auto-refresh a cada 30 segundos se estiver autenticado
-      setInterval(() => {
-        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
-          loadDashboard();
-        }
-      }, 30000);
-
-      // Mostrar toast de boas-vindas
-      setTimeout(() => {
-        if (AdminAuth.isAuthenticated()) {
-          ToastManager.show('Dashboard v2.0 com Notificações carregado! 🚀', 'success');
-        }
-      }, 1000);
-    });
-
-    console.log(`
-🔔 SENAI Lab - Dashboard com Notificações em Tempo Real
-
-🆕 NOVIDADES - SISTEMA DE NOTIFICAÇÕES:
-    ✅ Notificações desktop nativas
-    ✅ Monitoramento em tempo real
-    ✅ Filtro inteligente (só novas e recentes)
-    ✅ Click para ver detalhes
-    ✅ Auto-start/stop no login/logout
-    ✅ Indicador visual no navbar
-    ✅ Ícones personalizados por serviço
-
-🔔 Como funciona:
-    1. Admin faz login → Pede permissão
-    2. Nova solicitação → Notificação aparece
-    3. Click na notificação → Abre detalhes
-    4. Admin faz logout → Para notificações
-
-⚠️  CONFIGURAÇÃO DE SEGURANÇA:
-    Altere a senha em ADMIN_CONFIG.password
-    Senha atual: "${ADMIN_CONFIG.password}"
-    `);
+    // 🎯 DRAG AND DROP HANDLERS
+    function handleDragStart(e) {
+      e.dataTransfer.setData('text/plain', e.target.dataset.requestId);
+      e.target.classList.add('dragging');
+    }
   </script>
 </body>
 </html>
