@@ -729,21 +729,21 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   
   <!-- Firebase Configuration -->
-  <script src="firebase-config.js"></script>
+  <script src="shared/firebase-config.js"></script>
   
   <!-- GitHub Configuration -->
-  <script src="github-config.js"></script>
+  <script src="shared/github-config.js"></script>
 
   <script>
     // 🔥 VERIFICAR SE A CONFIGURAÇÃO FIREBASE FOI CARREGADA
     if (!window.firebaseConfig) {
-      alert('⚠️ Erro: Arquivo firebase-config.js não encontrado!\n\nPor favor:\n1. Copie firebase-config.example.js para firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
+      alert('⚠️ Erro: Arquivo firebase-config.js não encontrado!\n\nPor favor:\n1. Copie shared/firebase-config.example.js para shared/firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
       throw new Error('Firebase configuration not found');
     }
 
     // 🐙 VERIFICAR SE A CONFIGURAÇÃO GITHUB FOI CARREGADA
     if (!window.githubConfig) {
-      alert('⚠️ Erro: Arquivo github-config.js não encontrado!\n\nPor favor:\n1. Copie github-config.example.js para github-config.js\n2. Substitua pelas suas credenciais GitHub');
+      alert('⚠️ Erro: Arquivo github-config.js não encontrado!\n\nPor favor:\n1. Copie shared/github-config.example.js para shared/github-config.js\n2. Substitua pelas suas credenciais GitHub');
       throw new Error('GitHub configuration not found');
     }
 

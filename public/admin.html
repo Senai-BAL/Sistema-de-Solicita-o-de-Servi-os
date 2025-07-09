@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENAI Lab - Dashboard Administrativo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* ===== LOGIN SCREEN ===== */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-header {
+      margin-bottom: 30px;
+    }
+
+    .login-header h1 {
+      color: #1e3c72;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .login-header p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      padding: 10px;
+      background: #fdf2f2;
+      border-radius: 6px;
+      border: 1px solid #fecaca;
+      display: none;
+    }
+
+    /* ===== DASHBOARD SCREEN ===== */
+    .dashboard {
+      display: none;
+      min-height: 100vh;
+      background: #f8f9fa;
+    }
+
+    .dashboard.show {
+      display: block;
+    }
+
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 0 20px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-brand h1 {
+      color: #1e3c72;
+      font-size: 1.5rem;
+    }
+
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    .user-role {
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    .btn-logout {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+
+    .btn-logout:hover {
+      background: #c0392b;
+    }
+
+    .main-content {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .stat-title {
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .stat-icon {
+      font-size: 1.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1e3c72;
+    }
+
+    .stat-change {
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    .stat-change.positive {
+      color: #27ae60;
+    }
+
+    .stat-change.negative {
+      color: #e74c3c;
+    }
+
+    .content-section {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f1f3f4;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: #1e3c72;
+      font-weight: 600;
+    }
+
+    .filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .filter-group select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      max-width: 350px;
+    }
+
+    .status-indicator.show {
+      opacity: 1;
+    }
+
+    .status-indicator.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-indicator.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-indicator.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 15px;
+        height: 60px;
+      }
+
+      .navbar-brand h1 {
+        font-size: 1.2rem;
+      }
+
+      .main-content {
+        padding: 15px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .filters {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .user-info {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Tela de Login -->
+  <div class="login-container" id="loginContainer">
+    <div class="login-box">
+      <div class="login-header">
+        <h1>🔧 SENAI Lab</h1>
+        <p>Dashboard Administrativo</p>
+      </div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminPassword">Senha de Acesso</label>
+          <input 
+            type="password" 
+            id="adminPassword" 
+            placeholder="Digite a senha administrativa"
+            required
+          >
+        </div>
+        <button type="submit" class="btn" id="loginBtn">
+          <span id="loginText">🔐 Entrar</span>
+          <span id="loginLoading" style="display: none;">⏳ Verificando...</span>
+        </button>
+        <div class="error-message" id="loginError"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Principal -->
+  <div class="dashboard" id="dashboard">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <span>🔧</span>
+        <h1>SENAI Lab - Admin</h1>
+      </div>
+      <div class="navbar-user">
+        <div class="user-info">
+          <div class="user-name">Administrador</div>
+          <div class="user-role">Dashboard</div>
+        </div>
+        <button class="btn-logout" onclick="logout()">🚪 Sair</button>
+      </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+      <!-- Cards de Estatísticas -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Total de Solicitações</span>
+            <span class="stat-icon">📋</span>
+          </div>
+          <div class="stat-value" id="totalRequests">-</div>
+          <div class="stat-change positive" id="totalChange">Carregando...</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Pendentes</span>
+            <span class="stat-icon">⏳</span>
+          </div>
+          <div class="stat-value" id="pendingRequests">-</div>
+          <div class="stat-change" id="pendingChange">Carregando...</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Em Andamento</span>
+            <span class="stat-icon">🔄</span>
+          </div>
+          <div class="stat-value" id="inProgressRequests">-</div>
+          <div class="stat-change" id="progressChange">Carregando...</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-title">Concluídas</span>
+            <span class="stat-icon">✅</span>
+          </div>
+          <div class="stat-value" id="completedRequests">-</div>
+          <div class="stat-change positive" id="completedChange">Carregando...</div>
+        </div>
+      </div>
+
+      <!-- Seção de Solicitações -->
+      <div class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">📋 Solicitações Recentes</h2>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+          <div class="filter-group">
+            <label>Tipo de Serviço</label>
+            <select id="filterService">
+              <option value="">Todos os tipos</option>
+              <option value="espaco_maker">Espaço Maker</option>
+              <option value="servicos">Serviços</option>
+              <option value="emprestimo">Empréstimo</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="filterStatus">
+              <option value="">Todos os status</option>
+              <option value="pendente">Pendente</option>
+              <option value="em_andamento">Em Andamento</option>
+              <option value="concluido">Concluído</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Período</label>
+            <select id="filterPeriod">
+              <option value="hoje">Hoje</option>
+              <option value="semana">Esta Semana</option>
+              <option value="mes">Este Mês</option>
+              <option value="todos">Todos</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lista de Solicitações -->
+        <div id="requestsList">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Carregando solicitações...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Status Indicator -->
+  <div class="status-indicator" id="statusIndicator"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Configurações -->
+  <script src="shared/firebase-config.js"></script>
+  <script src="shared/github-config.js"></script>
+
+  <script>
+    // 🔐 CONFIGURAÇÃO DE AUTENTICAÇÃO
+    const ADMIN_CONFIG = {
+      // ⚠️ ALTERE ESTA SENHA PARA UMA SEGURA!
+      password: 'senai@admin2024',
+      sessionDuration: 24 * 60 * 60 * 1000, // 24 horas
+      sessionKey: 'senai_admin_session'
+    };
+
+    // Inicializar Firebase
+    if (!window.firebaseConfig) {
+      alert('⚠️ Erro: Configuração Firebase não encontrada!\n\nPor favor:\n1. Copie shared/firebase-config.example.js para shared/firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
+      throw new Error('Firebase config missing');
+    }
+
+    firebase.initializeApp(window.firebaseConfig);
+    const db = firebase.firestore();
+
+    // 🔒 SISTEMA DE AUTENTICAÇÃO
+    class AdminAuth {
+      static isAuthenticated() {
+        const session = localStorage.getItem(ADMIN_CONFIG.sessionKey);
+        if (!session) return false;
+
+        try {
+          const data = JSON.parse(session);
+          const now = Date.now();
+          
+          if (now > data.expires) {
+            this.logout();
+            return false;
+          }
+          
+          return true;
+        } catch {
+          this.logout();
+          return false;
+        }
+      }
+
+      static login(password) {
+        if (password === ADMIN_CONFIG.password) {
+          const session = {
+            timestamp: Date.now(),
+            expires: Date.now() + ADMIN_CONFIG.sessionDuration
+          };
+          
+          localStorage.setItem(ADMIN_CONFIG.sessionKey, JSON.stringify(session));
+          return true;
+        }
+        return false;
+      }
+
+      static logout() {
+        localStorage.removeItem(ADMIN_CONFIG.sessionKey);
+      }
+    }
+
+    // 📊 SISTEMA DE DADOS
+    class DashboardData {
+      static async loadStats() {
+        try {
+          const snapshot = await db.collection('solicitacoes').get();
+          const requests = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+
+          const stats = {
+            total: requests.length,
+            pending: requests.filter(r => !r.admin?.status || r.admin.status === 'pendente').length,
+            inProgress: requests.filter(r => r.admin?.status === 'em_andamento').length,
+            completed: requests.filter(r => r.admin?.status === 'concluido').length,
+            today: requests.filter(r => {
+              const today = new Date();
+              const requestDate = new Date(r.d);
+              return requestDate.toDateString() === today.toDateString();
+            }).length
+          };
+
+          return { stats, requests };
+        } catch (error) {
+          console.error('❌ Erro ao carregar dados:', error);
+          showStatus('Erro ao carregar dados: ' + error.message, 'error');
+          return { stats: {}, requests: [] };
+        }
+      }
+
+      static async updateRequestStatus(requestId, status, comment = '') {
+        try {
+          const updateData = {
+            'admin.status': status,
+            'admin.data_atualizacao': Date.now(),
+            'admin.responsavel': 'Administrador'
+          };
+
+          if (comment) {
+            updateData['admin.comentarios'] = firebase.firestore.FieldValue.arrayUnion({
+              texto: comment,
+              timestamp: Date.now(),
+              autor: 'Administrador'
+            });
+          }
+
+          await db.collection('solicitacoes').doc(requestId).update(updateData);
+          
+          showStatus('Status atualizado com sucesso!', 'success');
+          return true;
+        } catch (error) {
+          console.error('❌ Erro ao atualizar status:', error);
+          showStatus('Erro ao atualizar status: ' + error.message, 'error');
+          return false;
+        }
+      }
+    }
+
+    // 🎨 INTERFACE DO USUÁRIO
+    function showStatus(message, type = 'info') {
+      const indicator = document.getElementById('statusIndicator');
+      indicator.textContent = message;
+      indicator.className = `status-indicator ${type} show`;
+
+      setTimeout(() => {
+        indicator.classList.remove('show');
+      }, 4000);
+    }
+
+    function updateStatsDisplay(stats) {
+      document.getElementById('totalRequests').textContent = stats.total || 0;
+      document.getElementById('pendingRequests').textContent = stats.pending || 0;
+      document.getElementById('inProgressRequests').textContent = stats.inProgress || 0;
+      document.getElementById('completedRequests').textContent = stats.completed || 0;
+
+      // Atualizar indicadores de mudança
+      document.getElementById('totalChange').textContent = `+${stats.today || 0} hoje`;
+      document.getElementById('pendingChange').textContent = 'Requer atenção';
+      document.getElementById('progressChange').textContent = 'Em processo';
+      document.getElementById('completedChange').textContent = 'Finalizadas';
+    }
+
+    function formatDate(timestamp) {
+      return new Date(timestamp).toLocaleString('pt-BR');
+    }
+
+    function getServiceName(service, subService) {
+      const names = {
+        'espaco_maker': 'Espaço Maker',
+        'servicos': {
+          'impressao': 'Impressão',
+          'impressao_3d': 'Impressão 3D',
+          'manutencao': 'Manutenção',
+          'arte_digital': 'Arte Digital',
+          'projeto': 'Projeto'
+        },
+        'emprestimo': 'Empréstimo'
+      };
+
+      if (service === 'servicos' && subService) {
+        return names.servicos[subService] || subService;
+      }
+
+      return names[service] || service;
+    }
+
+    function getStatusBadge(status) {
+      const badges = {
+        'pendente': '<span style="background: #ffeaa7; color: #d63031; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">⏳ Pendente</span>',
+        'em_andamento': '<span style="background: #74b9ff; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">🔄 Em Andamento</span>',
+        'concluido': '<span style="background: #00b894; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">✅ Concluído</span>',
+        'cancelado': '<span style="background: #d63031; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">❌ Cancelado</span>'
+      };
+      
+      return badges[status] || badges['pendente'];
+    }
+
+    async function renderRequestsList(requests) {
+      const container = document.getElementById('requestsList');
+      
+      if (requests.length === 0) {
+        container.innerHTML = '<div class="loading"><p>Nenhuma solicitação encontrada</p></div>';
+        return;
+      }
+
+      let html = '';
+      
+      requests.forEach(request => {
+        const status = request.admin?.status || 'pendente';
+        const serviceName = getServiceName(request.s, request.ts);
+        
+        html += `
+          <div style="border: 1px solid #e1e5e9; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: white;">
+            <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 15px;">
+              <div style="flex: 1;">
+                <h3 style="color: #1e3c72; margin-bottom: 8px; font-size: 1.1rem;">
+                  ${serviceName} - ${request.c}
+                </h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 5px;">
+                  📧 ${request.e} | 📱 ${request.w || 'N/A'}
+                </p>
+                <p style="color: #888; font-size: 0.8rem;">
+                  📅 ${formatDate(request.d)}
+                </p>
+              </div>
+              <div style="text-align: right;">
+                ${getStatusBadge(status)}
+              </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+              <h4 style="color: #333; font-size: 0.9rem; margin-bottom: 8px;">📋 Detalhes:</h4>
+              <div style="font-size: 0.85rem; color: #555;">
+                ${formatRequestDetails(request)}
+              </div>
+              ${request.arq && request.arq.length > 0 ? `
+                <div style="margin-top: 10px;">
+                  <strong>📎 Arquivos:</strong>
+                  ${request.arq.map(arquivo => `
+                    <a href="${arquivo.u}" target="_blank" style="display: inline-block; margin: 5px 5px 0 0; padding: 4px 8px; background: #e3f2fd; color: #1976d2; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">
+                      📄 ${arquivo.n}
+                    </a>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <select onchange="updateStatus('${request.id}', this.value)" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;">
+                <option value="pendente" ${status === 'pendente' ? 'selected' : ''}>⏳ Pendente</option>
+                <option value="em_andamento" ${status === 'em_andamento' ? 'selected' : ''}>🔄 Em Andamento</option>
+                <option value="concluido" ${status === 'concluido' ? 'selected' : ''}>✅ Concluído</option>
+                <option value="cancelado" ${status === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+              </select>
+              
+              <button onclick="addComment('${request.id}')" style="padding: 6px 12px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                💬 Comentar
+              </button>
+              
+              <button onclick="viewDetails('${request.id}')" style="padding: 6px 12px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                👁️ Ver Detalhes
+              </button>
+            </div>
+
+            ${request.admin?.comentarios && request.admin.comentarios.length > 0 ? `
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                <h4 style="color: #333; font-size: 0.9rem; margin-bottom: 10px;">💬 Comentários Administrativos:</h4>
+                ${request.admin.comentarios.map(comment => `
+                  <div style="background: #f0f8ff; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #2196f3;">
+                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 5px;">
+                      <strong>${comment.autor}</strong> - ${formatDate(comment.timestamp)}
+                    </div>
+                    <div style="font-size: 0.9rem; color: #333;">
+                      ${comment.texto}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function formatRequestDetails(request) {
+      const service = request.s;
+      const dados = request.dados || {};
+      
+      if (service === 'espaco_maker') {
+        return `
+          <strong>Data:</strong> ${dados.dr || 'N/A'}<br>
+          <strong>Horário:</strong> ${dados.hi || 'N/A'} às ${dados.hf || 'N/A'}<br>
+          <strong>Chrome Books:</strong> ${dados.cb ? `Sim (${dados.qcb || 0})` : 'Não'}<br>
+          <strong>Computadores:</strong> ${dados.cp ? `Sim (${dados.qcp || 0})` : 'Não'}<br>
+          <strong>Descrição:</strong> ${dados.desc || 'N/A'}
+        `;
+      } else if (service === 'servicos') {
+        const tipo = request.ts;
+        
+        if (tipo === 'impressao') {
+          return `
+            <strong>Tamanho:</strong> ${dados.tf || 'N/A'}<br>
+            <strong>Quantidade:</strong> ${dados.qc || 0} cópias<br>
+            <strong>Frente e Verso:</strong> ${dados.fv ? 'Sim' : 'Não'}<br>
+            <strong>Colorido:</strong> ${dados.co ? 'Sim' : 'Não'}<br>
+            <strong>Escanear:</strong> ${dados.es ? 'Sim' : 'Não'}
+          `;
+        } else if (tipo === 'impressao_3d') {
+          return `
+            <strong>Material:</strong> ${dados.mt || 'N/A'}<br>
+            <strong>Quantidade:</strong> ${dados.qt || 0}<br>
+            <strong>Possui STL:</strong> ${dados.stl ? 'Sim' : 'Não'}<br>
+            ${dados.dp ? `<strong>Descrição:</strong> ${dados.dp}` : ''}
+          `;
+        } else if (tipo === 'manutencao') {
+          return `<strong>Problema:</strong> ${dados.prob || 'N/A'}`;
+        } else if (tipo === 'arte_digital' || tipo === 'projeto') {
+          return `<strong>Descrição:</strong> ${dados.desc || 'N/A'}`;
+        }
+      } else if (service === 'emprestimo') {
+        return `
+          <strong>Item:</strong> ${dados.ni || 'N/A'}<br>
+          <strong>Retirada:</strong> ${dados.dr || 'N/A'}<br>
+          <strong>Devolução:</strong> ${dados.dd || 'N/A'}
+        `;
+      }
+      
+      return 'Detalhes não disponíveis';
+    }
+
+    // 🔄 FUNÇÕES DE INTERAÇÃO
+    async function updateStatus(requestId, newStatus) {
+      if (await DashboardData.updateRequestStatus(requestId, newStatus)) {
+        loadDashboard(); // Recarregar dados
+      }
+    }
+
+    function addComment(requestId) {
+      const comment = prompt('Digite seu comentário:');
+      if (comment && comment.trim()) {
+        DashboardData.updateRequestStatus(requestId, null, comment.trim()).then(success => {
+          if (success) loadDashboard();
+        });
+      }
+    }
+
+    function viewDetails(requestId) {
+      // Por enquanto, mostrar alert com ID
+      // TODO: Implementar modal com detalhes completos
+      showStatus(`Visualizando detalhes da solicitação: ${requestId}`, 'info');
+    }
+
+    // 📱 APLICAR FILTROS
+    function applyFilters(requests) {
+      const serviceFilter = document.getElementById('filterService').value;
+      const statusFilter = document.getElementById('filterStatus').value;
+      const periodFilter = document.getElementById('filterPeriod').value;
+
+      let filtered = requests;
+
+      // Filtro por serviço
+      if (serviceFilter) {
+        filtered = filtered.filter(r => r.s === serviceFilter);
+      }
+
+      // Filtro por status
+      if (statusFilter) {
+        filtered = filtered.filter(r => {
+          const status = r.admin?.status || 'pendente';
+          return status === statusFilter;
+        });
+      }
+
+      // Filtro por período
+      if (periodFilter !== 'todos') {
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startOfWeek = new Date(startOfDay);
+        startOfWeek.setDate(startOfDay.getDate() - startOfDay.getDay());
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        filtered = filtered.filter(r => {
+          const requestDate = new Date(r.d);
+          
+          switch (periodFilter) {
+            case 'hoje':
+              return requestDate >= startOfDay;
+            case 'semana':
+              return requestDate >= startOfWeek;
+            case 'mes':
+              return requestDate >= startOfMonth;
+            default:
+              return true;
+          }
+        });
+      }
+
+      return filtered.sort((a, b) => b.d - a.d); // Ordenar por data (mais recente primeiro)
+    }
+
+    // 🔄 CARREGAR DASHBOARD
+    async function loadDashboard() {
+      try {
+        showStatus('Carregando dados...', 'info');
+        
+        const { stats, requests } = await DashboardData.loadStats();
+        
+        updateStatsDisplay(stats);
+        
+        const filteredRequests = applyFilters(requests);
+        await renderRequestsList(filteredRequests);
+        
+        showStatus('Dados carregados com sucesso!', 'success');
+      } catch (error) {
+        console.error('❌ Erro ao carregar dashboard:', error);
+        showStatus('Erro ao carregar dashboard', 'error');
+      }
+    }
+
+    // 🔐 SISTEMA DE LOGIN/LOGOUT
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const password = document.getElementById('adminPassword').value;
+      const loginBtn = document.getElementById('loginBtn');
+      const loginText = document.getElementById('loginText');
+      const loginLoading = document.getElementById('loginLoading');
+      const errorDiv = document.getElementById('loginError');
+
+      // UI de loading
+      loginBtn.disabled = true;
+      loginText.style.display = 'none';
+      loginLoading.style.display = 'inline';
+      errorDiv.style.display = 'none';
+
+      // Simular delay de verificação
+      setTimeout(() => {
+        if (AdminAuth.login(password)) {
+          showStatus('Login realizado com sucesso!', 'success');
+          showDashboard();
+        } else {
+          errorDiv.textContent = '❌ Senha incorreta. Tente novamente.';
+          errorDiv.style.display = 'block';
+          
+          // Reset do formulário
+          loginBtn.disabled = false;
+          loginText.style.display = 'inline';
+          loginLoading.style.display = 'none';
+          document.getElementById('adminPassword').value = '';
+          document.getElementById('adminPassword').focus();
+        }
+      }, 1000);
+    });
+
+    function logout() {
+      if (confirm('Tem certeza que deseja sair?')) {
+        AdminAuth.logout();
+        showStatus('Logout realizado com sucesso!', 'success');
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('loginContainer').style.display = 'flex';
+      document.getElementById('dashboard').classList.remove('show');
+      document.getElementById('adminPassword').focus();
+    }
+
+    function showDashboard() {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('dashboard').classList.add('show');
+      loadDashboard();
+    }
+
+    // 📱 EVENT LISTENERS
+    document.getElementById('filterService').addEventListener('change', () => {
+      loadDashboard();
+    });
+
+    document.getElementById('filterStatus').addEventListener('change', () => {
+      loadDashboard();
+    });
+
+    document.getElementById('filterPeriod').addEventListener('change', () => {
+      loadDashboard();
+    });
+
+    // ⚡ INICIALIZAÇÃO
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🔧 SENAI Lab - Dashboard Administrativo Iniciado');
+      
+      // Verificar se já está autenticado
+      if (AdminAuth.isAuthenticated()) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+
+      // Auto-refresh a cada 30 segundos se estiver autenticado
+      setInterval(() => {
+        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
+          loadDashboard();
+        }
+      }, 30000);
+    });
+
+    // ⚠️ AVISO IMPORTANTE
+    console.log(`
+🔐 DASHBOARD ADMINISTRATIVO CARREGADO
+
+⚠️  IMPORTANTE - CONFIGURAÇÃO DE SEGURANÇA:
+    Altere a senha em ADMIN_CONFIG.password
+    Senha atual: "${ADMIN_CONFIG.password}"
+    
+🔧 Funcionalidades ativas:
+    ✅ Autenticação por senha
+    ✅ Sessão persistente (24h)
+    ✅ Visualização de solicitações
+    ✅ Atualização de status
+    ✅ Sistema de comentários
+    ✅ Filtros avançados
+    ✅ Auto-refresh (30s)
+
+🎯 Próximos passos:
+    1. Alterar senha de acesso
+    2. Testar funcionalidades
+    3. Implementar melhorias
+    `);
+  </script>
+</body>
+</html>

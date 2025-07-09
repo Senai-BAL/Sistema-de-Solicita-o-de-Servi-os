@@ -11,13 +11,10 @@ firebase-debug.*.log*
 .firebase/
 
 # Firebase config - CREDENCIAIS SENSÍVEIS
-public/firebase-config.js
+public/shared/firebase-config.js
 
 # GitHub config - CREDENCIAIS SENSÍVEIS
-public/github-config.js
-
-# Google Drive config - CREDENCIAIS SENSÍVEIS
-public/google-drive-config.js
+public/shared/github-config.js
 
 # Uncomment this if you'd like others to create their own Firebase project.
 # For a team working on the same Firebase project(s), it is recommended to leave
