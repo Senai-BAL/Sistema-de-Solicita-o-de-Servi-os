@@ -1,0 +1,18 @@
+// No Firebase Console → Firestore → Rules
+// Cole estas regras:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir criação de solicitações (apenas escrita)
+    match /solicitacoes/{document} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Bloquear tudo mais
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

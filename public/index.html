@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENAI Lab - Solicitação de Serviços</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(45deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .form-content {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #fafbfc;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+      background: white;
+    }
+
+    .required {
+      color: #e74c3c;
+    }
+
+    .service-section {
+      display: none;
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      border-left: 4px solid #4285f4;
+    }
+
+    .service-section.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: #1e3c72;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #e1e5e9;
+      border-radius: 2px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+      width: 25%;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      color: #27ae60;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .success-message h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .status-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      z-index: 1000;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .status-indicator.show {
+      opacity: 1;
+    }
+
+    .status-indicator.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-indicator.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-indicator.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .usage-monitor {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      font-size: 0.8rem;
+      border: 2px solid #e1e5e9;
+      min-width: 200px;
+      display: none;
+    }
+
+    .usage-monitor.show {
+      display: block;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .usage-header {
+      font-weight: 600;
+      color: #1e3c72;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .usage-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 0.75rem;
+    }
+
+    .toggle-monitor {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toggle-monitor:hover {
+      transform: scale(1.1);
+    }
+
+    .upload-note {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #856404;
+    }
+
+    .upload-note strong {
+      color: #533f03;
+    }
+
+    @media (max-width: 768px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .form-content {
+        padding: 20px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔧 SENAI Lab</h1>
+      <p>Formulário de Solicitação de Serviços</p>
+    </div>
+
+    <div class="form-content" id="formContent">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <form id="senaiForm">
+        <!-- Dados Básicos -->
+        <div class="form-group">
+          <label for="colaborador">Colaborador <span class="required">*</span></label>
+          <input type="text" id="colaborador" name="colaborador" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="whatsapp">WhatsApp <span class="required">*</span></label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11)99999-9999" required>
+        </div>
+
+        <div class="form-group">
+          <label for="servico">Qual serviço deseja? <span class="required">*</span></label>
+          <select id="servico" name="servico" required>
+            <option value="">Selecione uma opção</option>
+            <option value="espaco_maker">Espaço Maker</option>
+            <option value="servicos">Serviços</option>
+            <option value="emprestimo">Empréstimo</option>
+          </select>
+        </div>
+
+        <!-- Serviços Específicos -->
+        <div class="form-group" id="tipoServico" style="display: none;">
+          <label for="tipoServicoSelect">Quais serviços deseja? <span class="required">*</span></label>
+          <select id="tipoServicoSelect" name="tipoServicoSelect">
+            <option value="">Selecione uma opção</option>
+            <option value="impressao">Impressão</option>
+            <option value="impressao_3d">Impressão 3D</option>
+            <option value="manutencao">Manutenção de Equipamentos Eletrônicos</option>
+            <option value="arte_digital">Elaboração de Arte Digital</option>
+            <option value="projeto">Projeto</option>
+          </select>
+        </div>
+
+        <!-- Seção Espaço Maker -->
+        <div class="service-section" id="espacoMakerSection">
+          <h3 class="section-title">📍 Reserva de Espaços</h3>
+
+          <div class="form-group">
+            <label for="dataReserva">Data de reserva <span class="required">*</span></label>
+            <input type="date" id="dataReserva" name="dataReserva">
+          </div>
+
+          <div class="row">
+            <div class="form-group">
+              <label for="horarioInicio">Horário Início <span class="required">*</span></label>
+              <input type="time" id="horarioInicio" name="horarioInicio">
+            </div>
+            <div class="form-group">
+              <label for="horarioFim">Horário Fim <span class="required">*</span></label>
+              <input type="time" id="horarioFim" name="horarioFim">
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="chromeBooks" name="chromeBooks">
+            <label for="chromeBooks">Deseja utilizar Chrome Books?</label>
+          </div>
+
+          <div class="form-group" id="qtdChromeBooks" style="display: none;">
+            <label for="qtdChromeBooksInput">Quantos? (8 disponíveis)</label>
+            <input type="number" id="qtdChromeBooksInput" name="qtdChromeBooksInput" min="1" max="8">
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="computadores" name="computadores">
+            <label for="computadores">Deseja utilizar os Computadores?</label>
+          </div>
+
+          <div class="form-group" id="qtdComputadores" style="display: none;">
+            <label for="qtdComputadoresInput">Quantos? (2 disponíveis)</label>
+            <input type="number" id="qtdComputadoresInput" name="qtdComputadoresInput" min="1" max="2">
+          </div>
+
+          <div class="form-group">
+            <label for="descricaoUtilizacao">Descreva as ideias e sua utilização <span class="required">*</span></label>
+            <textarea id="descricaoUtilizacao" name="descricaoUtilizacao" rows="4"></textarea>
+          </div>
+        </div>
+
+        <!-- Seção Impressão -->
+        <div class="service-section" id="impressaoSection">
+          <h3 class="section-title">🖨️ Descrição das Impressões</h3>
+          <p style="margin-bottom: 20px; color: #666;">
+            <strong>Limites:</strong><br>
+            A3 - Único lado: 10 folhas | Frente e verso: 5 folhas<br>
+            A4 - Único lado: 30 folhas | Frente e verso: 60 folhas
+          </p>
+
+          <div class="form-group">
+            <label for="tamanhoFolha">Tamanho da Folha <span class="required">*</span></label>
+            <select id="tamanhoFolha" name="tamanhoFolha">
+              <option value="">Selecione</option>
+              <option value="A3">A3</option>
+              <option value="A4">A4</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="qtdCopias">Quantidade de Cópias <span class="required">*</span></label>
+            <input type="number" id="qtdCopias" name="qtdCopias" min="1">
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="frenteVerso" name="frenteVerso">
+            <label for="frenteVerso">Frente e Verso?</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="escanear" name="escanear">
+            <label for="escanear">Necessário Escanear?</label>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="colorido" name="colorido">
+            <label for="colorido">Colorido?</label>
+          </div>
+
+          <div class="upload-note">
+            <strong>📁 Envio de Arquivos:</strong><br>
+            Por favor, faça upload do arquivo no Google Drive, Dropbox ou OneDrive e cole o link abaixo:
+          </div>
+
+          <div class="form-group">
+            <label for="linkArquivoImpressao">Link do arquivo de impressão</label>
+            <input type="url" id="linkArquivoImpressao" name="linkArquivoImpressao"
+              placeholder="https://drive.google.com/file/d/...">
+          </div>
+        </div>
+
+        <!-- Seção Impressão 3D -->
+        <div class="service-section" id="impressao3dSection">
+          <h3 class="section-title">🏗️ Descrição das Impressões 3D</h3>
+
+          <div class="form-group">
+            <label for="material">Material <span class="required">*</span></label>
+            <select id="material" name="material">
+              <option value="">Selecione</option>
+              <option value="ABS">ABS</option>
+              <option value="PLA">PLA</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="quantidade3d">Quantidade <span class="required">*</span></label>
+            <input type="number" id="quantidade3d" name="quantidade3d" min="1">
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="possuiSTL" name="possuiSTL">
+            <label for="possuiSTL">Possui o arquivo STL?</label>
+          </div>
+
+          <div class="upload-note">
+            <strong>📁 Envio de Arquivos STL:</strong><br>
+            Se possui arquivo STL, faça upload no Google Drive e cole o link abaixo:
+          </div>
+
+          <div class="form-group" id="linkSTLGroup">
+            <label for="linkSTL">Link do arquivo STL</label>
+            <input type="url" id="linkSTL" name="linkSTL" placeholder="https://drive.google.com/file/d/...">
+          </div>
+
+          <div class="form-group" id="descricaoPecaGroup">
+            <label for="descricaoPeca">Descreva a peça <span class="required">*</span></label>
+            <textarea id="descricaoPeca" name="descricaoPeca" rows="4"></textarea>
+          </div>
+        </div>
+
+        <!-- Seção Manutenção -->
+        <div class="service-section" id="manutencaoSection">
+          <h3 class="section-title">🔧 Manutenção de Equipamentos</h3>
+
+          <div class="form-group">
+            <label for="descricaoProblema">Descreva o problema <span class="required">*</span></label>
+            <textarea id="descricaoProblema" name="descricaoProblema" rows="4"></textarea>
+          </div>
+
+          <div class="upload-note">
+            <strong>📁 Foto do Problema:</strong><br>
+            Faça upload da foto no Google Drive e cole o link abaixo:
+          </div>
+
+          <div class="form-group">
+            <label for="linkFotoProblema">Link da foto do problema</label>
+            <input type="url" id="linkFotoProblema" name="linkFotoProblema"
+              placeholder="https://drive.google.com/file/d/...">
+          </div>
+        </div>
+
+        <!-- Seção Arte Digital/Projeto -->
+        <div class="service-section" id="arteProjetoSection">
+          <h3 class="section-title">🎨 Arte Digital / Projeto</h3>
+
+          <div class="form-group">
+            <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span
+                class="required">*</span></label>
+            <textarea id="descricaoArteProjeto" name="descricaoArteProjeto" rows="4"></textarea>
+          </div>
+        </div>
+
+        <!-- Seção Empréstimo -->
+        <div class="service-section" id="emprestimoSection">
+          <h3 class="section-title">📦 Empréstimo</h3>
+
+          <div class="form-group">
+            <label for="nomeItem">Nome do Item <span class="required">*</span></label>
+            <input type="text" id="nomeItem" name="nomeItem">
+          </div>
+
+          <div class="row">
+            <div class="form-group">
+              <label for="dataRetirada">Data Retirada <span class="required">*</span></label>
+              <input type="date" id="dataRetirada" name="dataRetirada">
+            </div>
+            <div class="form-group">
+              <label for="dataDevolucao">Data Devolução <span class="required">*</span></label>
+              <input type="date" id="dataDevolucao" name="dataDevolucao">
+            </div>
+          </div>
+
+          <div class="upload-note">
+            <strong>📁 Foto do Item:</strong><br>
+            Faça upload da foto no Google Drive e cole o link abaixo:
+          </div>
+
+          <div class="form-group">
+            <label for="linkFotoItem">Link da foto do item <span class="required">*</span></label>
+            <input type="url" id="linkFotoItem" name="linkFotoItem" placeholder="https://drive.google.com/file/d/...">
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          <span id="btnText">✉️ Enviar Solicitação</span>
+          <span id="loadingText" style="display: none;">⏳ Enviando...</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="success-message" id="successMessage">
+      <h2>✅ Solicitação Enviada!</h2>
+      <p>Sua solicitação foi registrada com sucesso. Em breve entraremos em contato.</p>
+      <p id="submissionId" style="font-size: 0.9rem; color: #666; margin-top: 10px;"></p>
+      <button class="btn" onclick="resetForm()" style="margin-top: 20px;">
+        📝 Nova Solicitação
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Indicator -->
+  <div class="status-indicator" id="statusIndicator"></div>
+
+  <!-- Monitor de Uso -->
+  <button class="toggle-monitor" onclick="toggleUsageMonitor()" title="Monitor de Uso">
+    📊
+  </button>
+
+  <div class="usage-monitor" id="usageMonitor">
+    <div class="usage-header">
+      🔥 Firebase Only
+      <span style="margin-left: auto; cursor: pointer;" onclick="toggleUsageMonitor()">✕</span>
+    </div>
+
+    <div class="usage-item">
+      <span>Firestore writes:</span>
+      <span id="writesCount">0 / 20k</span>
+    </div>
+
+    <div class="usage-item">
+      <span>Storage:</span>
+      <span style="color: #4caf50;">✅ Links externos</span>
+    </div>
+
+    <div class="usage-item">
+      <span>Status:</span>
+      <span style="color: #4caf50;">✅ Funcionando</span>
+    </div>
+
+    <div style="font-size: 0.7rem; color: #666; margin-top: 8px; text-align: center;">
+      Versão simplificada - 100% funcional 💾
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Firebase Configuration -->
+  <script src="firebase-config.js"></script>
+
+  <script>
+    // 🔥 VERIFICAR SE A CONFIGURAÇÃO FIREBASE FOI CARREGADA
+    if (!window.firebaseConfig) {
+      alert('⚠️ Erro: Arquivo firebase-config.js não encontrado!\n\nPor favor:\n1. Copie firebase-config.example.js para firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
+      throw new Error('Firebase configuration not found');
+    }
+
+    // Inicializar Firebase com a configuração externa
+    firebase.initializeApp(window.firebaseConfig);
+    const db = firebase.firestore();
+
+    // Ativar cache offline
+    db.enablePersistence().catch((err) => {
+      console.log('Cache offline não disponível:', err.code);
+    });
+
+    // 📊 MONITOR DE USO SIMPLIFICADO
+    const usageMonitor = {
+      dailyWrites: parseInt(localStorage.getItem('dailyWrites') || '0'),
+      lastReset: localStorage.getItem('lastReset') || new Date().toDateString(),
+
+      reset() {
+        const today = new Date().toDateString();
+        if (this.lastReset !== today) {
+          this.dailyWrites = 0;
+          this.lastReset = today;
+          this.save();
+        }
+      },
+
+      save() {
+        localStorage.setItem('dailyWrites', this.dailyWrites.toString());
+        localStorage.setItem('lastReset', this.lastReset);
+      },
+
+      addWrite() {
+        this.reset();
+        this.dailyWrites++;
+        this.save();
+        this.checkLimits();
+      },
+
+      checkLimits() {
+        const writeLimit = 20000;
+        if (this.dailyWrites > writeLimit * 0.8) {
+          showStatus('⚠️ Aproximando do limite de escritas diárias', 'info');
+        }
+      }
+    };
+
+    // 📋 COLETA DE DADOS OTIMIZADA
+    function collectFormData() {
+      const form = document.getElementById('senaiForm');
+      const formData = new FormData(form);
+
+      const data = {
+        c: formData.get('colaborador'),
+        e: formData.get('email'),
+        w: formData.get('whatsapp').replace(/\D/g, ''), // Remove máscara do WhatsApp
+        s: formData.get('servico'),
+        st: 'p',
+        d: Date.now(),
+        dados: {},
+        fonte: 'links'
+      };
+
+      // Dados específicos por serviço
+      if (data.s === 'espaco_maker') {
+        data.dados = {
+          dr: formData.get('dataReserva'),
+          hi: formData.get('horarioInicio'),
+          hf: formData.get('horarioFim'),
+          cb: formData.get('chromeBooks') === 'on' ? 1 : 0,
+          qcb: parseInt(formData.get('qtdChromeBooksInput')) || 0,
+          cp: formData.get('computadores') === 'on' ? 1 : 0,
+          qcp: parseInt(formData.get('qtdComputadoresInput')) || 0,
+          desc: formData.get('descricaoUtilizacao')
+        };
+      } else if (data.s === 'servicos') {
+        const ts = formData.get('tipoServicoSelect');
+        data.ts = ts;
+
+        if (ts === 'impressao') {
+          data.dados = {
+            tf: formData.get('tamanhoFolha'),
+            qc: parseInt(formData.get('qtdCopias')),
+            fv: formData.get('frenteVerso') === 'on' ? 1 : 0,
+            es: formData.get('escanear') === 'on' ? 1 : 0,
+            co: formData.get('colorido') === 'on' ? 1 : 0,
+            link: formData.get('linkArquivoImpressao')
+          };
+        } else if (ts === 'impressao_3d') {
+          data.dados = {
+            mt: formData.get('material'),
+            qt: parseInt(formData.get('quantidade3d')),
+            stl: formData.get('possuiSTL') === 'on' ? 1 : 0,
+            dp: formData.get('descricaoPeca'),
+            link: formData.get('linkSTL')
+          };
+        } else if (ts === 'manutencao') {
+          data.dados = {
+            prob: formData.get('descricaoProblema'),
+            link: formData.get('linkFotoProblema')
+          };
+        } else if (ts === 'arte_digital' || ts === 'projeto') {
+          data.dados = {
+            desc: formData.get('descricaoArteProjeto')
+          };
+        }
+      } else if (data.s === 'emprestimo') {
+        data.dados = {
+          ni: formData.get('nomeItem'),
+          dr: formData.get('dataRetirada'),
+          dd: formData.get('dataDevolucao'),
+          link: formData.get('linkFotoItem')
+        };
+      }
+
+      return data;
+    }
+
+    // 🚀 ENVIO SIMPLIFICADO
+    async function submitForm() {
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const loadingText = document.getElementById('loadingText');
+
+      try {
+        submitBtn.disabled = true;
+        btnText.style.display = 'none';
+        loadingText.style.display = 'inline';
+
+        if (!navigator.onLine) {
+          throw new Error('Sem conexão com a internet.');
+        }
+
+        const formData = collectFormData();
+
+        // Salvar no Firestore
+        const docRef = await db.collection('solicitacoes').add(formData);
+
+        console.log('✅ Solicitação enviada com ID:', docRef.id);
+
+        usageMonitor.addWrite();
+        showSuccessScreen(docRef.id);
+
+      } catch (error) {
+        console.error('❌ Erro ao enviar:', error);
+        showStatus('Erro ao enviar solicitação. Tente novamente.', 'error');
+
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        loadingText.style.display = 'none';
+      }
+    }
+
+    // 🎉 TELA DE SUCESSO
+    function showSuccessScreen(docId) {
+      document.getElementById('formContent').style.display = 'none';
+      document.getElementById('successMessage').classList.add('show');
+      document.getElementById('submissionId').textContent = `ID: ${docId}`;
+
+      const stats = JSON.parse(localStorage.getItem('senaiStats') || '{}');
+      stats.totalSubmissions = (stats.totalSubmissions || 0) + 1;
+      stats.lastSubmission = Date.now();
+      localStorage.setItem('senaiStats', JSON.stringify(stats));
+    }
+
+    // 📊 MONITOR DE USO
+    function updateUsageMonitor() {
+      usageMonitor.reset();
+      document.getElementById('writesCount').textContent = `${usageMonitor.dailyWrites} / 20k`;
+    }
+
+    function toggleUsageMonitor() {
+      const monitor = document.getElementById('usageMonitor');
+      const button = document.querySelector('.toggle-monitor');
+
+      if (monitor.classList.contains('show')) {
+        monitor.classList.remove('show');
+        button.style.display = 'block';
+      } else {
+        monitor.classList.add('show');
+        button.style.display = 'none';
+        updateUsageMonitor();
+      }
+    }
+
+    // 📢 MOSTRAR STATUS
+    function showStatus(message, type = 'info') {
+      const indicator = document.getElementById('statusIndicator');
+      indicator.textContent = message;
+      indicator.className = `status-indicator ${type} show`;
+
+      setTimeout(() => {
+        indicator.classList.remove('show');
+      }, 4000);
+    }
+
+    // NAVEGAÇÃO DO FORMULÁRIO
+    document.getElementById('servico').addEventListener('change', function () {
+      const value = this.value;
+      hideAllSections();
+      
+      // Resetar e esconder o select de tipo de serviço
+      document.getElementById('tipoServico').style.display = 'none';
+      document.getElementById('tipoServicoSelect').value = '';
+
+      if (value === 'servicos') {
+        document.getElementById('tipoServico').style.display = 'block';
+      } else if (value === 'espaco_maker') {
+        showSection('espacoMakerSection');
+      } else if (value === 'emprestimo') {
+        showSection('emprestimoSection');
+      }
+      updateProgress();
+    });
+
+    document.getElementById('tipoServicoSelect').addEventListener('change', function () {
+      const value = this.value;
+      hideAllSections();
+
+      if (value === 'impressao') {
+        showSection('impressaoSection');
+      } else if (value === 'impressao_3d') {
+        showSection('impressao3dSection');
+      } else if (value === 'manutencao') {
+        showSection('manutencaoSection');
+      } else if (value === 'arte_digital' || value === 'projeto') {
+        showSection('arteProjetoSection');
+      }
+      updateProgress();
+    });
+
+    document.getElementById('chromeBooks').addEventListener('change', function () {
+      document.getElementById('qtdChromeBooks').style.display = this.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('computadores').addEventListener('change', function () {
+      document.getElementById('qtdComputadores').style.display = this.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('possuiSTL').addEventListener('change', function () {
+      const linkGroup = document.getElementById('linkSTLGroup');
+      const descGroup = document.getElementById('descricaoPecaGroup');
+
+      if (this.checked) {
+        linkGroup.style.display = 'block';
+        descGroup.style.display = 'none';
+      } else {
+        linkGroup.style.display = 'none';
+        descGroup.style.display = 'block';
+      }
+    });
+
+    // 📱 MÁSCARA PARA WHATSAPP
+    document.getElementById('whatsapp').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+      
+      if (value.length <= 11) {
+        // Aplicar máscara (xx)xxxxx-xxxx
+        if (value.length >= 11) {
+          value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1)$2-$3');
+        } else if (value.length >= 7) {
+          value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1)$2-$3');
+        } else if (value.length >= 2) {
+          value = value.replace(/^(\d{2})(\d{0,5})/, '($1)$2');
+        } else if (value.length > 0) {
+          value = value.replace(/^(\d{0,2})/, '($1');
+        }
+        
+        // Limpar parênteses vazios ou inválidos
+        if (value === '(' || value === '()') value = '';
+      }
+      
+      e.target.value = value;
+    });
+
+    document.getElementById('whatsapp').addEventListener('keydown', function (e) {
+      // Permitir backspace, delete, tab, escape, enter
+      if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+        // Permitir Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true)) {
+        return;
+      }
+      // Garantir que é um número
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+      }
+    });
+
+    function hideAllSections() {
+      document.querySelectorAll('.service-section').forEach(section => {
+        section.classList.remove('active');
+      });
+    }
+
+    function showSection(sectionId) {
+      document.getElementById(sectionId).classList.add('active');
+    }
+
+    // 🔗 VALIDAÇÃO DE URL
+    function isValidUrl(string) {
+      try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function updateProgress() {
+      const form = document.getElementById('senaiForm');
+      const allInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+      
+      // Filtrar apenas campos visíveis
+      const visibleInputs = Array.from(allInputs).filter(input => {
+        const parent = input.closest('.form-group, .service-section');
+        return parent && window.getComputedStyle(parent).display !== 'none';
+      });
+      
+      const filledInputs = visibleInputs.filter(input => {
+        if (input.type === 'checkbox') return true;
+        return input.value.trim() !== '';
+      });
+
+      const progress = visibleInputs.length > 0 ? Math.min((filledInputs.length / visibleInputs.length) * 100, 100) : 25;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function validateForm() {
+      const servico = document.getElementById('servico').value;
+
+      if (!document.getElementById('colaborador').value.trim()) {
+        showStatus('Por favor, informe o nome do colaborador.', 'error');
+        return false;
+      }
+
+      if (!document.getElementById('email').value.trim()) {
+        showStatus('Por favor, informe o email.', 'error');
+        return false;
+      }
+
+      if (!document.getElementById('whatsapp').value.trim()) {
+        showStatus('Por favor, informe o WhatsApp.', 'error');
+        return false;
+      }
+
+      // Validar formato do WhatsApp
+      const whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, '');
+      if (whatsapp.length !== 11) {
+        showStatus('WhatsApp deve ter 11 dígitos: (xx)xxxxx-xxxx', 'error');
+        return false;
+      }
+
+      if (!servico) {
+        showStatus('Por favor, selecione um serviço.', 'error');
+        return false;
+      }
+
+      // Validações específicas por serviço
+      if (servico === 'espaco_maker') {
+        if (!document.getElementById('dataReserva').value) {
+          showStatus('Por favor, informe a data de reserva.', 'error');
+          return false;
+        }
+        if (!document.getElementById('horarioInicio').value) {
+          showStatus('Por favor, informe o horário de início.', 'error');
+          return false;
+        }
+        if (!document.getElementById('horarioFim').value) {
+          showStatus('Por favor, informe o horário de fim.', 'error');
+          return false;
+        }
+        if (!document.getElementById('descricaoUtilizacao').value.trim()) {
+          showStatus('Por favor, descreva a utilização.', 'error');
+          return false;
+        }
+      } else if (servico === 'servicos') {
+        const tipoServico = document.getElementById('tipoServicoSelect').value;
+        if (!tipoServico) {
+          showStatus('Por favor, selecione o tipo de serviço.', 'error');
+          return false;
+        }
+
+        if (tipoServico === 'impressao') {
+          if (!document.getElementById('tamanhoFolha').value) {
+            showStatus('Por favor, selecione o tamanho da folha.', 'error');
+            return false;
+          }
+          if (!document.getElementById('qtdCopias').value) {
+            showStatus('Por favor, informe a quantidade de cópias.', 'error');
+            return false;
+          }
+
+          // Validar limites
+          const tamanho = document.getElementById('tamanhoFolha').value;
+          const qtd = parseInt(document.getElementById('qtdCopias').value);
+          const frenteVerso = document.getElementById('frenteVerso').checked;
+
+          let limite;
+          if (tamanho === 'A3') {
+            limite = frenteVerso ? 5 : 10;
+          } else {
+            limite = frenteVerso ? 60 : 30;
+          }
+
+          if (qtd > limite) {
+            showStatus(`Limite excedido! Máximo: ${limite} folhas.`, 'error');
+            return false;
+          }
+          
+          // Validar link se fornecido
+          const linkImpressao = document.getElementById('linkArquivoImpressao').value.trim();
+          if (linkImpressao && !isValidUrl(linkImpressao)) {
+            showStatus('Por favor, forneça um link válido para o arquivo de impressão.', 'error');
+            return false;
+          }
+        } else if (tipoServico === 'impressao_3d') {
+          if (!document.getElementById('material').value) {
+            showStatus('Por favor, selecione o material.', 'error');
+            return false;
+          }
+          if (!document.getElementById('quantidade3d').value) {
+            showStatus('Por favor, informe a quantidade.', 'error');
+            return false;
+          }
+
+          const possuiSTL = document.getElementById('possuiSTL').checked;
+          if (!possuiSTL && !document.getElementById('descricaoPeca').value.trim()) {
+            showStatus('Por favor, descreva a peça ou forneça link do STL.', 'error');
+            return false;
+          }
+          
+          // Validar link STL se fornecido
+          const linkSTL = document.getElementById('linkSTL').value.trim();
+          if (linkSTL && !isValidUrl(linkSTL)) {
+            showStatus('Por favor, forneça um link válido para o arquivo STL.', 'error');
+            return false;
+          }
+        } else if (tipoServico === 'manutencao') {
+          if (!document.getElementById('descricaoProblema').value.trim()) {
+            showStatus('Por favor, descreva o problema.', 'error');
+            return false;
+          }
+          
+          // Validar link da foto se fornecido
+          const linkFotoProblema = document.getElementById('linkFotoProblema').value.trim();
+          if (linkFotoProblema && !isValidUrl(linkFotoProblema)) {
+            showStatus('Por favor, forneça um link válido para a foto do problema.', 'error');
+            return false;
+          }
+        } else if (tipoServico === 'arte_digital' || tipoServico === 'projeto') {
+          if (!document.getElementById('descricaoArteProjeto').value.trim()) {
+            showStatus('Por favor, descreva o projeto.', 'error');
+            return false;
+          }
+        }
+      } else if (servico === 'emprestimo') {
+        if (!document.getElementById('nomeItem').value.trim()) {
+          showStatus('Por favor, informe o nome do item.', 'error');
+          return false;
+        }
+        if (!document.getElementById('dataRetirada').value) {
+          showStatus('Por favor, informe a data de retirada.', 'error');
+          return false;
+        }
+        if (!document.getElementById('dataDevolucao').value) {
+          showStatus('Por favor, informe a data de devolução.', 'error');
+          return false;
+        }
+        if (!document.getElementById('linkFotoItem').value.trim()) {
+          showStatus('Por favor, forneça o link da foto do item.', 'error');
+          return false;
+        }
+        
+        // Validar se o link é válido
+        const linkFoto = document.getElementById('linkFotoItem').value.trim();
+        if (linkFoto && !isValidUrl(linkFoto)) {
+          showStatus('Por favor, forneça um link válido para a foto.', 'error');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    document.getElementById('senaiForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (validateForm()) {
+        submitForm();
+      }
+    });
+
+    function resetForm() {
+      document.getElementById('senaiForm').reset();
+      hideAllSections();
+      
+      // Resetar campos específicos
+      document.getElementById('tipoServico').style.display = 'none';
+      document.getElementById('tipoServicoSelect').value = '';
+      document.getElementById('qtdChromeBooks').style.display = 'none';
+      document.getElementById('qtdComputadores').style.display = 'none';
+      document.getElementById('linkSTLGroup').style.display = 'block';
+      document.getElementById('descricaoPecaGroup').style.display = 'none';
+      
+      // Resetar tela
+      document.getElementById('formContent').style.display = 'block';
+      document.getElementById('successMessage').classList.remove('show');
+      document.getElementById('submissionId').textContent = '';
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('btnText').style.display = 'inline';
+      document.getElementById('loadingText').style.display = 'none';
+      updateProgress();
+    }
+
+    document.getElementById('dataDevolucao').addEventListener('change', function () {
+      const dataRetirada = document.getElementById('dataRetirada').value;
+      const dataDevolucao = this.value;
+
+      if (dataRetirada && dataDevolucao && new Date(dataDevolucao) <= new Date(dataRetirada)) {
+        showStatus('A data de devolução deve ser posterior à data de retirada!', 'error');
+        this.value = '';
+      }
+    });
+
+    document.addEventListener('input', updateProgress);
+    document.addEventListener('change', updateProgress);
+
+    // Inicialização
+    updateProgress();
+    usageMonitor.reset();
+
+    showStatus('✅ Sistema carregado - Versão simplificada funcionando!', 'success');
+
+    console.log(`
+🔥 SENAI Lab - Versão Simplificada
+📊 Recursos utilizados:
+   • Firestore: 20.000 writes/dia (gratuito)
+   • Links externos: Para arquivos
+   • Firebase Hosting: 10GB (gratuito)
+
+💡 Funcionalidades ativas:
+   ✅ Formulário completo
+   ✅ Validações em tempo real
+   ✅ Cache offline habilitado
+   ✅ Dados salvos no Firestore
+   ✅ Monitor de uso
+   📁 Arquivos via links (Google Drive, etc)
+
+🎯 100% Funcional - Custo: R$ 0,00
+        `);
+  </script>
+</body>
+
+</html>
