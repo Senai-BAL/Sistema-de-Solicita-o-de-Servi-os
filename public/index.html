@@ -127,6 +127,93 @@
       margin-bottom: 15px;
     }
 
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .file-upload input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-upload-label {
+      display: block;
+      padding: 15px 20px;
+      background: #e3f2fd;
+      border: 2px dashed #2196f3;
+      border-radius: 8px;
+      text-align: center;
+      color: #1976d2;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .file-upload:hover .file-upload-label {
+      background: #bbdefb;
+      border-color: #1976d2;
+    }
+
+    .file-uploaded {
+      background: #e8f5e8 !important;
+      border-color: #4caf50 !important;
+      color: #2e7d32 !important;
+      border-style: solid !important;
+    }
+
+    .file-uploading {
+      background: #fff3e0 !important;
+      border-color: #ff9800 !important;
+      color: #ef6c00 !important;
+      border-style: solid !important;
+    }
+
+    .upload-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: #4caf50;
+      border-radius: 0 0 6px 6px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .upload-progress.uploading {
+      background: #ff9800;
+    }
+
+    .github-info {
+      background: #f6f8fa;
+      border: 1px solid #d1d9e0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #586069;
+    }
+
+    .file-info {
+      background: #e8f4fd;
+      border: 1px solid #b6d7ff;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 0.8rem;
+      color: #0366d6;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -201,6 +288,7 @@
       z-index: 1000;
       opacity: 0;
       transition: all 0.3s ease;
+      max-width: 300px;
     }
 
     .status-indicator.show {
@@ -291,19 +379,6 @@
 
     .toggle-monitor:hover {
       transform: scale(1.1);
-    }
-
-    .upload-note {
-      background: #fff3cd;
-      border: 1px solid #ffeaa7;
-      border-radius: 6px;
-      padding: 15px;
-      margin: 15px 0;
-      color: #856404;
-    }
-
-    .upload-note strong {
-      color: #533f03;
     }
 
     @media (max-width: 768px) {
@@ -462,15 +537,19 @@
             <label for="colorido">Colorido?</label>
           </div>
 
-          <div class="upload-note">
-            <strong>📁 Envio de Arquivos:</strong><br>
-            Por favor, faça upload do arquivo no Google Drive, Dropbox ou OneDrive e cole o link abaixo:
-          </div>
-
           <div class="form-group">
-            <label for="linkArquivoImpressao">Link do arquivo de impressão</label>
-            <input type="url" id="linkArquivoImpressao" name="linkArquivoImpressao"
-              placeholder="https://drive.google.com/file/d/...">
+            <label for="arquivoImpressao">Anexar arquivo de impressão</label>
+            <div class="file-upload">
+              <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg">
+              <label for="arquivoImpressao" class="file-upload-label">
+                <span>📄 Clique para selecionar arquivo</span>
+                <small>PDF, DOC, JPG, PNG (máx. 100MB)</small>
+              </label>
+              <div class="upload-progress"></div>
+            </div>
+            <div class="github-info">
+              <strong>📁 Upload automático:</strong> Arquivo será enviado automaticamente para o GitHub. Máximo 100MB.
+            </div>
           </div>
         </div>
 
@@ -497,17 +576,22 @@
             <label for="possuiSTL">Possui o arquivo STL?</label>
           </div>
 
-          <div class="upload-note">
-            <strong>📁 Envio de Arquivos STL:</strong><br>
-            Se possui arquivo STL, faça upload no Google Drive e cole o link abaixo:
+          <div class="form-group" id="arquivoSTLGroup">
+            <label for="arquivoSTL">Anexar arquivo STL</label>
+            <div class="file-upload">
+              <input type="file" id="arquivoSTL" name="arquivoSTL" accept=".stl">
+              <label for="arquivoSTL" class="file-upload-label">
+                <span>📐 Clique para selecionar arquivo STL</span>
+                <small>Arquivo STL (máx. 100MB)</small>
+              </label>
+              <div class="upload-progress"></div>
+            </div>
+            <div class="github-info">
+              <strong>🏗️ Upload STL:</strong> Arquivos 3D serão armazenados automaticamente no GitHub.
+            </div>
           </div>
 
-          <div class="form-group" id="linkSTLGroup">
-            <label for="linkSTL">Link do arquivo STL</label>
-            <input type="url" id="linkSTL" name="linkSTL" placeholder="https://drive.google.com/file/d/...">
-          </div>
-
-          <div class="form-group" id="descricaoPecaGroup">
+          <div class="form-group" id="descricaoPecaGroup" style="display: none;">
             <label for="descricaoPeca">Descreva a peça <span class="required">*</span></label>
             <textarea id="descricaoPeca" name="descricaoPeca" rows="4"></textarea>
           </div>
@@ -522,15 +606,19 @@
             <textarea id="descricaoProblema" name="descricaoProblema" rows="4"></textarea>
           </div>
 
-          <div class="upload-note">
-            <strong>📁 Foto do Problema:</strong><br>
-            Faça upload da foto no Google Drive e cole o link abaixo:
-          </div>
-
           <div class="form-group">
-            <label for="linkFotoProblema">Link da foto do problema</label>
-            <input type="url" id="linkFotoProblema" name="linkFotoProblema"
-              placeholder="https://drive.google.com/file/d/...">
+            <label for="fotoProblema">Anexar foto do problema</label>
+            <div class="file-upload">
+              <input type="file" id="fotoProblema" name="fotoProblema" accept="image/*">
+              <label for="fotoProblema" class="file-upload-label">
+                <span>📷 Clique para tirar/selecionar foto</span>
+                <small>Foto ou imagem (máx. 100MB)</small>
+              </label>
+              <div class="upload-progress"></div>
+            </div>
+            <div class="github-info">
+              <strong>📷 Foto automática:</strong> Tire uma foto ou selecione da galeria. Upload automático.
+            </div>
           </div>
         </div>
 
@@ -539,8 +627,7 @@
           <h3 class="section-title">🎨 Arte Digital / Projeto</h3>
 
           <div class="form-group">
-            <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span
-                class="required">*</span></label>
+            <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span class="required">*</span></label>
             <textarea id="descricaoArteProjeto" name="descricaoArteProjeto" rows="4"></textarea>
           </div>
         </div>
@@ -565,14 +652,19 @@
             </div>
           </div>
 
-          <div class="upload-note">
-            <strong>📁 Foto do Item:</strong><br>
-            Faça upload da foto no Google Drive e cole o link abaixo:
-          </div>
-
           <div class="form-group">
-            <label for="linkFotoItem">Link da foto do item <span class="required">*</span></label>
-            <input type="url" id="linkFotoItem" name="linkFotoItem" placeholder="https://drive.google.com/file/d/...">
+            <label for="fotoItem">Foto do Item <span class="required">*</span></label>
+            <div class="file-upload">
+              <input type="file" id="fotoItem" name="fotoItem" accept="image/*">
+              <label for="fotoItem" class="file-upload-label">
+                <span>📷 Clique para tirar/selecionar foto</span>
+                <small>Foto obrigatória (máx. 100MB)</small>
+              </label>
+              <div class="upload-progress"></div>
+            </div>
+            <div class="github-info">
+              <strong>📷 Foto obrigatória:</strong> Necessária para identificação do item. Upload automático.
+            </div>
           </div>
         </div>
 
@@ -603,7 +695,7 @@
 
   <div class="usage-monitor" id="usageMonitor">
     <div class="usage-header">
-      🔥 Firebase Only
+      🔥 Sistema Híbrido
       <span style="margin-left: auto; cursor: pointer;" onclick="toggleUsageMonitor()">✕</span>
     </div>
 
@@ -613,17 +705,22 @@
     </div>
 
     <div class="usage-item">
+      <span>GitHub uploads:</span>
+      <span id="uploadsCount">0 uploads</span>
+    </div>
+
+    <div class="usage-item">
       <span>Storage:</span>
-      <span style="color: #4caf50;">✅ Links externos</span>
+      <span style="color: #4caf50;">✅ GitHub (1GB)</span>
     </div>
 
     <div class="usage-item">
       <span>Status:</span>
-      <span style="color: #4caf50;">✅ Funcionando</span>
+      <span id="apiStatus" style="color: #4caf50;">✅ Funcionando</span>
     </div>
 
     <div style="font-size: 0.7rem; color: #666; margin-top: 8px; text-align: center;">
-      Versão simplificada - 100% funcional 💾
+      Firebase + GitHub - 100% gratuito 💾
     </div>
   </div>
 
@@ -633,12 +730,21 @@
   
   <!-- Firebase Configuration -->
   <script src="firebase-config.js"></script>
+  
+  <!-- GitHub Configuration -->
+  <script src="github-config.js"></script>
 
   <script>
     // 🔥 VERIFICAR SE A CONFIGURAÇÃO FIREBASE FOI CARREGADA
     if (!window.firebaseConfig) {
       alert('⚠️ Erro: Arquivo firebase-config.js não encontrado!\n\nPor favor:\n1. Copie firebase-config.example.js para firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
       throw new Error('Firebase configuration not found');
+    }
+
+    // 🐙 VERIFICAR SE A CONFIGURAÇÃO GITHUB FOI CARREGADA
+    if (!window.githubConfig) {
+      alert('⚠️ Erro: Arquivo github-config.js não encontrado!\n\nPor favor:\n1. Copie github-config.example.js para github-config.js\n2. Substitua pelas suas credenciais GitHub');
+      throw new Error('GitHub configuration not found');
     }
 
     // Inicializar Firebase com a configuração externa
@@ -650,15 +756,20 @@
       console.log('Cache offline não disponível:', err.code);
     });
 
-    // 📊 MONITOR DE USO SIMPLIFICADO
+    // 🐙 CONFIGURAÇÃO GITHUB API (carregada externamente)
+    const GITHUB_CONFIG = window.githubConfig;
+
+    // 📊 MONITOR DE USO
     const usageMonitor = {
       dailyWrites: parseInt(localStorage.getItem('dailyWrites') || '0'),
+      dailyUploads: parseInt(localStorage.getItem('dailyUploads') || '0'),
       lastReset: localStorage.getItem('lastReset') || new Date().toDateString(),
 
       reset() {
         const today = new Date().toDateString();
         if (this.lastReset !== today) {
           this.dailyWrites = 0;
+          this.dailyUploads = 0;
           this.lastReset = today;
           this.save();
         }
@@ -666,6 +777,7 @@
 
       save() {
         localStorage.setItem('dailyWrites', this.dailyWrites.toString());
+        localStorage.setItem('dailyUploads', this.dailyUploads.toString());
         localStorage.setItem('lastReset', this.lastReset);
       },
 
@@ -673,16 +785,127 @@
         this.reset();
         this.dailyWrites++;
         this.save();
-        this.checkLimits();
       },
 
-      checkLimits() {
-        const writeLimit = 20000;
-        if (this.dailyWrites > writeLimit * 0.8) {
-          showStatus('⚠️ Aproximando do limite de escritas diárias', 'info');
-        }
+      addUpload() {
+        this.reset();
+        this.dailyUploads++;
+        this.save();
       }
     };
+
+    // 🖼️ COMPRESSÃO DE IMAGENS
+    function compressImage(file, maxWidth = 1200, quality = 0.8) {
+      return new Promise((resolve) => {
+        if (!file.type.startsWith('image/')) {
+          resolve(file); // Não é imagem, retorna original
+          return;
+        }
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        img.onload = function() {
+          let { width, height } = this;
+
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(this, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            // Criar novo arquivo com nome original
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          }, 'image/jpeg', quality);
+        };
+
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    // 🐙 UPLOAD PARA GITHUB
+    async function uploadToGitHub(file, folder, progressCallback) {
+      try {
+        // Comprimir imagem se necessário
+        const fileToUpload = await compressImage(file);
+        
+        if (progressCallback) progressCallback(30);
+
+        // Gerar nome único
+        const timestamp = Date.now();
+        const extension = fileToUpload.name.split('.').pop();
+        const fileName = `${timestamp}_${fileToUpload.name.replace(/\.[^/.]+$/, "")}.${extension}`;
+        const filePath = `${folder}/${fileName}`;
+
+        if (progressCallback) progressCallback(50);
+
+        // Converter para base64
+        const base64Content = await fileToBase64(fileToUpload);
+        
+        if (progressCallback) progressCallback(70);
+
+        // API GitHub
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${filePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${GITHUB_CONFIG.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: `Upload: ${fileName}`,
+            content: base64Content
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`GitHub API Error: ${error.message}`);
+        }
+
+        const result = await response.json();
+        
+        if (progressCallback) progressCallback(100);
+
+        // URL pública do arquivo
+        const publicUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${filePath}`;
+
+        // Registrar upload
+        usageMonitor.addUpload();
+
+        return {
+          name: file.name,
+          url: publicUrl,
+          size: fileToUpload.size,
+          originalSize: file.size,
+          type: fileToUpload.type,
+          compressed: file.type.startsWith('image/'),
+          path: filePath
+        };
+
+      } catch (error) {
+        console.error('❌ Erro no upload para GitHub:', error);
+        throw error;
+      }
+    }
+
+    // 🔄 CONVERTER ARQUIVO PARA BASE64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+      });
+    }
 
     // 📋 COLETA DE DADOS OTIMIZADA
     function collectFormData() {
@@ -697,7 +920,7 @@
         st: 'p',
         d: Date.now(),
         dados: {},
-        fonte: 'links'
+        fonte: 'github'
       };
 
       // Dados específicos por serviço
@@ -722,21 +945,18 @@
             qc: parseInt(formData.get('qtdCopias')),
             fv: formData.get('frenteVerso') === 'on' ? 1 : 0,
             es: formData.get('escanear') === 'on' ? 1 : 0,
-            co: formData.get('colorido') === 'on' ? 1 : 0,
-            link: formData.get('linkArquivoImpressao')
+            co: formData.get('colorido') === 'on' ? 1 : 0
           };
         } else if (ts === 'impressao_3d') {
           data.dados = {
             mt: formData.get('material'),
             qt: parseInt(formData.get('quantidade3d')),
             stl: formData.get('possuiSTL') === 'on' ? 1 : 0,
-            dp: formData.get('descricaoPeca'),
-            link: formData.get('linkSTL')
+            dp: formData.get('descricaoPeca')
           };
         } else if (ts === 'manutencao') {
           data.dados = {
-            prob: formData.get('descricaoProblema'),
-            link: formData.get('linkFotoProblema')
+            prob: formData.get('descricaoProblema')
           };
         } else if (ts === 'arte_digital' || ts === 'projeto') {
           data.dados = {
@@ -747,15 +967,14 @@
         data.dados = {
           ni: formData.get('nomeItem'),
           dr: formData.get('dataRetirada'),
-          dd: formData.get('dataDevolucao'),
-          link: formData.get('linkFotoItem')
+          dd: formData.get('dataDevolucao')
         };
       }
 
       return data;
     }
 
-    // 🚀 ENVIO SIMPLIFICADO
+    // 🚀 ENVIO COM UPLOAD AUTOMÁTICO
     async function submitForm() {
       const submitBtn = document.getElementById('submitBtn');
       const btnText = document.getElementById('btnText');
@@ -772,7 +991,73 @@
 
         const formData = collectFormData();
 
+        // Upload de arquivos para GitHub
+        const arquivos = [];
+        const maxRetries = 3;
+
+        // Determinar pasta baseada no tipo de serviço
+        let folder = 'outros';
+        if (formData.s === 'servicos') {
+          const tipoServico = formData.ts;
+          if (tipoServico === 'impressao') folder = 'impressao';
+          else if (tipoServico === 'impressao_3d') folder = 'impressao-3d';
+          else if (tipoServico === 'manutencao') folder = 'manutencao';
+        } else if (formData.s === 'emprestimo') {
+          folder = 'emprestimo';
+        }
+
+        // Upload baseado no tipo de serviço
+        const uploadPromises = [];
+
+        if (formData.s === 'servicos') {
+          const tipoServico = formData.ts;
+
+          if (tipoServico === 'impressao') {
+            const arquivo = document.getElementById('arquivoImpressao').files[0];
+            if (arquivo) {
+              loadingText.textContent = '⏳ Enviando arquivo...';
+              uploadPromises.push(retryUpload(arquivo, 'impressao', maxRetries));
+            }
+          } else if (tipoServico === 'impressao_3d') {
+            const arquivo = document.getElementById('arquivoSTL').files[0];
+            if (arquivo) {
+              loadingText.textContent = '⏳ Enviando STL...';
+              uploadPromises.push(retryUpload(arquivo, 'impressao-3d', maxRetries));
+            }
+          } else if (tipoServico === 'manutencao') {
+            const arquivo = document.getElementById('fotoProblema').files[0];
+            if (arquivo) {
+              loadingText.textContent = '⏳ Enviando foto...';
+              uploadPromises.push(retryUpload(arquivo, 'manutencao', maxRetries));
+            }
+          }
+        } else if (formData.s === 'emprestimo') {
+          const arquivo = document.getElementById('fotoItem').files[0];
+          if (arquivo) {
+            loadingText.textContent = '⏳ Enviando foto...';
+            uploadPromises.push(retryUpload(arquivo, 'emprestimo', maxRetries));
+          }
+        }
+
+        // Executar uploads
+        if (uploadPromises.length > 0) {
+          const uploadResults = await Promise.all(uploadPromises);
+          arquivos.push(...uploadResults.filter(result => result !== null));
+        }
+
+        // Adicionar arquivos aos dados
+        if (arquivos.length > 0) {
+          formData.arq = arquivos.map(arq => ({
+            n: arq.name,
+            u: arq.url,
+            s: arq.size,
+            t: arq.type,
+            p: arq.path
+          }));
+        }
+
         // Salvar no Firestore
+        loadingText.textContent = '⏳ Salvando dados...';
         const docRef = await db.collection('solicitacoes').add(formData);
 
         console.log('✅ Solicitação enviada com ID:', docRef.id);
@@ -782,11 +1067,38 @@
 
       } catch (error) {
         console.error('❌ Erro ao enviar:', error);
-        showStatus('Erro ao enviar solicitação. Tente novamente.', 'error');
+
+        let errorMessage = 'Erro ao enviar solicitação. ';
+        if (error.message.includes('GitHub')) {
+          errorMessage += 'Problema no upload de arquivos.';
+        } else if (error.message.includes('quota')) {
+          errorMessage += 'Limite diário atingido.';
+        } else {
+          errorMessage += 'Tente novamente.';
+        }
+
+        showStatus(errorMessage, 'error');
 
         submitBtn.disabled = false;
         btnText.style.display = 'inline';
         loadingText.style.display = 'none';
+      }
+    }
+
+    // 🔄 RETRY PARA UPLOADS
+    async function retryUpload(file, folder, maxRetries) {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          return await uploadToGitHub(file, folder);
+        } catch (error) {
+          console.warn(`❌ Tentativa ${attempt}/${maxRetries} falhou:`, error.message);
+
+          if (attempt === maxRetries) {
+            throw error;
+          }
+
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        }
       }
     }
 
@@ -806,6 +1118,7 @@
     function updateUsageMonitor() {
       usageMonitor.reset();
       document.getElementById('writesCount').textContent = `${usageMonitor.dailyWrites} / 20k`;
+      document.getElementById('uploadsCount').textContent = `${usageMonitor.dailyUploads} uploads`;
     }
 
     function toggleUsageMonitor() {
@@ -832,6 +1145,79 @@
         indicator.classList.remove('show');
       }, 4000);
     }
+
+    // 📁 CONTROLE DE UPLOAD COM PROGRESS
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+      input.addEventListener('change', async function() {
+        const label = this.nextElementSibling;
+        const progressBar = label.nextElementSibling;
+        const file = this.files[0];
+
+        if (file) {
+          // Validar tamanho (100MB máximo GitHub)
+          if (file.size > 100 * 1024 * 1024) {
+            showStatus('📁 Arquivo muito grande! Máximo: 100MB', 'error');
+            this.value = '';
+            return;
+          }
+
+          // Validar tipo de arquivo
+          const allowedTypes = {
+            'arquivoImpressao': ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
+            'arquivoSTL': ['.stl'],
+            'fotoProblema': ['.jpg', '.jpeg', '.png', '.gif'],
+            'fotoItem': ['.jpg', '.jpeg', '.png', '.gif']
+          };
+
+          if (allowedTypes[this.id]) {
+            const extension = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes[this.id].includes(extension)) {
+              showStatus(`❌ Tipo não permitido! Aceitos: ${allowedTypes[this.id].join(', ')}`, 'error');
+              this.value = '';
+              return;
+            }
+          }
+
+          // Mostrar arquivo selecionado
+          const sizeText = file.size > 1024 * 1024 ? 
+            `${(file.size / (1024 * 1024)).toFixed(1)}MB` : 
+            `${(file.size / 1024).toFixed(1)}KB`;
+
+          label.innerHTML = `
+            <span>✅ ${file.name}</span>
+            <small>${sizeText} - Pronto para envio</small>
+          `;
+          label.classList.add('file-uploaded');
+
+          // Info de compressão para imagens
+          if (file.type.startsWith('image/')) {
+            const info = this.parentNode.parentNode.querySelector('.file-info') || document.createElement('div');
+            info.className = 'file-info';
+            info.innerHTML = `🔄 <strong>Imagem será comprimida automaticamente</strong> para reduzir tamanho e acelerar upload.`;
+
+            if (!this.parentNode.parentNode.querySelector('.file-info')) {
+              this.parentNode.parentNode.appendChild(info);
+            }
+
+            setTimeout(() => info.remove(), 4000);
+          }
+
+          showStatus(`📁 Arquivo selecionado: ${file.name}`, 'success');
+        } else {
+          // Resetar label
+          label.classList.remove('file-uploaded');
+          if (this.id === 'arquivoImpressao') {
+            label.innerHTML = '<span>📄 Clique para selecionar arquivo</span><small>PDF, DOC, JPG, PNG (máx. 100MB)</small>';
+          } else if (this.id === 'arquivoSTL') {
+            label.innerHTML = '<span>📐 Clique para selecionar arquivo STL</span><small>Arquivo STL (máx. 100MB)</small>';
+          } else if (this.id === 'fotoProblema' || this.id === 'fotoItem') {
+            label.innerHTML = '<span>📷 Clique para tirar/selecionar foto</span><small>Foto ou imagem (máx. 100MB)</small>';
+          }
+        }
+
+        updateProgress();
+      });
+    });
 
     // NAVEGAÇÃO DO FORMULÁRIO
     document.getElementById('servico').addEventListener('change', function () {
@@ -877,14 +1263,14 @@
     });
 
     document.getElementById('possuiSTL').addEventListener('change', function () {
-      const linkGroup = document.getElementById('linkSTLGroup');
+      const stlGroup = document.getElementById('arquivoSTLGroup');
       const descGroup = document.getElementById('descricaoPecaGroup');
 
       if (this.checked) {
-        linkGroup.style.display = 'block';
+        stlGroup.style.display = 'block';
         descGroup.style.display = 'none';
       } else {
-        linkGroup.style.display = 'none';
+        stlGroup.style.display = 'none';
         descGroup.style.display = 'block';
       }
     });
@@ -938,16 +1324,6 @@
       document.getElementById(sectionId).classList.add('active');
     }
 
-    // 🔗 VALIDAÇÃO DE URL
-    function isValidUrl(string) {
-      try {
-        const url = new URL(string);
-        return url.protocol === 'http:' || url.protocol === 'https:';
-      } catch (_) {
-        return false;
-      }
-    }
-
     function updateProgress() {
       const form = document.getElementById('senaiForm');
       const allInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
@@ -959,7 +1335,7 @@
       });
       
       const filledInputs = visibleInputs.filter(input => {
-        if (input.type === 'checkbox') return true;
+        if (input.type === 'checkbox' || input.type === 'file') return true;
         return input.value.trim() !== '';
       });
 
@@ -1048,13 +1424,6 @@
             showStatus(`Limite excedido! Máximo: ${limite} folhas.`, 'error');
             return false;
           }
-          
-          // Validar link se fornecido
-          const linkImpressao = document.getElementById('linkArquivoImpressao').value.trim();
-          if (linkImpressao && !isValidUrl(linkImpressao)) {
-            showStatus('Por favor, forneça um link válido para o arquivo de impressão.', 'error');
-            return false;
-          }
         } else if (tipoServico === 'impressao_3d') {
           if (!document.getElementById('material').value) {
             showStatus('Por favor, selecione o material.', 'error');
@@ -1067,26 +1436,12 @@
 
           const possuiSTL = document.getElementById('possuiSTL').checked;
           if (!possuiSTL && !document.getElementById('descricaoPeca').value.trim()) {
-            showStatus('Por favor, descreva a peça ou forneça link do STL.', 'error');
-            return false;
-          }
-          
-          // Validar link STL se fornecido
-          const linkSTL = document.getElementById('linkSTL').value.trim();
-          if (linkSTL && !isValidUrl(linkSTL)) {
-            showStatus('Por favor, forneça um link válido para o arquivo STL.', 'error');
+            showStatus('Por favor, descreva a peça ou anexe arquivo STL.', 'error');
             return false;
           }
         } else if (tipoServico === 'manutencao') {
           if (!document.getElementById('descricaoProblema').value.trim()) {
             showStatus('Por favor, descreva o problema.', 'error');
-            return false;
-          }
-          
-          // Validar link da foto se fornecido
-          const linkFotoProblema = document.getElementById('linkFotoProblema').value.trim();
-          if (linkFotoProblema && !isValidUrl(linkFotoProblema)) {
-            showStatus('Por favor, forneça um link válido para a foto do problema.', 'error');
             return false;
           }
         } else if (tipoServico === 'arte_digital' || tipoServico === 'projeto') {
@@ -1108,15 +1463,8 @@
           showStatus('Por favor, informe a data de devolução.', 'error');
           return false;
         }
-        if (!document.getElementById('linkFotoItem').value.trim()) {
-          showStatus('Por favor, forneça o link da foto do item.', 'error');
-          return false;
-        }
-        
-        // Validar se o link é válido
-        const linkFoto = document.getElementById('linkFotoItem').value.trim();
-        if (linkFoto && !isValidUrl(linkFoto)) {
-          showStatus('Por favor, forneça um link válido para a foto.', 'error');
+        if (!document.getElementById('fotoItem').files[0]) {
+          showStatus('Por favor, anexe uma foto do item.', 'error');
           return false;
         }
       }
@@ -1140,8 +1488,21 @@
       document.getElementById('tipoServicoSelect').value = '';
       document.getElementById('qtdChromeBooks').style.display = 'none';
       document.getElementById('qtdComputadores').style.display = 'none';
-      document.getElementById('linkSTLGroup').style.display = 'block';
+      document.getElementById('arquivoSTLGroup').style.display = 'block';
       document.getElementById('descricaoPecaGroup').style.display = 'none';
+      
+      // Resetar labels de upload
+      document.querySelectorAll('.file-upload-label').forEach(label => {
+        label.classList.remove('file-uploaded');
+        const input = label.previousElementSibling;
+        if (input.id === 'arquivoImpressao') {
+          label.innerHTML = '<span>📄 Clique para selecionar arquivo</span><small>PDF, DOC, JPG, PNG (máx. 100MB)</small>';
+        } else if (input.id === 'arquivoSTL') {
+          label.innerHTML = '<span>📐 Clique para selecionar arquivo STL</span><small>Arquivo STL (máx. 100MB)</small>';
+        } else if (input.id === 'fotoProblema' || input.id === 'fotoItem') {
+          label.innerHTML = '<span>📷 Clique para tirar/selecionar foto</span><small>Foto ou imagem (máx. 100MB)</small>';
+        }
+      });
       
       // Resetar tela
       document.getElementById('formContent').style.display = 'block';
@@ -1170,24 +1531,33 @@
     updateProgress();
     usageMonitor.reset();
 
-    showStatus('✅ Sistema carregado - Versão simplificada funcionando!', 'success');
+    showStatus('✅ Sistema carregado - GitHub Storage ativo!', 'success');
 
     console.log(`
-🔥 SENAI Lab - Versão Simplificada
+🔥 SENAI Lab - GitHub Storage
 📊 Recursos utilizados:
    • Firestore: 20.000 writes/dia (gratuito)
-   • Links externos: Para arquivos
+   • GitHub: 1GB storage + 5k requests/hora (gratuito)
    • Firebase Hosting: 10GB (gratuito)
 
 💡 Funcionalidades ativas:
-   ✅ Formulário completo
-   ✅ Validações em tempo real
-   ✅ Cache offline habilitado
-   ✅ Dados salvos no Firestore
-   ✅ Monitor de uso
-   📁 Arquivos via links (Google Drive, etc)
+   ✅ Upload automático para GitHub
+   ✅ Compressão automática de imagens
+   ✅ Progress bars visuais
+   ✅ Organização por pastas
+   ✅ URLs públicas permanentes
+   ✅ Retry automático em falhas
 
-🎯 100% Funcional - Custo: R$ 0,00
+🎯 100% Gratuito - Custo: R$ 0,00
+
+📂 Estrutura GitHub:
+   📁 impressao/
+   📁 impressao-3d/
+   📁 manutencao/
+   📁 emprestimo/
+
+🏢 Organização: Senai-BAL
+📁 Repositório: senai-lab-arquivos
         `);
   </script>
 </body>
