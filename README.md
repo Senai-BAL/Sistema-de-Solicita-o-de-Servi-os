@@ -202,8 +202,8 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 👥 Autores
 
-- **Getulio Vagner ** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/GetuliovmSantos)
-- **Chagas Junior ** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/FChJunior)
+- **Getulio Vagner** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/GetuliovmSantos)
+- **Chagas Junior** - *Desenvolvimento inicial* - [SeuGitHub](https://github.com/FChJunior)
 
 ## 📞 Suporte
 
