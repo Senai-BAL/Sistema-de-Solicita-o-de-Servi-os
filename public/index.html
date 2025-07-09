@@ -449,7 +449,6 @@
             <option value="impressao_3d">Impressão 3D</option>
             <option value="manutencao">Manutenção de Equipamentos Eletrônicos</option>
             <option value="arte_digital">Elaboração de Arte Digital</option>
-            <option value="projeto">Projeto</option>
           </select>
         </div>
 
@@ -524,17 +523,17 @@
 
           <div class="checkbox-group">
             <input type="checkbox" id="frenteVerso" name="frenteVerso">
-            <label for="frenteVerso">Frente e Verso?</label>
+            <label for="frenteVerso">Frente e Verso</label>
           </div>
 
           <div class="checkbox-group">
             <input type="checkbox" id="escanear" name="escanear">
-            <label for="escanear">Necessário Escanear?</label>
+            <label for="escanear">Necessário Escanear</label>
           </div>
 
           <div class="checkbox-group">
             <input type="checkbox" id="colorido" name="colorido">
-            <label for="colorido">Colorido?</label>
+            <label for="colorido">Colorido</label>
           </div>
 
           <div class="form-group">
@@ -572,7 +571,7 @@
           </div>
 
           <div class="checkbox-group">
-            <input type="checkbox" id="possuiSTL" name="possuiSTL">
+            <input type="checkbox" id="possuiSTL" name="possuiSTL" checked>
             <label for="possuiSTL">Possui o arquivo STL?</label>
           </div>
 
@@ -622,9 +621,9 @@
           </div>
         </div>
 
-        <!-- Seção Arte Digital/Projeto -->
+        <!-- Seção Arte Digital/ -->
         <div class="service-section" id="arteProjetoSection">
-          <h3 class="section-title">🎨 Arte Digital / Projeto</h3>
+          <h3 class="section-title">🎨 Arte Digital</h3>
 
           <div class="form-group">
             <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span class="required">*</span></label>
@@ -1278,24 +1277,24 @@
     // 📱 MÁSCARA PARA WHATSAPP
     document.getElementById('whatsapp').addEventListener('input', function (e) {
       let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+      let formattedValue = '';
       
-      if (value.length <= 11) {
-        // Aplicar máscara (xx)xxxxx-xxxx
-        if (value.length >= 11) {
-          value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1)$2-$3');
-        } else if (value.length >= 7) {
-          value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1)$2-$3');
-        } else if (value.length >= 2) {
-          value = value.replace(/^(\d{2})(\d{0,5})/, '($1)$2');
-        } else if (value.length > 0) {
-          value = value.replace(/^(\d{0,2})/, '($1');
-        }
-        
-        // Limpar parênteses vazios ou inválidos
-        if (value === '(' || value === '()') value = '';
+      // Aplicar máscara baseada no comprimento
+      if (value.length === 0) {
+        formattedValue = '';
+      } else if (value.length <= 2) {
+        formattedValue = `(${value}`;
+      } else if (value.length <= 7) {
+        formattedValue = `(${value.substring(0, 2)}) ${value.substring(2)}`;
+      } else if (value.length <= 11) {
+        formattedValue = `(${value.substring(0, 2)}) ${value.substring(2, 7)}-${value.substring(7)}`;
+      } else {
+        // Limitar a 11 dígitos
+        value = value.substring(0, 11);
+        formattedValue = `(${value.substring(0, 2)})${value.substring(2, 7)}-${value.substring(7)}`;
       }
       
-      e.target.value = value;
+      e.target.value = formattedValue;
     });
 
     document.getElementById('whatsapp').addEventListener('keydown', function (e) {
@@ -1312,6 +1311,56 @@
       if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
         e.preventDefault();
       }
+    });
+
+    // Tratar especialmente o backspace para limpar melhor
+    document.getElementById('whatsapp').addEventListener('keydown', function (e) {
+      if (e.keyCode === 8) { // Backspace
+        const currentValue = e.target.value;
+        const cursorPosition = e.target.selectionStart;
+        
+        // Se o cursor está numa posição de caractere especial, mover para o dígito anterior
+        if (cursorPosition > 0) {
+          const charAtCursor = currentValue[cursorPosition - 1];
+          if (charAtCursor === ')' || charAtCursor === '-') {
+            e.preventDefault();
+            // Remover o dígito anterior ao caractere especial
+            const newValue = currentValue.substring(0, cursorPosition - 2) + currentValue.substring(cursorPosition);
+            e.target.value = newValue;
+            // Reposicionar cursor
+            setTimeout(() => {
+              e.target.setSelectionRange(cursorPosition - 2, cursorPosition - 2);
+            }, 0);
+            // Disparar evento input para reaplicar a máscara
+            e.target.dispatchEvent(new Event('input'));
+          }
+        }
+      }
+    });
+
+    // Tratar paste e casos especiais
+    document.getElementById('whatsapp').addEventListener('paste', function (e) {
+      e.preventDefault();
+      const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+      const digitsOnly = pastedText.replace(/\D/g, '');
+      
+      // Aplicar máscara aos dígitos colados
+      let formattedValue = '';
+      if (digitsOnly.length === 0) {
+        formattedValue = '';
+      } else if (digitsOnly.length <= 2) {
+        formattedValue = `(${digitsOnly}`;
+      } else if (digitsOnly.length <= 7) {
+        formattedValue = `(${digitsOnly.substring(0, 2)})${digitsOnly.substring(2)}`;
+      } else if (digitsOnly.length <= 11) {
+        formattedValue = `(${digitsOnly.substring(0, 2)})${digitsOnly.substring(2, 7)}-${digitsOnly.substring(7)}`;
+      } else {
+        // Limitar a 11 dígitos
+        const limitedDigits = digitsOnly.substring(0, 11);
+        formattedValue = `(${limitedDigits.substring(0, 2)})${limitedDigits.substring(2, 7)}-${limitedDigits.substring(7)}`;
+      }
+      
+      e.target.value = formattedValue;
     });
 
     function hideAllSections() {

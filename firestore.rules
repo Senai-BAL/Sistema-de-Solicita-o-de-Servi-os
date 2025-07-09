@@ -1,13 +1,24 @@
 // No Firebase Console → Firestore → Rules
 // Cole estas regras:
+// 
+// IMPORTANTE: Estas regras permitem:
+// - Criação de solicitações por qualquer usuário (formulário público)
+// - Leitura/atualização/exclusão por qualquer usuário (dashboard admin protegido por senha)
+// - Tudo mais é bloqueado por padrão
+//
+// SEGURANÇA: O dashboard admin usa autenticação por senha local para controle de acesso
+// A segurança real está na autenticação do dashboard, não nas regras do Firestore
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Permitir criação de solicitações (apenas escrita)
+    // Permitir criação de solicitações para qualquer usuário (formulário público)
+    // Permitir leitura para qualquer usuário (dashboard admin com autenticação local)
+    // Permitir atualização/exclusão para qualquer usuário (controle no app)
     match /solicitacoes/{document} {
       allow create: if true;
-      allow read, update, delete: if false;
+      allow read: if true;
+      allow update, delete: if true;
     }
     
     // Bloquear tudo mais

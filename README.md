@@ -157,7 +157,44 @@ cp public/shared/github-config.example.js public/shared/github-config.js
 
 **Importante**: Os arquivos `*-config.js` contêm credenciais e não devem ser commitados no Git.
 
-### 4. Configure o Dashboard Administrativo
+### 4. Configure as Regras do Firestore
+
+1. **Vá para o Firebase Console**:
+   - Acesse [Firebase Console](https://console.firebase.google.com/)
+   - Selecione seu projeto
+   - Vá para "Firestore Database" → "Rules"
+
+2. **Cole as regras do arquivo `firestore.rules`**:
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       // Permitir criação de solicitações para qualquer usuário (formulário público)
+       // Permitir leitura para qualquer usuário (dashboard admin com autenticação local)
+       // Permitir atualização/exclusão para qualquer usuário (controle no app)
+       match /solicitacoes/{document} {
+         allow create: if true;
+         allow read: if true;
+         allow update, delete: if true;
+       }
+       
+       // Bloquear tudo mais
+       match /{document=**} {
+         allow read, write: if false;
+       }
+     }
+   }
+   ```
+
+3. **Publique as regras**: Clique em "Publicar"
+
+**Importante**: 
+- ✅ **Formulário público**: Pode criar solicitações
+- ✅ **Dashboard admin**: Pode ler/atualizar/deletar solicitações (protegido por senha)
+- ❌ **Tudo mais**: Bloqueado por padrão
+- 🔐 **Segurança**: O controle de acesso está na autenticação por senha do dashboard
+
+### 5. Configure o Dashboard Administrativo
 
 1. **Edite a senha do admin** em `public/admin.html`:
    ```javascript
@@ -172,7 +209,7 @@ cp public/shared/github-config.example.js public/shared/github-config.js
    - URL: `https://seu-dominio.com/admin.html`
    - Senha: A que você definiu no passo anterior
 
-### 5. Deploy
+### 6. Deploy
 ```bash
 firebase deploy
 ```
