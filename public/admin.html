@@ -317,7 +317,19 @@
     }
 
     .btn-export.pdf {
-      background: #d32f2f;
+      background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-export.pdf:hover {
+      background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+    }
+    
+    .btn-export.pdf:active {
+      transform: translateY(0);
     }
 
     /* ===== QUICK ACTIONS ===== */
@@ -827,7 +839,7 @@
           <h2 class="section-title">📋 Gestão de Solicitações</h2>
           <div class="export-buttons">
             <button class="btn-export excel" onclick="exportToExcel()">📊 Excel</button>
-            <button class="btn-export pdf" onclick="exportToPDF()">📄 PDF</button>
+            <button class="btn-export pdf" onclick="openModal('pdfConfigModal')">� Relatório PDF</button>
           </div>
         </div>
 
@@ -968,9 +980,64 @@
     </div>
   </div>
 
+  <!-- Modal de Configurações PDF -->
+  <div class="modal" id="pdfConfigModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">📋 Configurações do Relatório PDF</h3>
+        <button class="close-btn" onclick="closeModal('pdfConfigModal')">&times;</button>
+      </div>
+      <div style="padding: 20px;">
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h4 style="margin-bottom: 10px; color: #1e3c72;">📊 Resumo do Relatório:</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <strong>Total de Solicitações:</strong> <span id="pdfTotalRequests">-</span><br>
+              <strong>Período:</strong> <span id="pdfPeriod">Todos os registros</span><br>
+              <strong>Filtros Aplicados:</strong> <span id="pdfFilters">Nenhum</span>
+            </div>
+            <div>
+              <strong>Pendentes:</strong> <span id="pdfPendingCount">-</span><br>
+              <strong>Em Andamento:</strong> <span id="pdfProgressCount">-</span><br>
+              <strong>Concluídas:</strong> <span id="pdfCompletedCount">-</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h4 style="margin-bottom: 10px; color: #1976d2;">⚙️ Opções do PDF:</h4>
+          <label style="display: flex; align-items: center; margin-bottom: 10px;">
+            <input type="checkbox" id="pdfIncludeStats" checked style="margin-right: 8px;">
+            <span>Incluir estatísticas resumidas</span>
+          </label>
+          <label style="display: flex; align-items: center; margin-bottom: 10px;">
+            <input type="checkbox" id="pdfIncludeDetails" checked style="margin-right: 8px;">
+            <span>Incluir detalhes completos das solicitações</span>
+          </label>
+          <label style="display: flex; align-items: center;">
+            <input type="checkbox" id="pdfColorStatus" checked style="margin-right: 8px;">
+            <span>Usar cores para status (Pendente/Concluído/etc.)</span>
+          </label>
+        </div>
+        
+        <div style="text-align: right;">
+          <button onclick="closeModal('pdfConfigModal')" style="margin-right: 10px; padding: 10px 20px; background: #ccc; border: none; border-radius: 6px; cursor: pointer;">
+            Cancelar
+          </button>
+          <button onclick="generatePDFWithConfig()" style="padding: 10px 20px; background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; border: none; border-radius: 6px; cursor: pointer;">
+            📋 Gerar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- jsPDF para exportação PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <!-- Configurações -->
   <script src="shared/firebase-config.js"></script>
@@ -2869,8 +2936,302 @@ Para restaurar, reimporte os dados conforme necessário.
     }
 
     function exportToPDF() {
-      ToastManager.show('Exportação PDF em desenvolvimento...', 'warning');
-      // TODO: Implementar exportação PDF
+      // Atualizar informações no modal
+      updatePDFConfigModal();
+      // Abrir modal de configurações
+      openModal('pdfConfigModal');
+    }
+    
+    function updatePDFConfigModal() {
+      const stats = {
+        total: filteredRequests.length,
+        pendente: filteredRequests.filter(r => !r.admin?.status || r.admin.status === 'pendente').length,
+        em_andamento: filteredRequests.filter(r => r.admin?.status === 'em_andamento').length,
+        concluido: filteredRequests.filter(r => r.admin?.status === 'concluido').length,
+        cancelado: filteredRequests.filter(r => r.admin?.status === 'cancelado').length
+      };
+      
+      // Atualizar contadores
+      document.getElementById('pdfTotalRequests').textContent = stats.total;
+      document.getElementById('pdfPendingCount').textContent = stats.pendente;
+      document.getElementById('pdfProgressCount').textContent = stats.em_andamento;
+      document.getElementById('pdfCompletedCount').textContent = stats.concluido;
+      
+      // Verificar filtros aplicados
+      const activeFilters = [];
+      const serviceFilter = document.getElementById('filterService').value;
+      const statusFilter = document.getElementById('filterStatus').value;
+      const priorityFilter = document.getElementById('filterPriority').value;
+      const periodFilter = document.getElementById('filterPeriod').value;
+      
+      if (serviceFilter) activeFilters.push(`Serviço: ${serviceFilter}`);
+      if (statusFilter) activeFilters.push(`Status: ${statusFilter}`);
+      if (priorityFilter) activeFilters.push(`Prioridade: ${priorityFilter}`);
+      if (periodFilter && periodFilter !== 'todos') activeFilters.push(`Período: ${periodFilter}`);
+      
+      document.getElementById('pdfFilters').textContent = activeFilters.length > 0 ? activeFilters.join(', ') : 'Nenhum';
+      
+      // Definir período
+      if (periodFilter === 'hoje') {
+        document.getElementById('pdfPeriod').textContent = 'Hoje';
+      } else if (periodFilter === 'semana') {
+        document.getElementById('pdfPeriod').textContent = 'Esta semana';
+      } else if (periodFilter === 'mes') {
+        document.getElementById('pdfPeriod').textContent = 'Este mês';
+      } else {
+        document.getElementById('pdfPeriod').textContent = 'Todos os registros';
+      }
+    }
+    
+    function generatePDFWithConfig() {
+      closeModal('pdfConfigModal');
+      
+      // Pegar configurações do modal
+      const includeStats = document.getElementById('pdfIncludeStats').checked;
+      const includeDetails = document.getElementById('pdfIncludeDetails').checked;
+      const colorStatus = document.getElementById('pdfColorStatus').checked;
+      
+      // Gerar PDF com configurações
+      generatePDFReport(includeStats, includeDetails, colorStatus);
+    }
+    
+    function generatePDFReport(includeStats = true, includeDetails = true, colorStatus = true) {
+      openModal('pdfConfigModal');
+    }
+
+    function generatePDFWithConfig() {
+      const includeStats = document.getElementById('pdfIncludeStats').checked;
+      const includeDetails = document.getElementById('pdfIncludeDetails').checked;
+      const colorStatus = document.getElementById('pdfColorStatus').checked;
+
+      // Fechar modal
+      closeModal('pdfConfigModal');
+
+      // Aguardar a biblioteca carregar se necessário
+      const checkAndGeneratePDF = () => {
+        if (typeof window.jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined') {
+          generatePDFReportNow(includeStats, includeDetails, colorStatus);
+        } else {
+          ToastManager.show('Aguardando biblioteca PDF carregar...', 'info');
+          setTimeout(checkAndGeneratePDF, 500);
+        }
+      };
+      
+      checkAndGeneratePDF();
+    }
+    
+    function generatePDFReportNow(includeStats = true, includeDetails = true, colorStatus = true) {
+      try {
+        ToastManager.show('Gerando relatório PDF...', 'info');
+        
+        // Verificar se jsPDF está disponível
+        if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {
+          throw new Error('Biblioteca jsPDF não carregada');
+        }
+        
+        // Tentar diferentes formas de acesso à biblioteca
+        let jsPDF;
+        if (window.jspdf && window.jspdf.jsPDF) {
+          jsPDF = window.jspdf.jsPDF;
+        } else if (window.jsPDF) {
+          jsPDF = window.jsPDF;
+        } else {
+          throw new Error('jsPDF não encontrado');
+        }
+        
+        const doc = new jsPDF();
+        
+        // Configurar fonte para suportar caracteres especiais
+        doc.setFont('helvetica');
+        
+        // Cabeçalho do relatório
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('pt-BR');
+        const timeStr = now.toLocaleTimeString('pt-BR');
+        
+        // Título principal
+        doc.setFontSize(20);
+        doc.setTextColor(30, 60, 114); // Cor azul do SENAI
+        doc.text('SENAI Lab - Relatorio de Solicitacoes', 20, 25);
+        
+        // Linha separadora
+        doc.setDrawColor(30, 60, 114);
+        doc.setLineWidth(0.5);
+        doc.line(20, 30, 190, 30);
+        
+        // Informações do relatório
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Gerado em: ${dateStr} as ${timeStr}`, 20, 40);
+        doc.text(`Total de solicitacoes: ${filteredRequests.length}`, 20, 45);
+        doc.text(`Administrador: Sistema SENAI Lab`, 20, 50);
+        
+        // Estatísticas resumidas
+        const stats = {
+          total: filteredRequests.length,
+          pendente: filteredRequests.filter(r => !r.admin?.status || r.admin.status === 'pendente').length,
+          em_andamento: filteredRequests.filter(r => r.admin?.status === 'em_andamento').length,
+          concluido: filteredRequests.filter(r => r.admin?.status === 'concluido').length,
+          cancelado: filteredRequests.filter(r => r.admin?.status === 'cancelado').length
+        };
+        
+        if (includeStats) {
+          // Box de estatísticas
+          doc.setDrawColor(200, 200, 200);
+          doc.setFillColor(248, 249, 250);
+          doc.roundedRect(20, 60, 170, 25, 3, 3, 'FD');
+          
+          doc.setFontSize(12);
+          doc.setTextColor(51, 51, 51);
+          doc.text('Resumo Estatistico:', 25, 70);
+          
+          doc.setFontSize(9);
+          doc.text(`Pendentes: ${stats.pendente}`, 25, 76);
+          doc.text(`Em Andamento: ${stats.em_andamento}`, 70, 76);
+          doc.text(`Concluidas: ${stats.concluido}`, 120, 76);
+          doc.text(`Canceladas: ${stats.cancelado}`, 160, 76);
+        }
+        
+        // Preparar dados para a tabela
+        let yPosition = includeStats ? 100 : 65;
+        const pageHeight = doc.internal.pageSize.height;
+        const margin = 20;
+        
+        // Detalhamento das solicitações (se habilitado)
+        if (includeDetails && filteredRequests.length > 0) {
+          // Cabeçalho da tabela
+          doc.setFontSize(14);
+          doc.setTextColor(30, 60, 114);
+          doc.text('Detalhamento das Solicitacoes', 20, yPosition);
+          yPosition += 10;
+        
+        // Headers da tabela
+        doc.setFontSize(8);
+        doc.setTextColor(51, 51, 51);
+        doc.setFont('helvetica', 'bold');
+        
+        const headers = ['Data', 'Colaborador', 'Servico', 'Status', 'Prioridade'];
+        const columnWidths = [25, 45, 45, 25, 25];
+        let xPosition = 20;
+        
+        // Desenhar headers
+        headers.forEach((header, index) => {
+          doc.text(header, xPosition, yPosition);
+          xPosition += columnWidths[index];
+        });
+        
+        // Linha após headers
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, yPosition + 2, 185, yPosition + 2);
+        yPosition += 8;
+        
+        // Dados da tabela
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        
+        filteredRequests.forEach((request, index) => {
+          // Verificar se precisa de nova página
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 30;
+            
+            // Repetir headers na nova página
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            xPosition = 20;
+            headers.forEach((header, index) => {
+              doc.text(header, xPosition, yPosition);
+              xPosition += columnWidths[index];
+            });
+            doc.line(20, yPosition + 2, 185, yPosition + 2);
+            yPosition += 8;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7);
+          }
+          
+          // Dados da linha
+          const rowData = [
+            formatDate(request.d),
+            truncateText(request.c, 20),
+            truncateText(getServiceName(request.s, request.ts), 20),
+            getStatusText(request.admin?.status || 'pendente'),
+            request.admin?.prioridade || 'N/A'
+          ];
+          
+          // Colorir linha alternada
+          if (index % 2 === 0) {
+            doc.setFillColor(248, 249, 250);
+            doc.rect(20, yPosition - 4, 165, 6, 'F');
+          }
+          
+          // Definir cor do texto baseado no status (se habilitado)
+          const status = request.admin?.status || 'pendente';
+          if (colorStatus) {
+            if (status === 'concluido') {
+              doc.setTextColor(39, 174, 96); // Verde
+            } else if (status === 'cancelado') {
+              doc.setTextColor(231, 76, 60); // Vermelho
+            } else if (status === 'em_andamento') {
+              doc.setTextColor(52, 152, 219); // Azul
+            } else {
+              doc.setTextColor(241, 196, 15); // Amarelo escuro para pendente
+            }
+          } else {
+            doc.setTextColor(51, 51, 51); // Cor padrão se coloração desabilitada
+          }
+          
+          xPosition = 20;
+          rowData.forEach((data, colIndex) => {
+            if (colIndex === 3) { // Coluna de status
+              doc.text(data, xPosition, yPosition);
+            } else {
+              doc.setTextColor(51, 51, 51); // Cor padrão para outras colunas
+              doc.text(data, xPosition, yPosition);
+            }
+            xPosition += columnWidths[colIndex];
+          });
+          
+          yPosition += 6;
+        });
+        } // Fim do if (includeDetails)
+        
+        // Rodapé
+        const totalPages = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          doc.setPage(i);
+          doc.setFontSize(8);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Pagina ${i} de ${totalPages}`, 20, pageHeight - 10);
+          doc.text('SENAI Lab - Sistema de Solicitacao de Servicos', 105, pageHeight - 10, { align: 'center' });
+          doc.text(`Gerado em ${dateStr}`, 190, pageHeight - 10, { align: 'right' });
+        }
+        
+        // Salvar o PDF
+        const fileName = `senai-lab-relatorio-${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}.pdf`;
+        doc.save(fileName);
+        
+        ToastManager.show(`Relatório PDF gerado com sucesso! ${filteredRequests.length} solicitações incluídas.`, 'success');
+        
+      } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+        ToastManager.show('Erro ao gerar PDF: ' + error.message, 'error');
+      }
+    }
+
+    // Funções auxiliares para o PDF
+    function truncateText(text, maxLength) {
+      if (text.length <= maxLength) return text;
+      return text.substring(0, maxLength - 3) + '...';
+    }
+    
+    function getStatusText(status) {
+      const statusMap = {
+        'pendente': 'Pendente',
+        'em_andamento': 'Em Andamento',
+        'concluido': 'Concluido',
+        'cancelado': 'Cancelado'
+      };
+      return statusMap[status] || status;
     }
 
     function convertToCSV(data) {
@@ -3025,6 +3386,7 @@ Para restaurar, reimporte os dados conforme necessário.
     ✅ Sistema 100% gratuito mantido
     ✅ Notificações desktop nativas
     ✅ Monitoramento em tempo real
+    ✅ Exportação PDF HABILITADA! 📋
 
 🔔 Recursos mantidos:
     ✅ Toast notifications elegantes
@@ -3053,10 +3415,36 @@ Para restaurar, reimporte os dados conforme necessário.
 🎉 NOVO: Botão "🗂️ Backup Completo + Limpar" disponível!
     `);
 
+    // 🎧 TESTE DE FUNCIONALIDADE PDF
+    testPDFLibrary();
+    
     // 🎯 DRAG AND DROP HANDLERS
     function handleDragStart(e) {
       e.dataTransfer.setData('text/plain', e.target.dataset.requestId);
       e.target.classList.add('dragging');
+    }
+
+    // 🧪 FUNÇÃO DE TESTE PDF
+    function testPDFLibrary() {
+      try {
+        let jsPDF;
+        if (window.jspdf && window.jspdf.jsPDF) {
+          jsPDF = window.jspdf.jsPDF;
+        } else if (window.jsPDF) {
+          jsPDF = window.jsPDF;
+        } else {
+          throw new Error('jsPDF não encontrado');
+        }
+        
+        const doc = new jsPDF();
+        doc.text('Teste SENAI Lab PDF', 20, 20);
+        doc.save('teste-senai-lab.pdf');
+        ToastManager.show('✅ Biblioteca PDF funcionando corretamente!', 'success');
+        
+      } catch (error) {
+        console.error('Erro no teste PDF:', error);
+        ToastManager.show('❌ Erro no teste PDF: ' + error.message, 'error');
+      }
     }
   </script>
 </body>
