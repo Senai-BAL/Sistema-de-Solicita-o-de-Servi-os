@@ -1,6 +1,16 @@
 // 🔥 SERVIÇOS FIREBASE CENTRALIZADOS
 // Arquivo: public/shared/firebase-service.js
 
+// 🧪 CONFIGURAÇÃO DE AMBIENTE
+const ENVIRONMENT_CONFIG = {
+  // Altere para 'production' ou 'test' conforme necessário
+  mode: 'test', // 'production' ou 'test'
+  collections: {
+    production: 'solicitacoes',
+    test: 'solicitacoes_test'
+  }
+};
+
 class FirebaseService {
   constructor() {
     if (!window.firebaseConfig) {
@@ -12,7 +22,12 @@ class FirebaseService {
     }
     
     this.db = firebase.firestore();
+    this.collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
     this.enableOfflineSupport();
+    
+    // Log do ambiente atual
+    console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
+    console.log(`📂 Coleção: ${this.collectionName}`);
   }
 
   // 🔧 CONFIGURAÇÃO INICIAL
@@ -28,7 +43,7 @@ class FirebaseService {
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
     try {
-      const snapshot = await this.db.collection('solicitacoes').orderBy('d', 'desc').get();
+      const snapshot = await this.db.collection(this.collectionName).orderBy('d', 'desc').get();
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -41,7 +56,7 @@ class FirebaseService {
 
   async getRequestById(id) {
     try {
-      const doc = await this.db.collection('solicitacoes').doc(id).get();
+      const doc = await this.db.collection(this.collectionName).doc(id).get();
       if (doc.exists) {
         return { id: doc.id, ...doc.data() };
       }
@@ -54,7 +69,7 @@ class FirebaseService {
 
   async getRequestsByFilter(filters = {}) {
     try {
-      let query = this.db.collection('solicitacoes');
+      let query = this.db.collection(this.collectionName);
 
       // Aplicar filtros
       if (filters.service) {
@@ -83,7 +98,7 @@ class FirebaseService {
   // ✍️ OPERAÇÕES DE ESCRITA
   async createRequest(data) {
     try {
-      const docRef = await this.db.collection('solicitacoes').add({
+      const docRef = await this.db.collection(this.collectionName).add({
         ...data,
         d: Date.now(),
         st: 'p' // status: pendente
@@ -119,7 +134,7 @@ class FirebaseService {
         updateData['admin.prioridade'] = adminData.priority;
       }
 
-      await this.db.collection('solicitacoes').doc(requestId).update(updateData);
+      await this.db.collection(this.collectionName).doc(requestId).update(updateData);
       
       // Log da ação administrativa
       await this.logAdminAction(requestId, 'status_update', {
@@ -139,7 +154,7 @@ class FirebaseService {
 
   async addComment(requestId, comment, author = 'Administrador') {
     try {
-      await this.db.collection('solicitacoes').doc(requestId).update({
+      await this.db.collection(this.collectionName).doc(requestId).update({
         'admin.comentarios': firebase.firestore.FieldValue.arrayUnion({
           texto: comment,
           timestamp: Date.now(),
@@ -164,7 +179,7 @@ class FirebaseService {
 
   async setPriority(requestId, priority, author = 'Administrador') {
     try {
-      await this.db.collection('solicitacoes').doc(requestId).update({
+      await this.db.collection(this.collectionName).doc(requestId).update({
         'admin.prioridade': priority,
         'admin.data_atualizacao': Date.now(),
         'admin.responsavel': author
@@ -186,7 +201,7 @@ class FirebaseService {
   // 🗑️ DELETAR SOLICITAÇÃO
   async deleteRequest(requestId) {
     try {
-      await this.db.collection('solicitacoes').doc(requestId).delete();
+      await this.db.collection(this.collectionName).doc(requestId).delete();
       
       // Log da ação
       await this.logAdminAction(requestId, 'request_deleted', {
@@ -207,7 +222,7 @@ class FirebaseService {
       const batch = this.db.batch();
       
       requestIds.forEach(requestId => {
-        const docRef = this.db.collection('solicitacoes').doc(requestId);
+        const docRef = this.db.collection(this.collectionName).doc(requestId);
         batch.delete(docRef);
       });
 
@@ -350,7 +365,7 @@ class FirebaseService {
 
   // 🔄 LISTENERS EM TEMPO REAL
   onRequestsChange(callback) {
-    return this.db.collection('solicitacoes')
+    return this.db.collection(this.collectionName)
       .orderBy('d', 'desc')
       .onSnapshot(snapshot => {
         const requests = snapshot.docs.map(doc => ({
@@ -364,7 +379,7 @@ class FirebaseService {
   }
 
   onRequestChange(requestId, callback) {
-    return this.db.collection('solicitacoes')
+    return this.db.collection(this.collectionName)
       .doc(requestId)
       .onSnapshot(doc => {
         if (doc.exists) {
