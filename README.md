@@ -21,7 +21,10 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - ✅ **Formulário Dinâmico**: Interface adaptativa baseada no tipo de serviço
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
-- ✅ **Upload de Arquivos**: Envio automático para GitHub
+- ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
+- ✅ **Preview de Imagens**: Visualização inline de fotos
+- ✅ **Progress Visual**: Barras de progresso individuais e globais
+- ✅ **Nomenclatura Padronizada**: Sistema organizacional TIPO_DATA_SOLICITANTE_ARQUIVO
 - ✅ **Cache Offline**: Funcionamento sem internet
 - ✅ **Monitor de Uso**: Controle de recursos Firebase
 - ✅ **Design Responsivo**: Otimizado para mobile e desktop
@@ -44,6 +47,30 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - **Backend**: Firebase Firestore
 - **Hosting**: Firebase Hosting
 - **Arquivos**: Upload automático para GitHub
+- **Organização**: Sistema de nomenclatura padronizada
+
+## 🆕 Atualizações Recentes (v2.5 - Julho 2025)
+
+### 📁 **Sistema de Múltiplos Arquivos**
+- ✅ **Múltiplos uploads** por categoria de serviço
+- ✅ **Interface visual** com lista interativa de arquivos
+- ✅ **Preview de imagens** inline com thumbnails
+- ✅ **Progress bars** individuais e globais
+- ✅ **Validação aprimorada** de tipos e tamanhos
+- ✅ **Gerenciamento visual** com ações (remover, visualizar)
+
+### 🏷️ **Sistema de Nomenclatura Inteligente**
+- ✅ **Padrão padronizado**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
+- ✅ **Pasta organizacional**: Todos os arquivos em `senai-arquivos/`
+- ✅ **Timestamp detalhado**: Data e hora precisos
+- ✅ **Identificação clara**: Nome do solicitante e tipo de serviço
+
+### 🎨 **Melhorias de Interface**
+- ✅ **Cards visuais** para cada arquivo
+- ✅ **Ícones específicos** por tipo de arquivo
+- ✅ **Status em tempo real** do upload
+- ✅ **Resumo inteligente** de arquivos selecionados
+- ✅ **Feedback visual** aprimorado
 
 ## � Configuração
 
@@ -82,12 +109,32 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 📁 Upload de Arquivos
 
+### 🆕 **Sistema de Múltiplos Arquivos (Atualização 2025)**
+- ✅ **Upload Múltiplo**: Múltiplos arquivos por categoria de serviço
+- ✅ **Preview Visual**: Visualização de imagens antes do envio
+- ✅ **Progress Individual**: Acompanhamento do upload de cada arquivo
+- ✅ **Validação Avançada**: Tipo, tamanho e formato automático
+- ✅ **Nomenclatura Inteligente**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
+- ✅ **Pasta Organizacional**: Todos os arquivos em `senai-arquivos/`
+- ✅ **Gerenciamento Visual**: Lista interativa com ações (remover, preview)
+
+### 🔧 **Recursos Técnicos**
 - ✅ **Upload para GitHub**: Arquivos enviados automaticamente para repositório
 - ✅ **Compressão automática**: Imagens comprimidas antes do upload
-- ✅ **Organização por pastas**: `impressao/`, `impressao-3d/`, `manutencao/`, `emprestimo/`
 - ✅ **URLs públicas**: Links permanentes para todos os arquivos
 - ✅ **Limite**: 100MB por arquivo
 - ✅ **Retry automático**: Reenvio em caso de falha
+- ✅ **Tipos suportados**: PDF, DOC, JPG, PNG, STL
+
+### 📂 **Estrutura Organizacional**
+```
+📁 senai-arquivos/
+├── 📄 IMPRESSAO_20250715_123000_JOAO_documento.pdf
+├── 📐 IMPRESSAO_3D_20250715_140500_MARIA_modelo.stl
+├── 📷 MANUTENCAO_20250715_160000_PEDRO_foto1.jpg
+├── 📷 MANUTENCAO_20250715_160000_PEDRO_foto2.jpg
+└── 📸 EMPRESTIMO_20250715_180000_ANA_item.png
+```
 
 ## 🌐 URLs de Acesso
 

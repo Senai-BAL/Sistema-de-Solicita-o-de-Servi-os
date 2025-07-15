@@ -183,6 +183,50 @@ class FirebaseService {
     }
   }
 
+  // 🗑️ DELETAR SOLICITAÇÃO
+  async deleteRequest(requestId) {
+    try {
+      await this.db.collection('solicitacoes').doc(requestId).delete();
+      
+      // Log da ação
+      await this.logAdminAction(requestId, 'request_deleted', {
+        admin: 'Sistema'
+      });
+
+      console.log('✅ Solicitação deletada:', requestId);
+      return true;
+    } catch (error) {
+      console.error('❌ Erro ao deletar solicitação:', error);
+      throw error;
+    }
+  }
+
+  // 🧹 DELETAR MÚLTIPLAS SOLICITAÇÕES (BATCH)
+  async deleteMultipleRequests(requestIds) {
+    try {
+      const batch = this.db.batch();
+      
+      requestIds.forEach(requestId => {
+        const docRef = this.db.collection('solicitacoes').doc(requestId);
+        batch.delete(docRef);
+      });
+
+      await batch.commit();
+      
+      // Log da ação
+      await this.logAdminAction('BATCH', 'multiple_requests_deleted', {
+        count: requestIds.length,
+        admin: 'Sistema'
+      });
+
+      console.log(`✅ ${requestIds.length} solicitações deletadas em batch`);
+      return true;
+    } catch (error) {
+      console.error('❌ Erro ao deletar solicitações em batch:', error);
+      throw error;
+    }
+  }
+
   // 📝 SISTEMA DE LOGS
   async logAdminAction(requestId, action, details = {}) {
     try {

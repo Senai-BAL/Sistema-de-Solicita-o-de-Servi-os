@@ -194,6 +194,178 @@
       background: #ff9800;
     }
 
+    /* 📁 ESTILOS PARA MÚLTIPLOS ARQUIVOS */
+    .file-list {
+      margin-top: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fafafa;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .file-list.empty {
+      display: none;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-bottom: 1px solid #e5e5e5;
+      transition: all 0.2s ease;
+    }
+
+    .file-item:last-child {
+      border-bottom: none;
+    }
+
+    .file-item:hover {
+      background: #f0f0f0;
+    }
+
+    .file-icon {
+      font-size: 24px;
+      margin-right: 12px;
+      min-width: 30px;
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-name {
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .file-size {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .file-status {
+      font-size: 0.8rem;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .file-status.waiting {
+      color: #6c757d;
+    }
+
+    .file-status.uploading {
+      color: #007bff;
+    }
+
+    .file-status.success {
+      color: #28a745;
+    }
+
+    .file-status.error {
+      color: #dc3545;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: 10px;
+    }
+
+    .file-action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+    }
+
+    .file-action-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .file-action-btn.remove {
+      color: #dc3545;
+    }
+
+    .file-action-btn.preview {
+      color: #007bff;
+    }
+
+    .file-action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .files-summary {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #495057;
+      border-left: 4px solid #007bff;
+    }
+
+    .files-summary.empty {
+      display: none;
+    }
+
+    .global-progress {
+      margin-top: 10px;
+      padding: 0;
+      display: none;
+    }
+
+    .global-progress.active {
+      display: block;
+    }
+
+    .global-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+
+    .global-progress-fill {
+      height: 100%;
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .global-progress-text {
+      font-size: 0.85rem;
+      color: #6c757d;
+      text-align: center;
+    }
+
+    /* 🖼️ PREVIEW DE IMAGENS */
+    .image-preview {
+      max-width: 40px;
+      max-height: 40px;
+      border-radius: 4px;
+      margin-right: 8px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+    }
+
     .github-info {
       background: #f6f8fa;
       border: 1px solid #d1d9e0;
@@ -537,17 +709,28 @@
           </div>
 
           <div class="form-group">
-            <label for="arquivoImpressao">Anexar arquivo de impressão</label>
+            <label for="arquivoImpressao">Anexar arquivos de impressão</label>
             <div class="file-upload">
-              <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg">
+              <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg" multiple>
               <label for="arquivoImpressao" class="file-upload-label">
-                <span>📄 Clique para selecionar arquivo</span>
-                <small>PDF, DOC, JPG, PNG (máx. 100MB)</small>
+                <span>📄 Clique para selecionar arquivos</span>
+                <small>PDF, DOC, JPG, PNG (máx. 100MB cada) - Múltiplos arquivos permitidos</small>
               </label>
               <div class="upload-progress"></div>
             </div>
+            <div class="file-list empty" id="fileListImpressao"></div>
+            <div class="files-summary empty" id="filesSummaryImpressao">
+              <strong>📁 Arquivos selecionados:</strong> <span class="count">0</span> arquivo(s) | 
+              <span class="size">0 KB</span>
+            </div>
+            <div class="global-progress" id="globalProgressImpressao">
+              <div class="global-progress-bar">
+                <div class="global-progress-fill"></div>
+              </div>
+              <div class="global-progress-text">Fazendo upload...</div>
+            </div>
             <div class="github-info">
-              <strong>📁 Upload automático:</strong> Arquivo será enviado automaticamente para o GitHub. Máximo 100MB.
+              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o GitHub com nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
           </div>
         </div>
@@ -576,14 +759,25 @@
           </div>
 
           <div class="form-group" id="arquivoSTLGroup">
-            <label for="arquivoSTL">Anexar arquivo STL</label>
+            <label for="arquivoSTL">Anexar arquivos STL</label>
             <div class="file-upload">
-              <input type="file" id="arquivoSTL" name="arquivoSTL" accept=".stl">
+              <input type="file" id="arquivoSTL" name="arquivoSTL" accept=".stl" multiple>
               <label for="arquivoSTL" class="file-upload-label">
-                <span>📐 Clique para selecionar arquivo STL</span>
-                <small>Arquivo STL (máx. 100MB)</small>
+                <span>📐 Clique para selecionar arquivos STL</span>
+                <small>Arquivos STL (máx. 100MB cada) - Múltiplos arquivos permitidos</small>
               </label>
               <div class="upload-progress"></div>
+            </div>
+            <div class="file-list empty" id="fileListSTL"></div>
+            <div class="files-summary empty" id="filesSummarySTL">
+              <strong>📐 Arquivos STL:</strong> <span class="count">0</span> arquivo(s) | 
+              <span class="size">0 KB</span>
+            </div>
+            <div class="global-progress" id="globalProgressSTL">
+              <div class="global-progress-bar">
+                <div class="global-progress-fill"></div>
+              </div>
+              <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="github-info">
               <strong>🏗️ Upload STL:</strong> Arquivos 3D serão armazenados automaticamente no GitHub.
@@ -606,17 +800,28 @@
           </div>
 
           <div class="form-group">
-            <label for="fotoProblema">Anexar foto do problema</label>
+            <label for="fotoProblema">Anexar fotos do problema</label>
             <div class="file-upload">
-              <input type="file" id="fotoProblema" name="fotoProblema" accept="image/*">
+              <input type="file" id="fotoProblema" name="fotoProblema" accept="image/*" multiple>
               <label for="fotoProblema" class="file-upload-label">
-                <span>📷 Clique para tirar/selecionar foto</span>
-                <small>Foto ou imagem (máx. 100MB)</small>
+                <span>📷 Clique para tirar/selecionar fotos</span>
+                <small>Fotos ou imagens (máx. 100MB cada) - Múltiplas fotos permitidas</small>
               </label>
               <div class="upload-progress"></div>
             </div>
+            <div class="file-list empty" id="fileListProblema"></div>
+            <div class="files-summary empty" id="filesSummaryProblema">
+              <strong>📷 Fotos do problema:</strong> <span class="count">0</span> foto(s) | 
+              <span class="size">0 KB</span>
+            </div>
+            <div class="global-progress" id="globalProgressProblema">
+              <div class="global-progress-bar">
+                <div class="global-progress-fill"></div>
+              </div>
+              <div class="global-progress-text">Fazendo upload...</div>
+            </div>
             <div class="github-info">
-              <strong>📷 Foto automática:</strong> Tire uma foto ou selecione da galeria. Upload automático.
+              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura: MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático.
             </div>
           </div>
         </div>
@@ -652,17 +857,28 @@
           </div>
 
           <div class="form-group">
-            <label for="fotoItem">Foto do Item <span class="required">*</span></label>
+            <label for="fotoItem">Fotos do Item <span class="required">*</span></label>
             <div class="file-upload">
-              <input type="file" id="fotoItem" name="fotoItem" accept="image/*">
+              <input type="file" id="fotoItem" name="fotoItem" accept="image/*" multiple>
               <label for="fotoItem" class="file-upload-label">
-                <span>📷 Clique para tirar/selecionar foto</span>
-                <small>Foto obrigatória (máx. 100MB)</small>
+                <span>📷 Clique para tirar/selecionar fotos</span>
+                <small>Fotos obrigatórias (máx. 100MB cada) - Múltiplas fotos permitidas</small>
               </label>
               <div class="upload-progress"></div>
             </div>
+            <div class="file-list empty" id="fileListItem"></div>
+            <div class="files-summary empty" id="filesSummaryItem">
+              <strong>📷 Fotos do item:</strong> <span class="count">0</span> foto(s) | 
+              <span class="size">0 KB</span>
+            </div>
+            <div class="global-progress" id="globalProgressItem">
+              <div class="global-progress-bar">
+                <div class="global-progress-fill"></div>
+              </div>
+              <div class="global-progress-text">Fazendo upload...</div>
+            </div>
             <div class="github-info">
-              <strong>📷 Foto obrigatória:</strong> Necessária para identificação do item. Upload automático.
+              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura: EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático.
             </div>
           </div>
         </div>
@@ -831,19 +1047,35 @@
       });
     }
 
-    // 🐙 UPLOAD PARA GITHUB
-    async function uploadToGitHub(file, folder, progressCallback) {
+    // 🐙 UPLOAD PARA GITHUB COM NOVO PADRÃO DE NOMENCLATURA
+    async function uploadToGitHub(file, serviceInfo, progressCallback) {
       try {
         // Comprimir imagem se necessário
         const fileToUpload = await compressImage(file);
         
         if (progressCallback) progressCallback(30);
 
-        // Gerar nome único
-        const timestamp = Date.now();
-        const extension = fileToUpload.name.split('.').pop();
-        const fileName = `${timestamp}_${fileToUpload.name.replace(/\.[^/.]+$/, "")}.${extension}`;
-        const filePath = `${folder}/${fileName}`;
+        // Gerar novo padrão: TIPO_DATA_SOLICITANTE_NOMEDOARQUIVO
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, ''); // YYYYMMDD
+        const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
+        const timestamp = `${dateStr}_${timeStr}`;
+        
+        // Limpar nome do solicitante (remover caracteres especiais)
+        const cleanSolicitante = serviceInfo.solicitante
+          .replace(/[^a-zA-Z0-9]/g, '')
+          .slice(0, 20)
+          .toUpperCase();
+        
+        // Limpar nome do arquivo original
+        const originalName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9._-]/g, '');
+        const extension = file.name.split('.').pop();
+        
+        // Novo padrão: TIPO_DATA_SOLICITANTE_NOMEDOARQUIVO
+        const fileName = `${serviceInfo.tipo}_${timestamp}_${cleanSolicitante}_${originalName}.${extension}`;
+        
+        // PASTA ÚNICA PARA TODOS OS ARQUIVOS
+        const filePath = `senai-arquivos/${fileName}`;
 
         if (progressCallback) progressCallback(50);
 
@@ -973,6 +1205,33 @@
       return data;
     }
 
+    // 🏷️ GERAR INFORMAÇÕES PARA UPLOAD
+    function generateServiceInfo(formData) {
+      let tipo = '';
+      
+      if (formData.s === 'espaco_maker') {
+        tipo = 'ESPACO_MAKER';
+      } else if (formData.s === 'servicos') {
+        const ts = formData.ts;
+        if (ts === 'impressao') tipo = 'IMPRESSAO';
+        else if (ts === 'impressao_3d') tipo = 'IMPRESSAO_3D';
+        else if (ts === 'manutencao') tipo = 'MANUTENCAO';
+        else if (ts === 'arte_digital') tipo = 'ARTE_DIGITAL';
+        else if (ts === 'projeto') tipo = 'PROJETO';
+        else tipo = 'SERVICOS';
+      } else if (formData.s === 'emprestimo') {
+        tipo = 'EMPRESTIMO';
+      } else {
+        tipo = 'OUTROS';
+      }
+
+      return {
+        tipo: tipo,
+        solicitante: formData.c || 'USUARIO',
+        email: formData.e || ''
+      };
+    }
+
     // 🚀 ENVIO COM UPLOAD AUTOMÁTICO
     async function submitForm() {
       const submitBtn = document.getElementById('submitBtn');
@@ -989,59 +1248,55 @@
         }
 
         const formData = collectFormData();
+        
+        // Gerar informações de serviço para upload
+        const serviceInfo = generateServiceInfo(formData);
+        
+        // 🔍 DEBUG: Mostrar novo padrão de nomenclatura
+        console.log('🔧 NOVO PADRÃO DE NOMENCLATURA:');
+        console.log(`📂 Pasta: senai-arquivos/`);
+        console.log(`🏷️ Padrão: ${serviceInfo.tipo}_DATA_${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}_ARQUIVO`);
+        console.log(`👤 Solicitante processado: ${serviceInfo.solicitante} → ${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}`);
 
-        // Upload de arquivos para GitHub
+        // Upload de arquivos para GitHub com novo padrão
         const arquivos = [];
         const maxRetries = 3;
 
-        // Determinar pasta baseada no tipo de serviço
-        let folder = 'outros';
-        if (formData.s === 'servicos') {
-          const tipoServico = formData.ts;
-          if (tipoServico === 'impressao') folder = 'impressao';
-          else if (tipoServico === 'impressao_3d') folder = 'impressao-3d';
-          else if (tipoServico === 'manutencao') folder = 'manutencao';
-        } else if (formData.s === 'emprestimo') {
-          folder = 'emprestimo';
-        }
-
-        // Upload baseado no tipo de serviço
+        // Upload baseado no tipo de serviço usando novos gerenciadores
         const uploadPromises = [];
 
         if (formData.s === 'servicos') {
           const tipoServico = formData.ts;
 
           if (tipoServico === 'impressao') {
-            const arquivo = document.getElementById('arquivoImpressao').files[0];
-            if (arquivo) {
-              loadingText.textContent = '⏳ Enviando arquivo...';
-              uploadPromises.push(retryUpload(arquivo, 'impressao', maxRetries));
+            const manager = multiFileManagers['arquivoImpressao'];
+            if (manager && manager.hasFiles()) {
+              loadingText.textContent = '⏳ Enviando arquivos de impressão...';
+              const results = await manager.uploadAll(serviceInfo);
+              arquivos.push(...results);
             }
           } else if (tipoServico === 'impressao_3d') {
-            const arquivo = document.getElementById('arquivoSTL').files[0];
-            if (arquivo) {
-              loadingText.textContent = '⏳ Enviando STL...';
-              uploadPromises.push(retryUpload(arquivo, 'impressao-3d', maxRetries));
+            const manager = multiFileManagers['arquivoSTL'];
+            if (manager && manager.hasFiles()) {
+              loadingText.textContent = '⏳ Enviando arquivos STL...';
+              const results = await manager.uploadAll(serviceInfo);
+              arquivos.push(...results);
             }
           } else if (tipoServico === 'manutencao') {
-            const arquivo = document.getElementById('fotoProblema').files[0];
-            if (arquivo) {
-              loadingText.textContent = '⏳ Enviando foto...';
-              uploadPromises.push(retryUpload(arquivo, 'manutencao', maxRetries));
+            const manager = multiFileManagers['fotoProblema'];
+            if (manager && manager.hasFiles()) {
+              loadingText.textContent = '⏳ Enviando fotos do problema...';
+              const results = await manager.uploadAll(serviceInfo);
+              arquivos.push(...results);
             }
           }
         } else if (formData.s === 'emprestimo') {
-          const arquivo = document.getElementById('fotoItem').files[0];
-          if (arquivo) {
-            loadingText.textContent = '⏳ Enviando foto...';
-            uploadPromises.push(retryUpload(arquivo, 'emprestimo', maxRetries));
+          const manager = multiFileManagers['fotoItem'];
+          if (manager && manager.hasFiles()) {
+            loadingText.textContent = '⏳ Enviando fotos do item...';
+            const results = await manager.uploadAll(serviceInfo);
+            arquivos.push(...results);
           }
-        }
-
-        // Executar uploads
-        if (uploadPromises.length > 0) {
-          const uploadResults = await Promise.all(uploadPromises);
-          arquivos.push(...uploadResults.filter(result => result !== null));
         }
 
         // Adicionar arquivos aos dados
@@ -1084,11 +1339,11 @@
       }
     }
 
-    // 🔄 RETRY PARA UPLOADS
-    async function retryUpload(file, folder, maxRetries) {
+    // 🔄 RETRY PARA UPLOADS COM NOVO PADRÃO
+    async function retryUpload(file, serviceInfo, maxRetries) {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-          return await uploadToGitHub(file, folder);
+          return await uploadToGitHub(file, serviceInfo);
         } catch (error) {
           console.warn(`❌ Tentativa ${attempt}/${maxRetries} falhou:`, error.message);
 
@@ -1145,78 +1400,287 @@
       }, 4000);
     }
 
-    // 📁 CONTROLE DE UPLOAD COM PROGRESS
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-      input.addEventListener('change', async function() {
-        const label = this.nextElementSibling;
-        const progressBar = label.nextElementSibling;
-        const file = this.files[0];
+    // 📁 SISTEMA DE MÚLTIPLOS ARQUIVOS
+    class MultiFileManager {
+      constructor(inputId, listId, summaryId, progressId) {
+        this.inputId = inputId;
+        this.listId = listId;
+        this.summaryId = summaryId;
+        this.progressId = progressId;
+        this.files = new Map();
+        this.uploadQueue = [];
+        this.isUploading = false;
+        
+        this.setupEventListeners();
+      }
 
-        if (file) {
-          // Validar tamanho (100MB máximo GitHub)
-          if (file.size > 100 * 1024 * 1024) {
-            showStatus('📁 Arquivo muito grande! Máximo: 100MB', 'error');
-            this.value = '';
-            return;
+      setupEventListeners() {
+        const input = document.getElementById(this.inputId);
+        if (!input) return;
+
+        input.addEventListener('change', (e) => {
+          this.handleFileSelection(e.target.files);
+        });
+      }
+
+      handleFileSelection(fileList) {
+        const newFiles = Array.from(fileList);
+        
+        // Validar cada arquivo
+        for (const file of newFiles) {
+          if (!this.validateFile(file)) {
+            continue;
           }
 
-          // Validar tipo de arquivo
-          const allowedTypes = {
-            'arquivoImpressao': ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
-            'arquivoSTL': ['.stl'],
-            'fotoProblema': ['.jpg', '.jpeg', '.png', '.gif'],
-            'fotoItem': ['.jpg', '.jpeg', '.png', '.gif']
-          };
-
-          if (allowedTypes[this.id]) {
-            const extension = '.' + file.name.split('.').pop().toLowerCase();
-            if (!allowedTypes[this.id].includes(extension)) {
-              showStatus(`❌ Tipo não permitido! Aceitos: ${allowedTypes[this.id].join(', ')}`, 'error');
-              this.value = '';
-              return;
-            }
-          }
-
-          // Mostrar arquivo selecionado
-          const sizeText = file.size > 1024 * 1024 ? 
-            `${(file.size / (1024 * 1024)).toFixed(1)}MB` : 
-            `${(file.size / 1024).toFixed(1)}KB`;
-
-          label.innerHTML = `
-            <span>✅ ${file.name}</span>
-            <small>${sizeText} - Pronto para envio</small>
-          `;
-          label.classList.add('file-uploaded');
-
-          // Info de compressão para imagens
-          if (file.type.startsWith('image/')) {
-            const info = this.parentNode.parentNode.querySelector('.file-info') || document.createElement('div');
-            info.className = 'file-info';
-            info.innerHTML = `🔄 <strong>Imagem será comprimida automaticamente</strong> para reduzir tamanho e acelerar upload.`;
-
-            if (!this.parentNode.parentNode.querySelector('.file-info')) {
-              this.parentNode.parentNode.appendChild(info);
-            }
-
-            setTimeout(() => info.remove(), 4000);
-          }
-
-          showStatus(`📁 Arquivo selecionado: ${file.name}`, 'success');
-        } else {
-          // Resetar label
-          label.classList.remove('file-uploaded');
-          if (this.id === 'arquivoImpressao') {
-            label.innerHTML = '<span>📄 Clique para selecionar arquivo</span><small>PDF, DOC, JPG, PNG (máx. 100MB)</small>';
-          } else if (this.id === 'arquivoSTL') {
-            label.innerHTML = '<span>📐 Clique para selecionar arquivo STL</span><small>Arquivo STL (máx. 100MB)</small>';
-          } else if (this.id === 'fotoProblema' || this.id === 'fotoItem') {
-            label.innerHTML = '<span>📷 Clique para tirar/selecionar foto</span><small>Foto ou imagem (máx. 100MB)</small>';
+          // Adicionar arquivo à lista (evitar duplicatas)
+          const fileKey = `${file.name}_${file.size}_${file.lastModified}`;
+          if (!this.files.has(fileKey)) {
+            this.files.set(fileKey, {
+              file: file,
+              id: fileKey,
+              status: 'waiting',
+              uploadResult: null,
+              error: null
+            });
           }
         }
 
-        updateProgress();
-      });
-    });
+        this.updateDisplay();
+        this.updateSummary();
+      }
+
+      validateFile(file) {
+        // Validar tamanho (100MB máximo)
+        if (file.size > 100 * 1024 * 1024) {
+          showStatus(`📁 Arquivo "${file.name}" muito grande! Máximo: 100MB`, 'error');
+          return false;
+        }
+
+        // Validar tipo de arquivo baseado no inputId
+        const allowedTypes = {
+          'arquivoImpressao': ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
+          'arquivoSTL': ['.stl'],
+          'fotoProblema': ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'],
+          'fotoItem': ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
+        };
+
+        if (allowedTypes[this.inputId]) {
+          if (this.inputId.includes('foto') || this.inputId.includes('Problema') || this.inputId.includes('Item')) {
+            // Para fotos, verificar mime type
+            if (!allowedTypes[this.inputId].includes(file.type)) {
+              showStatus(`❌ Tipo "${file.name}" não permitido! Aceitos: JPG, PNG, GIF`, 'error');
+              return false;
+            }
+          } else {
+            // Para outros arquivos, verificar extensão
+            const extension = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedTypes[this.inputId].includes(extension)) {
+              showStatus(`❌ Tipo "${file.name}" não permitido! Aceitos: ${allowedTypes[this.inputId].join(', ')}`, 'error');
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+
+      updateDisplay() {
+        const listElement = document.getElementById(this.listId);
+        if (!listElement) return;
+
+        if (this.files.size === 0) {
+          listElement.classList.add('empty');
+          listElement.innerHTML = '';
+          return;
+        }
+
+        listElement.classList.remove('empty');
+        listElement.innerHTML = '';
+
+        this.files.forEach((fileData, fileKey) => {
+          const fileItem = this.createFileItem(fileData);
+          listElement.appendChild(fileItem);
+        });
+      }
+
+      createFileItem(fileData) {
+        const { file, id, status, error } = fileData;
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.setAttribute('data-file-id', id);
+
+        const isImage = file.type.startsWith('image/');
+        const fileIcon = this.getFileIcon(file);
+        const fileSize = this.formatFileSize(file.size);
+
+        // Preview de imagem se for imagem
+        let imagePreview = '';
+        if (isImage) {
+          const imageUrl = URL.createObjectURL(file);
+          imagePreview = `<img src="${imageUrl}" alt="Preview" class="image-preview">`;
+        }
+
+        const statusClass = status === 'waiting' ? 'waiting' : 
+                           status === 'uploading' ? 'uploading' :
+                           status === 'success' ? 'success' : 'error';
+
+        const statusText = status === 'waiting' ? 'Aguardando...' :
+                          status === 'uploading' ? 'Enviando...' :
+                          status === 'success' ? 'Enviado ✓' :
+                          `Erro: ${error}`;
+
+        item.innerHTML = `
+          ${imagePreview}
+          <div class="file-icon">${fileIcon}</div>
+          <div class="file-info">
+            <div class="file-name" title="${file.name}">${file.name}</div>
+            <div class="file-size">${fileSize}</div>
+            <div class="file-status ${statusClass}">${statusText}</div>
+          </div>
+          <div class="file-actions">
+            ${isImage ? `<button type="button" class="file-action-btn preview" onclick="multiFileManagers['${this.inputId}'].previewImage('${id}')" title="Visualizar">👁️</button>` : ''}
+            <button type="button" class="file-action-btn remove" onclick="multiFileManagers['${this.inputId}'].removeFile('${id}')" title="Remover" ${status === 'uploading' ? 'disabled' : ''}>🗑️</button>
+          </div>
+        `;
+
+        return item;
+      }
+
+      getFileIcon(file) {
+        if (file.type.startsWith('image/')) return '📷';
+        if (file.name.toLowerCase().endsWith('.pdf')) return '📄';
+        if (file.name.toLowerCase().endsWith('.stl')) return '📐';
+        if (file.name.toLowerCase().includes('.doc')) return '📝';
+        return '📁';
+      }
+
+      formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+      }
+
+      updateSummary() {
+        const summaryElement = document.getElementById(this.summaryId);
+        if (!summaryElement) return;
+
+        if (this.files.size === 0) {
+          summaryElement.classList.add('empty');
+          return;
+        }
+
+        summaryElement.classList.remove('empty');
+        const totalSize = Array.from(this.files.values()).reduce((sum, fileData) => sum + fileData.file.size, 0);
+        
+        summaryElement.querySelector('.count').textContent = this.files.size;
+        summaryElement.querySelector('.size').textContent = this.formatFileSize(totalSize);
+      }
+
+      removeFile(fileId) {
+        this.files.delete(fileId);
+        this.updateDisplay();
+        this.updateSummary();
+        showStatus('📁 Arquivo removido', 'info');
+      }
+
+      previewImage(fileId) {
+        const fileData = this.files.get(fileId);
+        if (!fileData || !fileData.file.type.startsWith('image/')) return;
+
+        const imageUrl = URL.createObjectURL(fileData.file);
+        window.open(imageUrl, '_blank');
+      }
+
+      async uploadAll(serviceInfo) {
+        if (this.files.size === 0) return [];
+
+        this.isUploading = true;
+        const progressElement = document.getElementById(this.progressId);
+        if (progressElement) {
+          progressElement.classList.add('active');
+        }
+
+        const results = [];
+        let completed = 0;
+        const total = this.files.size;
+
+        for (const [fileId, fileData] of this.files) {
+          try {
+            // Atualizar status do arquivo
+            fileData.status = 'uploading';
+            this.updateDisplay();
+
+            // Fazer upload com novo padrão
+            const result = await retryUpload(fileData.file, serviceInfo, 3);
+            if (result) {
+              fileData.status = 'success';
+              fileData.uploadResult = result;
+              results.push(result);
+            } else {
+              fileData.status = 'error';
+              fileData.error = 'Falha no upload';
+            }
+          } catch (error) {
+            fileData.status = 'error';
+            fileData.error = error.message;
+          }
+
+          completed++;
+          
+          // Atualizar progresso global
+          if (progressElement) {
+            const progressBar = progressElement.querySelector('.global-progress-fill');
+            const progressText = progressElement.querySelector('.global-progress-text');
+            const percentage = (completed / total) * 100;
+            
+            if (progressBar) progressBar.style.width = `${percentage}%`;
+            if (progressText) progressText.textContent = `Enviando... ${completed}/${total}`;
+          }
+
+          this.updateDisplay();
+        }
+
+        // Finalizar progresso
+        if (progressElement) {
+          setTimeout(() => {
+            progressElement.classList.remove('active');
+          }, 1000);
+        }
+
+        this.isUploading = false;
+        return results;
+      }
+
+      getFiles() {
+        return Array.from(this.files.values()).map(fileData => fileData.file);
+      }
+
+      hasFiles() {
+        return this.files.size > 0;
+      }
+
+      clear() {
+        this.files.clear();
+        this.updateDisplay();
+        this.updateSummary();
+      }
+    }
+
+    // 📁 GERENCIADORES DE MÚLTIPLOS ARQUIVOS
+    let multiFileManagers = {};
+
+    // 📁 CONTROLE DE UPLOAD COM PROGRESS (VERSÃO LEGACY PARA COMPATIBILIDADE)
+    // 📁 INICIALIZAR GERENCIADORES DE MÚLTIPLOS ARQUIVOS
+    function initializeMultiFileManagers() {
+      multiFileManagers = {
+        'arquivoImpressao': new MultiFileManager('arquivoImpressao', 'fileListImpressao', 'filesSummaryImpressao', 'globalProgressImpressao'),
+        'arquivoSTL': new MultiFileManager('arquivoSTL', 'fileListSTL', 'filesSummarySTL', 'globalProgressSTL'),
+        'fotoProblema': new MultiFileManager('fotoProblema', 'fileListProblema', 'filesSummaryProblema', 'globalProgressProblema'),
+        'fotoItem': new MultiFileManager('fotoItem', 'fileListItem', 'filesSummaryItem', 'globalProgressItem')
+      };
+    }
 
     // NAVEGAÇÃO DO FORMULÁRIO
     document.getElementById('servico').addEventListener('change', function () {
@@ -1512,8 +1976,8 @@
           showStatus('Por favor, informe a data de devolução.', 'error');
           return false;
         }
-        if (!document.getElementById('fotoItem').files[0]) {
-          showStatus('Por favor, anexe uma foto do item.', 'error');
+        if (!multiFileManagers['fotoItem'] || !multiFileManagers['fotoItem'].hasFiles()) {
+          showStatus('Por favor, anexe pelo menos uma foto do item.', 'error');
           return false;
         }
       }
@@ -1540,16 +2004,10 @@
       document.getElementById('arquivoSTLGroup').style.display = 'block';
       document.getElementById('descricaoPecaGroup').style.display = 'none';
       
-      // Resetar labels de upload
-      document.querySelectorAll('.file-upload-label').forEach(label => {
-        label.classList.remove('file-uploaded');
-        const input = label.previousElementSibling;
-        if (input.id === 'arquivoImpressao') {
-          label.innerHTML = '<span>📄 Clique para selecionar arquivo</span><small>PDF, DOC, JPG, PNG (máx. 100MB)</small>';
-        } else if (input.id === 'arquivoSTL') {
-          label.innerHTML = '<span>📐 Clique para selecionar arquivo STL</span><small>Arquivo STL (máx. 100MB)</small>';
-        } else if (input.id === 'fotoProblema' || input.id === 'fotoItem') {
-          label.innerHTML = '<span>📷 Clique para tirar/selecionar foto</span><small>Foto ou imagem (máx. 100MB)</small>';
+      // Limpar todos os gerenciadores de múltiplos arquivos
+      Object.values(multiFileManagers).forEach(manager => {
+        if (manager) {
+          manager.clear();
         }
       });
       
@@ -1577,13 +2035,14 @@
     document.addEventListener('change', updateProgress);
 
     // Inicialização
+    initializeMultiFileManagers();
     updateProgress();
     usageMonitor.reset();
 
     showStatus('✅ Sistema carregado - GitHub Storage ativo!', 'success');
 
     console.log(`
-🔥 SENAI Lab - GitHub Storage
+🔥 SENAI Lab - GitHub Storage (NOVO PADRÃO)
 📊 Recursos utilizados:
    • Firestore: 20.000 writes/dia (gratuito)
    • GitHub: 1GB storage + 5k requests/hora (gratuito)
@@ -1593,17 +2052,19 @@
    ✅ Upload automático para GitHub
    ✅ Compressão automática de imagens
    ✅ Progress bars visuais
-   ✅ Organização por pastas
+   ✅ NOVO: Pasta única organizacional
+   ✅ NOVO: Nomenclatura padronizada
    ✅ URLs públicas permanentes
    ✅ Retry automático em falhas
 
 🎯 100% Gratuito - Custo: R$ 0,00
 
-📂 Estrutura GitHub:
-   📁 impressao/
-   📁 impressao-3d/
-   📁 manutencao/
-   📁 emprestimo/
+📂 Nova Estrutura GitHub:
+   📁 senai-arquivos/
+      � TIPO_DATA_SOLICITANTE_ARQUIVO
+      📄 Ex: IMPRESSAO_20250715_123000_JOAO_documento.pdf
+      � Ex: EMPRESTIMO_20250715_140500_MARIA_foto.jpg
+      � Ex: MANUTENCAO_20250715_160000_PEDRO_problema.png
 
 🏢 Organização: Senai-BAL
 📁 Repositório: senai-lab-arquivos
