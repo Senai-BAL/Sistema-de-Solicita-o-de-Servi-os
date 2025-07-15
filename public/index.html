@@ -46,6 +46,29 @@
       font-size: 1.1rem;
     }
 
+    /* ===== BANNER DE TESTE ===== */
+    .test-environment-banner {
+      background: linear-gradient(45deg, #ff9800, #f57c00);
+      color: white;
+      padding: 8px 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+      box-shadow: 0 2px 10px rgba(255, 152, 0, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .test-environment-banner .test-icon {
+      font-size: 14px;
+      margin-right: 6px;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 2px 10px rgba(255, 152, 0, 0.3); }
+      50% { box-shadow: 0 2px 20px rgba(255, 152, 0, 0.6); }
+      100% { box-shadow: 0 2px 10px rgba(255, 152, 0, 0.3); }
+    }
+
     .form-content {
       padding: 40px;
     }
@@ -580,6 +603,12 @@
       <p>Formulário de Solicitação de Serviços</p>
     </div>
 
+    <!-- Banner de Ambiente de Teste -->
+    <div class="test-environment-banner" id="testBanner">
+      <span class="test-icon">🧪</span>
+      AMBIENTE DE TESTE ATIVO - Os dados serão salvos separadamente para testes
+    </div>
+
     <div class="form-content" id="formContent">
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
@@ -965,6 +994,20 @@
     // Inicializar Firebase com a configuração externa
     firebase.initializeApp(window.firebaseConfig);
     const db = firebase.firestore();
+    
+    // 🧪 CONFIGURAÇÃO DE AMBIENTE
+    const ENVIRONMENT_CONFIG = {
+      // Altere para 'production' ou 'test' conforme necessário
+      mode: 'test', // 'production' ou 'test'
+      collections: {
+        production: 'solicitacoes',
+        test: 'solicitacoes_test'
+      }
+    };
+    
+    const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
+    console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
+    console.log(`📂 Coleção: ${collectionName}`);
 
     // Ativar cache offline
     db.enablePersistence().catch((err) => {
@@ -1312,7 +1355,7 @@
 
         // Salvar no Firestore
         loadingText.textContent = '⏳ Salvando dados...';
-        const docRef = await db.collection('solicitacoes').add(formData);
+        const docRef = await db.collection(collectionName).add(formData);
 
         console.log('✅ Solicitação enviada com ID:', docRef.id);
 
