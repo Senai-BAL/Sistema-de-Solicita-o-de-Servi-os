@@ -3415,37 +3415,12 @@ Para restaurar, reimporte os dados conforme necessário.
 🎉 NOVO: Botão "🗂️ Backup Completo + Limpar" disponível!
     `);
 
-    // 🎧 TESTE DE FUNCIONALIDADE PDF
-    testPDFLibrary();
-    
-    // 🎯 DRAG AND DROP HANDLERS
+    //  DRAG AND DROP HANDLERS
     function handleDragStart(e) {
       e.dataTransfer.setData('text/plain', e.target.dataset.requestId);
       e.target.classList.add('dragging');
     }
 
-    // 🧪 FUNÇÃO DE TESTE PDF
-    function testPDFLibrary() {
-      try {
-        let jsPDF;
-        if (window.jspdf && window.jspdf.jsPDF) {
-          jsPDF = window.jspdf.jsPDF;
-        } else if (window.jsPDF) {
-          jsPDF = window.jsPDF;
-        } else {
-          throw new Error('jsPDF não encontrado');
-        }
-        
-        const doc = new jsPDF();
-        doc.text('Teste SENAI Lab PDF', 20, 20);
-        doc.save('teste-senai-lab.pdf');
-        ToastManager.show('✅ Biblioteca PDF funcionando corretamente!', 'success');
-        
-      } catch (error) {
-        console.error('Erro no teste PDF:', error);
-        ToastManager.show('❌ Erro no teste PDF: ' + error.message, 'error');
-      }
-    }
   </script>
 </body>
 </html>
