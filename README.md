@@ -49,28 +49,10 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - **Arquivos**: Upload automático para GitHub
 - **Organização**: Sistema de nomenclatura padronizada
 
-## 🆕 Atualizações Recentes (v2.5 - Julho 2025)
+## 🆕 Última Atualização
 
-### 📁 **Sistema de Múltiplos Arquivos**
-- ✅ **Múltiplos uploads** por categoria de serviço
-- ✅ **Interface visual** com lista interativa de arquivos
-- ✅ **Preview de imagens** inline com thumbnails
-- ✅ **Progress bars** individuais e globais
-- ✅ **Validação aprimorada** de tipos e tamanhos
-- ✅ **Gerenciamento visual** com ações (remover, visualizar)
-
-### 🏷️ **Sistema de Nomenclatura Inteligente**
-- ✅ **Padrão padronizado**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
-- ✅ **Pasta organizacional**: Todos os arquivos em `senai-arquivos/`
-- ✅ **Timestamp detalhado**: Data e hora precisos
-- ✅ **Identificação clara**: Nome do solicitante e tipo de serviço
-
-### 🎨 **Melhorias de Interface**
-- ✅ **Cards visuais** para cada arquivo
-- ✅ **Ícones específicos** por tipo de arquivo
-- ✅ **Status em tempo real** do upload
-- ✅ **Resumo inteligente** de arquivos selecionados
-- ✅ **Feedback visual** aprimorado
+**Versão Atual**: v2.5.0 (Sistema de Múltiplos Arquivos)  
+**Detalhes**: Consulte [`docs/releases/RELEASE-v2.5.0.md`](docs/releases/RELEASE-v2.5.0.md) para informações completas
 
 ## � Configuração
 
@@ -136,34 +118,41 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 └── 📸 EMPRESTIMO_20250715_180000_ANA_item.png
 ```
 
-## 🌐 URLs de Acesso
+## 📄 Documentação e Configurações
 
-### 👥 **Para Colaboradores**
-- **URL Principal**: `https://seu-dominio.com/` ou `https://seu-dominio.com/index.html`
-- **Função**: Solicitação de serviços
-- **Acesso**: Público (todos os colaboradores)
+- **Configurações**: [`docs/CONFIG.md`](docs/CONFIG.md) - URLs, credenciais e configurações
+- **Releases**: [`docs/releases/`](docs/releases/) - Histórico detalhado de versões
+- **Changelog**: [`CHANGELOG.md`](CHANGELOG.md) - Histórico de mudanças
 
-### 🔐 **Para Administradores**
-- **URL Admin**: `https://seu-dominio.com/admin.html`
-- **Função**: Gerenciamento de solicitações
-- **Acesso**: Restrito (senha necessária)
-- **Senha Padrão**: `senai@admin2024` (⚠️ **ALTERE IMEDIATAMENTE**)
+> 🧪 **Ambiente de Teste**: Documentação específica disponível apenas na branch `test-environment`
 
 ## 🏗️ Estrutura do Projeto
 
 ```
 senai-lab-webapp/
-├── public/
-│   ├── index.html                       # Aplicação principal (colaboradores)
-│   ├── admin.html                       # Dashboard administrativo
-│   └── shared/                          # Configurações compartilhadas
-│       ├── firebase-config.example.js   # Exemplo configuração Firebase
+├── public/                             # 🌐 Aplicação Web
+│   ├── README.md                       # Documentação da aplicação
+│   ├── index.html                      # Interface principal (colaboradores)
+│   ├── admin.html                      # Dashboard administrativo
+│   └── shared/                         # Configurações compartilhadas
+│       ├── README.md                   # Documentação das configurações
+│       ├── firebase-config.example.js  # Exemplo configuração Firebase
 │       ├── firebase-config.js          # Suas credenciais Firebase (não commitado)
-│       ├── github-config.example.js    # Exemplo configuração GitHub
-│       └── github-config.js           # Suas credenciais GitHub (não commitado)
-├── firebase.json                       # Configuração Firebase
-├── firestore.rules                     # Regras de segurança
-├── firestore.indexes.json              # Índices do Firestore
+│       ├── firebase-service.js         # Serviços Firebase centralizados
+│       ├── github-config.example.js   # Exemplo configuração GitHub
+│       └── github-config.js            # Suas credenciais GitHub (não commitado)
+├── docs/                               # 📚 Documentação
+│   ├── CONFIG.md                       # Configurações centrais
+│   └── releases/                       # Releases específicas
+│       ├── README.md                   # Índice de releases
+│       └── RELEASE-v2.5.0.md          # Release v2.5.0
+├── firebase/                           # 🔥 Configurações Firebase
+│   ├── README.md                       # Documentação Firebase
+│   ├── firestore.rules                 # Regras de segurança
+│   └── firestore.indexes.json          # Índices do Firestore
+├── firebase.json                       # Configuração principal (referencia firebase/)
+├── .firebaserc                         # Projetos Firebase
+├── CHANGELOG.md                        # Histórico de mudanças
 ├── .gitignore                          # Arquivos ignorados pelo Git
 ├── LICENSE                             # Licença MIT
 └── README.md                           # Este arquivo

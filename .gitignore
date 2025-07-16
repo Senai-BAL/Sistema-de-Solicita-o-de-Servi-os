@@ -7,6 +7,13 @@ yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
 
+# Debug files adicionais
+*debug.log
+pglite-debug.log
+
+# Ambiente de teste (apenas na branch test-environment)
+# AMBIENTE-TESTE.md deve ficar apenas na branch de teste
+
 # Firebase cache
 .firebase/
 

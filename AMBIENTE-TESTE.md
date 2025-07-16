@@ -1,5 +1,7 @@
 # 🧪 Ambiente de Teste - SENAI Lab
 
+> ⚠️ **IMPORTANTE**: Este arquivo existe APENAS na branch `test-environment` e NÃO deve ser mergeado para `main`
+
 ## 📋 Configuração do Ambiente de Teste
 
 Este ambiente foi criado para permitir testes seguros de novas funcionalidades sem afetar o sistema de produção.
