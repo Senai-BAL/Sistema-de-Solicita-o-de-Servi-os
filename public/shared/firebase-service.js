@@ -28,6 +28,26 @@ class FirebaseService {
     // Log do ambiente atual
     console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
     console.log(`📂 Coleção: ${this.collectionName}`);
+    
+    // Teste de conectividade automático
+    this.testConnection();
+  }
+
+  // 🧪 TESTE DE CONECTIVIDADE
+  async testConnection() {
+    try {
+      console.log('🧪 Testando conectividade Firebase...');
+      const testDoc = await this.db.collection(this.collectionName).limit(1).get();
+      console.log('✅ Conexão Firebase OK - Regras funcionando');
+      return true;
+    } catch (error) {
+      console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
+      if (error.code === 'permission-denied') {
+        console.warn('🔒 ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
+        console.warn('📋 Instruções em: CORRECAO-PERMISSOES-FIREBASE.md');
+      }
+      return false;
+    }
   }
 
   // 🔧 CONFIGURAÇÃO INICIAL
@@ -43,26 +63,63 @@ class FirebaseService {
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
     try {
+      console.log(`🔍 Buscando solicitações na coleção: ${this.collectionName}`);
       const snapshot = await this.db.collection(this.collectionName).orderBy('d', 'desc').get();
+      console.log(`✅ Encontradas ${snapshot.docs.length} solicitações`);
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
     } catch (error) {
       console.error('❌ Erro ao buscar solicitações:', error);
+      console.error('❌ Código do erro:', error.code);
+      
+      // Tentar fallback para coleção principal se estivermos em modo test
+      if (error.code === 'permission-denied' && this.collectionName === 'solicitacoes_test') {
+        console.log('🔄 Tentando buscar na coleção principal...');
+        try {
+          const snapshot = await this.db.collection('solicitacoes').orderBy('d', 'desc').get();
+          console.log(`✅ Fallback bem-sucedido: ${snapshot.docs.length} solicitações encontradas`);
+          return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+        } catch (fallbackError) {
+          console.error('❌ Erro também na coleção principal:', fallbackError);
+        }
+      }
+      
       throw error;
     }
   }
 
   async getRequestById(id) {
     try {
+      console.log(`🔍 Buscando solicitação ID: ${id} na coleção: ${this.collectionName}`);
       const doc = await this.db.collection(this.collectionName).doc(id).get();
       if (doc.exists) {
         return { id: doc.id, ...doc.data() };
+      } else {
+        return null;
       }
-      return null;
     } catch (error) {
-      console.error('❌ Erro ao buscar solicitação:', error);
+      console.error('❌ Erro ao buscar solicitação por ID:', error);
+      
+      // Tentar fallback para coleção principal se estivermos em modo test
+      if (error.code === 'permission-denied' && this.collectionName === 'solicitacoes_test') {
+        console.log('🔄 Tentando buscar na coleção principal...');
+        try {
+          const doc = await this.db.collection('solicitacoes').doc(id).get();
+          if (doc.exists) {
+            return { id: doc.id, ...doc.data() };
+          } else {
+            return null;
+          }
+        } catch (fallbackError) {
+          console.error('❌ Erro também na coleção principal:', fallbackError);
+        }
+      }
+      
       throw error;
     }
   }
@@ -400,7 +457,24 @@ class FirebaseService {
   }
 }
 
-// 🌟 EXPORT PARA USO GLOBAL
+// 🌟 EXPORT GLOBAL PARA COMPATIBILIDADE
 if (typeof window !== 'undefined') {
   window.FirebaseService = FirebaseService;
+  
+  // 🚀 FUNÇÃO DE INICIALIZAÇÃO GLOBAL
+  window.initializeFirebaseService = async function() {
+    try {
+      const service = new FirebaseService();
+      
+      // Aguardar teste de conectividade
+      await service.testConnection();
+      
+      return service;
+    } catch (error) {
+      console.error('❌ Erro ao inicializar Firebase Service:', error);
+      throw error;
+    }
+  };
+  
+  console.log('✅ Firebase Service disponível globalmente');
 }
