@@ -21,6 +21,27 @@ service cloud.firestore {
       allow update, delete: if true;
     }
     
+    // Coleção de teste para desenvolvimento
+    match /solicitacoes_test/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if true;
+    }
+    
+    // Logs administrativos
+    match /admin_logs/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if true;
+    }
+    
+    // Logs administrativos de teste
+    match /admin_logs_test/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if true;
+    }
+    
     // Bloquear tudo mais
     match /{document=**} {
       allow read, write: if false;
