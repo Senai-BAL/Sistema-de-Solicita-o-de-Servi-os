@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🔧 SENAI Lab - Solicitação de Serviços</title>
-  <meta name="description" content="Sistema de solicitação de serviços do SENAI Lab - Espaço Maker, Impressões, Manutenção e Empréstimos">
-  
+  <meta name="description"
+    content="Sistema de solicitação de serviços do SENAI Lab - Espaço Maker, Impressões, Manutenção e Empréstimos">
+
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
-  
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+
   <!-- Estilos CSS -->
   <link rel="stylesheet" href="assets/css/index.css">
 </head>
@@ -151,7 +154,8 @@
           <div class="form-group">
             <label for="arquivoImpressao">Anexar arquivos de impressão</label>
             <div class="file-upload">
-              <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg" multiple>
+              <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg"
+                multiple>
               <label for="arquivoImpressao" class="file-upload-label">
                 <span>📄 Clique para selecionar arquivos</span>
                 <small>PDF, DOC, JPG, PNG (máx. 100MB cada) - Múltiplos arquivos permitidos</small>
@@ -160,7 +164,7 @@
             </div>
             <div class="file-list empty" id="fileListImpressao"></div>
             <div class="files-summary empty" id="filesSummaryImpressao">
-              <strong>📁 Arquivos selecionados:</strong> <span class="count">0</span> arquivo(s) | 
+              <strong>📁 Arquivos selecionados:</strong> <span class="count">0</span> arquivo(s) |
               <span class="size">0 KB</span>
             </div>
             <div class="global-progress" id="globalProgressImpressao">
@@ -170,7 +174,8 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="github-info">
-              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o GitHub com nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
+              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o GitHub com
+              nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
           </div>
         </div>
@@ -210,7 +215,7 @@
             </div>
             <div class="file-list empty" id="fileListSTL"></div>
             <div class="files-summary empty" id="filesSummarySTL">
-              <strong>📐 Arquivos STL:</strong> <span class="count">0</span> arquivo(s) | 
+              <strong>📐 Arquivos STL:</strong> <span class="count">0</span> arquivo(s) |
               <span class="size">0 KB</span>
             </div>
             <div class="global-progress" id="globalProgressSTL">
@@ -251,7 +256,7 @@
             </div>
             <div class="file-list empty" id="fileListProblema"></div>
             <div class="files-summary empty" id="filesSummaryProblema">
-              <strong>📷 Fotos do problema:</strong> <span class="count">0</span> foto(s) | 
+              <strong>📷 Fotos do problema:</strong> <span class="count">0</span> foto(s) |
               <span class="size">0 KB</span>
             </div>
             <div class="global-progress" id="globalProgressProblema">
@@ -261,7 +266,8 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="github-info">
-              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura: MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático.
+              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura:
+              MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático.
             </div>
           </div>
         </div>
@@ -271,7 +277,8 @@
           <h3 class="section-title">🎨 Arte Digital</h3>
 
           <div class="form-group">
-            <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span class="required">*</span></label>
+            <label for="descricaoArteProjeto">Descreva as ideias e sua utilização <span
+                class="required">*</span></label>
             <textarea id="descricaoArteProjeto" name="descricaoArteProjeto" rows="4"></textarea>
           </div>
         </div>
@@ -308,7 +315,7 @@
             </div>
             <div class="file-list empty" id="fileListItem"></div>
             <div class="files-summary empty" id="filesSummaryItem">
-              <strong>📷 Fotos do item:</strong> <span class="count">0</span> foto(s) | 
+              <strong>📷 Fotos do item:</strong> <span class="count">0</span> foto(s) |
               <span class="size">0 KB</span>
             </div>
             <div class="global-progress" id="globalProgressItem">
@@ -318,7 +325,8 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="github-info">
-              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura: EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático.
+              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura:
+              EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático.
             </div>
           </div>
         </div>
@@ -382,7 +390,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  
+
   <!-- Configurações -->
   <script src="shared/firebase-config.js"></script>
   <script src="shared/github-config.js"></script>
@@ -396,4 +404,5 @@
   <script src="assets/js/navigation.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
+
 </html>
