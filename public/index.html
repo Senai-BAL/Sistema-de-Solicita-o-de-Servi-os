@@ -13,10 +13,11 @@
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
 
   <!-- Estilos CSS -->
+  <link rel="stylesheet" href="assets/css/common.css">
   <link rel="stylesheet" href="assets/css/index.css">
 </head>
 
-<body>
+<body class="index-page">
   <div class="container">
     <div class="header">
       <h1>🔧 SENAI Lab</h1>
@@ -158,10 +159,10 @@
           </div>
 
           <div class="form-group">
-            <label for="arquivoImpressao">Anexar arquivos de impressão</label>
+            <label for="arquivoImpressao">Anexar arquivos de impressão <span class="required">*</span></label>
             <div class="file-upload">
               <input type="file" id="arquivoImpressao" name="arquivoImpressao" accept=".pdf,.doc,.docx,.jpg,.png,.jpeg"
-                multiple>
+                multiple required>
               <label for="arquivoImpressao" class="file-upload-label">
                 <span>📄 Clique para selecionar arquivos</span>
                 <small>PDF, DOC, JPG, PNG (máx. 100MB cada) - Múltiplos arquivos permitidos</small>
@@ -183,6 +184,15 @@
               <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o GitHub com
               nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="observacoesImpressao">Observações especiais (opcional)</label>
+            <textarea id="observacoesImpressao" name="observacoesImpressao" rows="3" 
+              placeholder="Ex: Tipo de papel específico, cuidados especiais, orientações de impressão, etc."></textarea>
+            <small style="color: #666; font-size: 0.9rem;">
+              💡 Informe qualquer cuidado especial, tipo de papel desejado, orientações específicas ou outras observações para sua impressão.
+            </small>
           </div>
         </div>
 
@@ -287,6 +297,33 @@
                 class="required">*</span></label>
             <textarea id="descricaoArteProjeto" name="descricaoArteProjeto" rows="4"></textarea>
           </div>
+
+          <div class="form-group">
+            <label for="referenciaArte">Anexar referências (opcional)</label>
+            <div class="file-upload">
+              <input type="file" id="referenciaArte" name="referenciaArte" accept="image/*,.pdf,.doc,.docx" multiple>
+              <label for="referenciaArte" class="file-upload-label">
+                <span>🖼️ Clique para selecionar referências</span>
+                <small>Imagens, PDF, DOC (máx. 100MB cada) - Múltiplas referências permitidas</small>
+              </label>
+              <div class="upload-progress"></div>
+            </div>
+            <div class="file-list empty" id="fileListReferencia"></div>
+            <div class="files-summary empty" id="filesSummaryReferencia">
+              <strong>🖼️ Referências:</strong> <span class="count">0</span> arquivo(s) |
+              <span class="size">0 KB</span>
+            </div>
+            <div class="global-progress" id="globalProgressReferencia">
+              <div class="global-progress-bar">
+                <div class="global-progress-fill"></div>
+              </div>
+              <div class="global-progress-text">Fazendo upload...</div>
+            </div>
+            <div class="github-info">
+              <strong>🖼️ Referências visuais:</strong> Envie imagens, designs ou documentos que possam servir de referência para o projeto.
+            </div>
+          </div>
+
         </div>
 
         <!-- Seção Empréstimo -->
@@ -334,6 +371,15 @@
               <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura:
               EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático.
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="finalidadeEmprestimo">Finalidade do empréstimo (opcional)</label>
+            <textarea id="finalidadeEmprestimo" name="finalidadeEmprestimo" rows="3" 
+              placeholder="Ex: Para qual projeto será usado, duração estimada de uso, cuidados especiais, etc."></textarea>
+            <small style="color: #666; font-size: 0.9rem;">
+              💡 Explique para que será usado o item, isso nos ajuda a entender melhor a necessidade e oferecer suporte adequado.
+            </small>
           </div>
         </div>
 
