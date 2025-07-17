@@ -280,6 +280,7 @@ function initializeMultiFileManagers() {
     'arquivoImpressao': new MultiFileManager('arquivoImpressao', 'fileListImpressao', 'filesSummaryImpressao', 'globalProgressImpressao'),
     'arquivoSTL': new MultiFileManager('arquivoSTL', 'fileListSTL', 'filesSummarySTL', 'globalProgressSTL'),
     'fotoProblema': new MultiFileManager('fotoProblema', 'fileListProblema', 'filesSummaryProblema', 'globalProgressProblema'),
+    'referenciaArte': new MultiFileManager('referenciaArte', 'fileListReferencia', 'filesSummaryReferencia', 'globalProgressReferencia'),
     'fotoItem': new MultiFileManager('fotoItem', 'fileListItem', 'filesSummaryItem', 'globalProgressItem')
   };
 }

@@ -177,28 +177,53 @@ function setupWhatsAppMask() {
   });
 }
 
+// Função para inicializar estado dos campos
+function initializeFieldStates() {
+  // Desabilitar todos os campos obrigatórios de seções ocultas no início
+  hideAllSections();
+  updateProgress();
+}
+
+// Chamar a inicialização quando a página carrega
+document.addEventListener('DOMContentLoaded', initializeFieldStates);
+
 function hideAllSections() {
   document.querySelectorAll('.service-section').forEach(section => {
     section.classList.remove('active');
+    // Desabilitar campos obrigatórios em seções ocultas
+    const requiredFields = section.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+      field.disabled = true;
+    });
   });
 }
 
 function showSection(sectionId) {
-  document.getElementById(sectionId).classList.add('active');
+  const section = document.getElementById(sectionId);
+  section.classList.add('active');
+  // Habilitar campos obrigatórios na seção ativa
+  const requiredFields = section.querySelectorAll('[required]');
+  requiredFields.forEach(field => {
+    field.disabled = false;
+  });
 }
 
 function updateProgress() {
   const form = document.getElementById('senaiForm');
   const allInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
   
-  // Filtrar apenas campos visíveis
+  // Filtrar apenas campos visíveis e habilitados
   const visibleInputs = Array.from(allInputs).filter(input => {
     const parent = input.closest('.form-group, .service-section');
-    return parent && window.getComputedStyle(parent).display !== 'none';
+    return parent && window.getComputedStyle(parent).display !== 'none' && !input.disabled;
   });
   
   const filledInputs = visibleInputs.filter(input => {
-    if (input.type === 'checkbox' || input.type === 'file') return true;
+    if (input.type === 'checkbox') return true;
+    if (input.type === 'file') {
+      // Para campos de arquivo, verificar se há arquivos selecionados
+      return input.files && input.files.length > 0;
+    }
     return input.value.trim() !== '';
   });
 

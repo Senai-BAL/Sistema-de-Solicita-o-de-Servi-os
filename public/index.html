@@ -249,6 +249,15 @@
             <label for="descricaoPeca">Descreva a peça <span class="required">*</span></label>
             <textarea id="descricaoPeca" name="descricaoPeca" rows="4"></textarea>
           </div>
+
+          <div class="form-group">
+            <label for="observacoes3d">Observações especiais (opcional)</label>
+            <textarea id="observacoes3d" name="observacoes3d" rows="3" 
+              placeholder="Ex: Cores desejadas, acabamento especial, urgência, orientações específicas, etc."></textarea>
+            <small style="color: #666; font-size: 0.9rem;">
+              💡 Informe qualquer cuidado especial, cor desejada, acabamento específico ou outras observações para sua impressão 3D.
+            </small>
+          </div>
         </div>
 
         <!-- Seção Manutenção -->
@@ -349,7 +358,7 @@
           <div class="form-group">
             <label for="fotoItem">Fotos do Item <span class="required">*</span></label>
             <div class="file-upload">
-              <input type="file" id="fotoItem" name="fotoItem" accept="image/*" multiple>
+              <input type="file" id="fotoItem" name="fotoItem" accept="image/*" multiple required>
               <label for="fotoItem" class="file-upload-label">
                 <span>📷 Clique para tirar/selecionar fotos</span>
                 <small>Fotos obrigatórias (máx. 100MB cada) - Múltiplas fotos permitidas</small>

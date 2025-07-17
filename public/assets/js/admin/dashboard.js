@@ -291,27 +291,341 @@ async function handleDrop(e, newStatus) {
     }
 }
 
-// 🔄 FUNÇÕES DE INTERAÇÃO
-async function updateStatus(requestId, newStatus) {
-    if (newStatus) {
-        await DashboardManager.updateStatus(requestId, newStatus);
+// 📋 MODAL HÍBRIDO - FUNÇÕES DE VISUALIZAÇÃO
+function viewDetails(requestId) {
+    const request = currentRequests.find(r => r.id === requestId);
+    if (!request) {
+        console.error('Solicitação não encontrada:', requestId);
+        ToastManager.show('Solicitação não encontrada!', 'error');
+        return;
+    }
+
+    // Preencher cabeçalho do modal
+    document.getElementById('modalSubtitle').textContent = `Solicitação #${requestId.substr(0, 8)}`;
+    document.getElementById('modalDate').textContent = formatDate(request.d);
+
+    // Preencher informações básicas
+    const infoGrid = document.getElementById('modalInfoGrid');
+    infoGrid.innerHTML = `
+        <div class="info-item">
+            <div class="info-label">Colaborador</div>
+            <div class="info-value">${request.c}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Email</div>
+            <div class="info-value">${request.e}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">WhatsApp</div>
+            <div class="info-value">${request.w || 'Não informado'}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Data da Solicitação</div>
+            <div class="info-value">${formatDate(request.d)}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Status</div>
+            <div class="info-value">${getStatusBadge(request.admin?.status || 'pendente')}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Tipo de Serviço</div>
+            <div class="info-value">${getServiceName(request.s, request.ts)}</div>
+        </div>
+        ${request.admin?.prioridade ? `
+            <div class="info-item">
+                <div class="info-label">Prioridade</div>
+                <div class="info-value">
+                    <span class="priority-indicator priority-${request.admin.prioridade}">
+                        ${request.admin.prioridade.toUpperCase()}
+                    </span>
+                </div>
+            </div>
+        ` : ''}
+        ${request.admin?.ultimaAtualizacao ? `
+            <div class="info-item">
+                <div class="info-label">Última Atualização</div>
+                <div class="info-value">${formatDate(request.admin.ultimaAtualizacao)}</div>
+            </div>
+        ` : ''}
+    `;
+
+    // Preencher Detalhes da Solicitação
+    const requestDetails = formatRequestDetailsStructured(request);
+    const requestGrid = document.getElementById('modalRequestGrid');
+    requestGrid.innerHTML = requestDetails.map(detail => {
+        if (detail.isLong) {
+            return `
+                <div class="info-item full-width">
+                    <div class="info-label">${detail.label}</div>
+                    <div class="info-value${detail.isCode ? ' code-block' : ''}">${detail.value}</div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="info-item">
+                    <div class="info-label">${detail.label}</div>
+                    <div class="info-value">${detail.value}</div>
+                </div>
+            `;
+        }
+    }).join('');
+
+    // Preencher Arquivos
+    const fileList = document.getElementById('modalFileList');
+    if (request.arq && request.arq.length > 0) {
+        fileList.innerHTML = request.arq.map(arquivo => `
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-info">
+                    <div class="file-name">${arquivo.n}</div>
+                    <div class="file-meta">${(arquivo.s / 1024).toFixed(1)} KB • ${arquivo.t}</div>
+                </div>
+                <div class="file-actions">
+                    <a href="${arquivo.u}" target="_blank" class="file-action-btn">
+                        📥 Download
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        fileList.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">Nenhum arquivo anexado</div>';
+    }
+
+    // Preencher Timeline
+    populateTimeline(request);
+
+    // Preencher Ações
+    populateActions(request);
+
+    // Preencher Comentários
+    populateComments(request);
+
+    // Mostrar modal
+    openModal('detailsModal');
+}
+
+// ⏱️ FUNÇÃO PARA POPULAR A TIMELINE
+function populateTimeline(request) {
+    const timeline = document.getElementById('modalTimeline');
+    if (!timeline) return;
+    
+    let timelineItems = [];
+    
+    // Criação da solicitação
+    timelineItems.push({
+        timestamp: request.d || Date.now(),
+        title: 'Solicitação Criada',
+        description: `Solicitação de ${getServiceName(request.s, request.ts)} foi criada por ${request.c || 'Usuário'}`,
+        type: 'created'
+    });
+    
+    // Comentários (verificar se existem)
+    if (request.admin?.comments && Array.isArray(request.admin.comments)) {
+        request.admin.comments.forEach(comment => {
+            timelineItems.push({
+                timestamp: comment.timestamp || Date.now(),
+                title: 'Comentário Adicionado',
+                description: `${comment.autor || 'Administrador'}: ${comment.texto}`,
+                type: 'comment'
+            });
+        });
+    }
+    
+    // Mudanças de status
+    if (request.admin?.status && request.admin.status !== 'pendente') {
+        timelineItems.push({
+            timestamp: request.admin.ultimaAtualizacao || request.d || Date.now(),
+            title: 'Status Atualizado',
+            description: `Status alterado para: ${getStatusText(request.admin.status)}`,
+            type: 'status'
+        });
+    }
+    
+    // Mudanças de prioridade
+    if (request.admin?.priority) {
+        timelineItems.push({
+            timestamp: request.admin.ultimaAtualizacao || request.d || Date.now(),
+            title: 'Prioridade Definida',
+            description: `Prioridade definida como: ${getPriorityText(request.admin.priority)}`,
+            type: 'priority'
+        });
+    }
+    
+    // Ordenar por timestamp
+    timelineItems.sort((a, b) => a.timestamp - b.timestamp);
+    
+    // Se não há itens, mostrar mensagem
+    if (timelineItems.length === 0) {
+        timeline.innerHTML = `
+            <div class="timeline-empty">
+                <div class="timeline-empty-icon">📋</div>
+                <div class="timeline-empty-text">Nenhum evento registrado ainda</div>
+            </div>
+        `;
+        return;
+    }
+    
+    timeline.innerHTML = timelineItems.map(item => {
+        const icon = item.type === 'created' ? '📋' : 
+                    item.type === 'comment' ? '💬' : 
+                    item.type === 'status' ? '🔄' : 
+                    item.type === 'priority' ? '🎯' : '📝';
+        
+        return `
+            <div class="timeline-item">
+                <div class="timeline-marker">${icon}</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">${item.title}</div>
+                    <div class="timeline-description">${item.description}</div>
+                    <div class="timeline-time">${formatDate(item.timestamp)}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Função auxiliar para texto do status
+function getStatusText(status) {
+    switch(status) {
+        case 'pendente': return '⏳ Pendente';
+        case 'em_andamento': return '🔄 Em Andamento';
+        case 'concluido': return '✅ Concluído';
+        case 'cancelado': return '❌ Cancelado';
+        default: return '⏳ Pendente';
     }
 }
 
-async function setPriority(requestId, priority) {
-    if (priority) {
-        await DashboardManager.setPriority(requestId, priority);
+// ⚡ FUNÇÃO PARA POPULAR AS AÇÕES
+function populateActions(request) {
+    const actions = document.getElementById('modalActions');
+    if (!actions) return;
+    
+    const status = request.admin?.status || 'pendente';
+    const priority = request.admin?.priority || 'media';
+    
+    let actionCards = '';
+    
+    // Card de Status
+    actionCards += `
+        <div class="action-card">
+            <div class="card-title">🔄 Status</div>
+            <div class="card-buttons">
+    `;
+    
+    if (status === 'pendente') {
+        actionCards += `
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'em_andamento')">
+                🔄 Iniciar
+            </button>
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')">
+                ❌ Cancelar
+            </button>
+        `;
+    } else if (status === 'em_andamento') {
+        actionCards += `
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'concluido')">
+                ✅ Concluir
+            </button>
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')">
+                ❌ Cancelar
+            </button>
+        `;
+    } else if (status === 'concluido') {
+        actionCards += `
+            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'em_andamento')">
+                🔄 Reabrir
+            </button>
+        `;
+    } else if (status === 'cancelado') {
+        actionCards += `
+            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'pendente')">
+                🔄 Reativar
+            </button>
+        `;
+    }
+    
+    actionCards += `
+            </div>
+        </div>
+    `;
+    
+    // Card de Prioridade com visual melhorado
+    actionCards += `
+        <div class="action-card">
+            <div class="card-title">🎯 Prioridade</div>
+            <div class="priority-current">
+                <span class="priority-label">Atual:</span>
+                <span class="priority-badge priority-${priority}">${getPriorityText(priority)}</span>
+            </div>
+            <div class="card-buttons priority-buttons">
+                <button class="btn-action priority-high ${priority === 'alta' ? 'active' : ''}" onclick="setPriority('${request.id}', 'alta')">
+                    🔴 Alta
+                </button>
+                <button class="btn-action priority-medium ${priority === 'media' ? 'active' : ''}" onclick="setPriority('${request.id}', 'media')">
+                    🟡 Média
+                </button>
+                <button class="btn-action priority-low ${priority === 'baixa' ? 'active' : ''}" onclick="setPriority('${request.id}', 'baixa')">
+                    🟢 Baixa
+                </button>
+            </div>
+        </div>
+    `;
+    
+    actions.innerHTML = actionCards;
+}
+
+// Função auxiliar para texto da prioridade
+function getPriorityText(priority) {
+    switch(priority) {
+        case 'alta': return '🔴 Alta';
+        case 'media': return '🟡 Média';
+        case 'baixa': return '🟢 Baixa';
+        default: return '🟡 Média';
     }
 }
 
-function addComment(requestId) {
-    currentRequestId = requestId;
-    openModal('commentModal');
-    document.getElementById('commentText').focus();
+// ⚡ FUNÇÃO PARA POPULAR OS COMENTÁRIOS
+function populateComments(request) {
+    const comments = document.getElementById('modalComments');
+    if (!comments) return;
+    
+    // Verificar diferentes estruturas de comentários
+    const requestComments = request.admin?.comments || 
+                           request.admin?.comentarios || 
+                           request.comentarios || 
+                           [];
+    
+    if (requestComments.length === 0) {
+        comments.innerHTML = `
+            <div class="no-comments">
+                <div class="no-comments-icon">💬</div>
+                <div class="no-comments-text">Nenhum comentário ainda</div>
+            </div>
+        `;
+        return;
+    }
+    
+    comments.innerHTML = requestComments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <div class="comment-author">${comment.autor || 'Administrador'}</div>
+                <div class="comment-date">${formatDate(comment.timestamp || Date.now())}</div>
+            </div>
+            <div class="comment-content">${comment.texto || comment.text || ''}</div>
+        </div>
+    `).join('');
 }
 
-async function submitComment() {
-    const comment = document.getElementById('commentText').value.trim();
+// Função modificada para adicionar comentário da modal
+function addCommentFromModal() {
+    const commentText = document.getElementById('newComment').value.trim();
+    if (!commentText || !currentRequestId) return;
+    
+    submitCommentText(commentText);
+}
+
+// Função para submeter comentário
+async function submitCommentText(comment) {
     if (!comment || !currentRequestId) return;
 
     try {
@@ -325,9 +639,12 @@ async function submitComment() {
 
         if (success) {
             ToastManager.show('Comentário adicionado com sucesso!', 'success');
-            document.getElementById('commentText').value = '';
-            closeModal('commentModal');
-            await loadDashboard();
+            document.getElementById('newComment').value = '';
+            // Recarregar comentários na aba
+            const request = await firebaseService.getRequestById(currentRequestId);
+            if (request) {
+                populateComments(request);
+            }
         }
 
         LoadingManager.hide();
@@ -337,75 +654,28 @@ async function submitComment() {
     }
 }
 
-function viewDetails(requestId) {
-    const request = currentRequests.find(r => r.id === requestId);
-    if (!request) {
-        console.error('Solicitação não encontrada:', requestId);
-        ToastManager.show('Solicitação não encontrada!', 'error');
-        return;
+// 🔄 FUNÇÕES DE INTERAÇÃO
+async function updateStatus(requestId, newStatus) {
+    if (newStatus) {
+        await DashboardManager.updateStatus(requestId, newStatus);
     }
+}
 
-    const modal = document.getElementById('detailsModal');
-    const content = document.getElementById('modalContent');
-
-    if (!modal || !content) {
-        console.error('Elementos do modal não encontrados');
-        ToastManager.show('Erro ao abrir detalhes!', 'error');
-        return;
+async function setPriority(requestId, priority) {
+    if (priority) {
+        await DashboardManager.setPriority(requestId, priority);
     }
+}
 
-    content.innerHTML = `
-        <h3 style="color: #1e3c72; margin-bottom: 20px;">
-            ${getServiceName(request.s, request.ts)} - ${request.c}
-        </h3>
-        
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h4>📋 Informações Básicas</h4>
-            <p><strong>Colaborador:</strong> ${request.c}</p>
-            <p><strong>Email:</strong> ${request.e}</p>
-            <p><strong>WhatsApp:</strong> ${request.w || 'N/A'}</p>
-            <p><strong>Data:</strong> ${formatDate(request.d)}</p>
-            <p><strong>Status:</strong> ${getStatusBadge(request.admin?.status || 'pendente')}</p>
-            ${request.admin?.prioridade ? `<p><strong>Prioridade:</strong> <span class="priority-${request.admin.prioridade}">${request.admin.prioridade.toUpperCase()}</span></p>` : ''}
-        </div>
-
-        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h4>📝 Detalhes da Solicitação</h4>
-            ${formatRequestDetails(request)}
-        </div>
-
-        ${request.arq && request.arq.length > 0 ? `
-            <div style="background: #f0fff0; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <h4>📎 Arquivos Anexos</h4>
-                ${request.arq.map(arquivo => `
-                    <div style="margin: 10px 0; padding: 10px; background: white; border-radius: 4px; border: 1px solid #ddd;">
-                        <a href="${arquivo.u}" target="_blank" style="text-decoration: none; color: #1976d2; font-weight: bold;">
-                            📄 ${arquivo.n}
-                        </a>
-                        <p style="font-size: 0.8rem; color: #666; margin: 5px 0 0 0;">
-                            Tamanho: ${(arquivo.s / 1024).toFixed(1)} KB | Tipo: ${arquivo.t}
-                        </p>
-                    </div>
-                `).join('')}
-            </div>
-        ` : ''}
-
-        ${request.admin?.comentarios && request.admin.comentarios.length > 0 ? `
-            <div style="background: #fff8e1; padding: 15px; border-radius: 8px;">
-                <h4>💬 Comentários Administrativos</h4>
-                ${request.admin.comentarios.map(comment => `
-                    <div style="background: white; padding: 12px; margin: 10px 0; border-radius: 4px; border-left: 4px solid #2196f3;">
-                        <div style="font-size: 0.9rem; color: #555; margin-bottom: 8px;">
-                            <strong>${comment.autor}</strong> - ${formatDate(comment.timestamp)}
-                        </div>
-                        <div style="color: #333;">${comment.texto}</div>
-                    </div>
-                `).join('')}
-            </div>
-        ` : ''}
-    `;
-
-    openModal('detailsModal');
+// 🔄 SISTEMA DE TABS
+function switchTab(tabName) {
+    // Remover classes ativas
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    // Adicionar classes ativas
+    document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(`${tabName}-tab`).classList.add('active');
 }
 
 console.log('📋 Admin Dashboard - Funções do dashboard carregadas');
