@@ -94,7 +94,7 @@ async function renderRequestsList(requests) {
     const container = document.getElementById('requestsList');
 
     if (requests.length === 0) {
-        container.innerHTML = '<div class="loading"><p>Nenhuma solicitação encontrada</p></div>';
+        container.innerHTML = '<div class="empty-state"><p>Nenhuma solicitação encontrada</p></div>';
         return;
     }
 
@@ -253,8 +253,12 @@ function renderKanbanBoard(requests) {
           `;
 
             // Drag and Drop events
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
+            if (typeof handleDragStart === 'function') {
+                card.addEventListener('dragstart', handleDragStart);
+            }
+            if (typeof handleDragEnd === 'function') {
+                card.addEventListener('dragend', handleDragEnd);
+            }
 
             column.appendChild(card);
         });
@@ -335,10 +339,20 @@ async function submitComment() {
 
 function viewDetails(requestId) {
     const request = currentRequests.find(r => r.id === requestId);
-    if (!request) return;
+    if (!request) {
+        console.error('Solicitação não encontrada:', requestId);
+        ToastManager.show('Solicitação não encontrada!', 'error');
+        return;
+    }
 
     const modal = document.getElementById('detailsModal');
-    const content = document.getElementById('detailsContent');
+    const content = document.getElementById('modalContent');
+
+    if (!modal || !content) {
+        console.error('Elementos do modal não encontrados');
+        ToastManager.show('Erro ao abrir detalhes!', 'error');
+        return;
+    }
 
     content.innerHTML = `
         <h3 style="color: #1e3c72; margin-bottom: 20px;">
@@ -392,11 +406,6 @@ function viewDetails(requestId) {
     `;
 
     openModal('detailsModal');
-}
-
-function formatRequestDetails(request) {
-    // Esta função será expandida no arquivo utils.js
-    return '<p>Detalhes da solicitação...</p>';
 }
 
 console.log('📋 Admin Dashboard - Funções do dashboard carregadas');
