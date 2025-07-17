@@ -122,7 +122,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 - **Configurações**: [`docs/CONFIG.md`](docs/CONFIG.md) - URLs, credenciais e configurações
 - **Releases**: [`docs/releases/`](docs/releases/) - Histórico detalhado de versões
-- **Changelog**: [`CHANGELOG.md`](CHANGELOG.md) - Histórico de mudanças
+- **Changelog Resumido**: [`CHANGELOG.md`](CHANGELOG.md) - Principais marcos e mudanças
+- **Changelog Completo**: [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md) - Histórico completo desde v1.0.0
 
 > 🧪 **Ambiente de Teste**: Documentação específica disponível apenas na branch `test-environment`
 
