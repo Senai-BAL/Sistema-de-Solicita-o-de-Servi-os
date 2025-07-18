@@ -36,7 +36,6 @@
         <div class="form-group">
           <label for="adminUsername">👤 Usuário</label>
           <input type="text" id="adminUsername" placeholder="Digite seu usuário" required>
-          <small class="input-hint">Ex: presidentinho, dr.chaguinha, rainha.cat...</small>
         </div>
         <div class="form-group">
           <label for="adminPassword">🔐 Senha</label>
@@ -47,19 +46,6 @@
           <span id="loginLoading" style="display: none;">⏳ Verificando...</span>
         </button>
         <div class="error-message" id="loginError"></div>
-        <div class="login-info">
-          <details>
-            <summary>👥 Usuários de Teste</summary>
-            <div class="users-list">
-              <div class="user-item">🏛️ <strong>presidentinho</strong> (Getulio)</div>
-              <div class="user-item">👨‍⚕️ <strong>dr.chaguinha</strong> (Chagas)</div>
-              <div class="user-item">👸 <strong>rainha.cat</strong> (Catarina)</div>
-              <div class="user-item">💻 <strong>brunete.tech</strong> (Bruna)</div>
-              <div class="user-item">🌟 <strong>luy.jedi</strong> (Luy)</div>
-            </div>
-            <small>Senha padrão: Senai@[username]</small>
-          </details>
-        </div>
       </form>
     </div>
   </div>
@@ -80,6 +66,7 @@
             <div class="user-role" id="userRole">Sistema Multiusuário</div>
           </div>
         </div>
+        <button class="btn-audit" onclick="openAuditModal()" title="Ver Auditoria">📊 Logs</button>
         <button class="btn-logout" onclick="logout()">🚪 Sair</button>
       </div>
     </nav>
@@ -244,6 +231,11 @@
             <div class="modal-subtitle" id="modalDate">Data/Hora</div>
           </div>
         </div>
+        <div class="modal-user-info">
+          <span class="modal-user-label">Usuário:</span>
+          <span class="modal-user-avatar" id="modalUserAvatar">👤</span>
+          <span class="modal-user-name" id="modalUserName">Sistema</span>
+        </div>
         <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
       </div>
       <div class="modal-body">
@@ -382,6 +374,79 @@
     </div>
   </div>
 
+  <!-- Modal de Auditoria -->
+  <div class="modal" id="auditModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="header-content">
+          <h3 class="modal-title">📊 Auditoria do Sistema</h3>
+          <div>
+            <div class="modal-subtitle" id="auditSubtitle">Logs de Ações e Acessos</div>
+          </div>
+        </div>
+        <button class="close-btn" onclick="closeModal('auditModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tab-navigation">
+          <button class="tab-button active" onclick="switchAuditTab('actions')">
+            📋 Ações dos Usuários
+          </button>
+          <button class="tab-button" onclick="switchAuditTab('access')">
+            🔐 Logs de Acesso
+          </button>
+          <button class="tab-button" onclick="switchAuditTab('stats')">
+            📊 Estatísticas
+          </button>
+        </div>
+        
+        <!-- Tab Content 1 - Ações -->
+        <div id="actions-audit-tab" class="tab-content active">
+          <div class="audit-info-banner">
+            📊 Exibindo os últimos 20 registros de ações (máximo de 50 salvos)
+          </div>
+          <div class="audit-filters">
+            <div class="filter-group">
+              <label>Filtrar por usuário:</label>
+              <select id="auditUserFilter" onchange="filterAuditLogs()">
+                <option value="">Todos os usuários</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Filtrar por ação:</label>
+              <select id="auditActionFilter" onchange="filterAuditLogs()">
+                <option value="">Todas as ações</option>
+                <option value="loadStats">Carregamento de dados</option>
+                <option value="updateStatus">Alteração de status</option>
+                <option value="setPriority">Definição de prioridade</option>
+              </select>
+            </div>
+            <button class="btn-refresh-audit" onclick="refreshAuditLogs()">🔄 Atualizar</button>
+          </div>
+          <div class="audit-logs-container" id="actionLogsContainer">
+            <div class="loading-audit">Carregando logs...</div>
+          </div>
+        </div>
+        
+        <!-- Tab Content 2 - Acessos -->
+        <div id="access-audit-tab" class="tab-content">
+          <div class="audit-info-banner">
+            🔐 Exibindo os últimos 20 registros de acesso (máximo de 50 salvos)
+          </div>
+          <div class="access-logs-container" id="accessLogsContainer">
+            <div class="loading-audit">Carregando logs de acesso...</div>
+          </div>
+        </div>
+        
+        <!-- Tab Content 3 - Estatísticas -->
+        <div id="stats-audit-tab" class="tab-content">
+          <div class="audit-stats-container" id="auditStatsContainer">
+            <div class="loading-audit">Carregando estatísticas...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -408,6 +473,7 @@
   <script src="assets/js/admin/dashboard.js"></script>
   <script src="assets/js/admin/filters.js"></script>
   <script src="assets/js/admin/export.js"></script>
+  <script src="assets/js/admin/audit.js"></script>
   <script src="assets/js/admin/main.js"></script>
 </body>
 

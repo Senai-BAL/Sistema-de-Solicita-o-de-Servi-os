@@ -278,6 +278,15 @@ async function handleDrop(e, newStatus) {
     if (currentStatus !== newStatus) {
         try {
             LoadingManager.show('Atualizando status...');
+            
+            // Registrar ação de auditoria
+            AdminAuth.logUserAction('updateStatus', {
+                description: `Status alterado de "${currentStatus}" para "${newStatus}"`,
+                requestId: requestId,
+                previousStatus: currentStatus,
+                newStatus: newStatus
+            });
+            
             await DashboardManager.updateStatus(requestId, newStatus);
             await loadDashboard();
             LoadingManager.hide();
@@ -304,6 +313,17 @@ function viewDetails(requestId) {
     // Preencher cabeçalho do modal
     document.getElementById('modalSubtitle').textContent = `Solicitação #${requestId.substr(0, 8)}`;
     document.getElementById('modalDate').textContent = formatDate(request.d);
+
+    // Atualizar informações do usuário atual no modal
+    document.getElementById('modalUserAvatar').textContent = AdminAuth.getCurrentUserAvatar();
+    document.getElementById('modalUserName').textContent = AdminAuth.getCurrentUserName();
+
+    // Registrar ação de visualização
+    AdminAuth.logUserAction('viewDetails', {
+        description: `Visualização de detalhes da solicitação`,
+        requestId: requestId,
+        service: getServiceName(request.s, request.ts)
+    });
 
     // Preencher informações básicas
     const infoGrid = document.getElementById('modalInfoGrid');
@@ -600,6 +620,7 @@ function populateTimeline(request) {
     const timeline = document.getElementById('modalTimeline');
     if (!timeline) return;
     
+    const requestId = request.id; // Extrair o ID da solicitação
     const currentStatus = request.admin?.status || 'pendente';
     const createdDate = request.d || Date.now();
     const adminData = request.admin || {};
@@ -615,7 +636,8 @@ function populateTimeline(request) {
             icon: '📋',
             timestamp: statusHistory.created || createdDate,
             completed: true, // Sempre completo
-            description: 'Solicitação enviada pelo colaborador'
+            description: 'Solicitação enviada pelo colaborador',
+            user: `📤 ${request.c}`
         },
         {
             key: 'approved',
@@ -623,15 +645,17 @@ function populateTimeline(request) {
             icon: currentStatus === 'cancelado' ? '❌' : '✅',
             timestamp: statusHistory.approved || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
             completed: ['aprovado', 'em_andamento', 'concluido', 'reaberto', 'cancelado'].includes(currentStatus),
-            description: currentStatus === 'cancelado' ? 'Solicitação cancelada' : 'Aprovada para execução'
+            description: currentStatus === 'cancelado' ? 'Solicitação cancelada' : 'Aprovada para execução',
+            user: AuditManager.getUserForStatusChange(requestId, currentStatus === 'cancelado' ? 'cancelado' : 'aprovado')?.name
         },
         {
             key: 'started',
             title: currentStatus === 'cancelado' ? 'Processo Interrompido' : 'Execução Iniciada',
-            icon: currentStatus === 'cancelado' ? '⚠️' : '�',
+            icon: currentStatus === 'cancelado' ? '⚠️' : '🔧',
             timestamp: statusHistory.processing || statusHistory.started || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
             completed: ['em_andamento', 'concluido', 'reaberto'].includes(currentStatus) || (currentStatus === 'cancelado' && statusHistory.processing),
-            description: currentStatus === 'cancelado' ? 'Execução foi interrompida' : 'Serviço em andamento'
+            description: currentStatus === 'cancelado' ? 'Execução foi interrompida' : 'Serviço em andamento',
+            user: AuditManager.getUserForStatusChange(requestId, currentStatus === 'cancelado' ? 'cancelado' : 'em_andamento')?.name
         },
         {
             key: 'completed',
@@ -639,7 +663,8 @@ function populateTimeline(request) {
             icon: currentStatus === 'reaberto' ? '🔄' : '🎉',
             timestamp: statusHistory.completed || statusHistory.reopened || (currentStatus === 'concluido' ? adminData.data_atualizacao : null),
             completed: currentStatus === 'concluido' || currentStatus === 'reaberto',
-            description: currentStatus === 'reaberto' ? 'Reaberto para nova execução' : 'Serviço finalizado com sucesso'
+            description: currentStatus === 'reaberto' ? 'Reaberto para nova execução' : 'Serviço finalizado com sucesso',
+            user: AuditManager.getUserForStatusChange(requestId, currentStatus)?.name
         }
     ];
     
@@ -685,6 +710,7 @@ function populateTimeline(request) {
                             <div class="timeline-step-title">${state.title}</div>
                             <div class="timeline-step-description" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${state.description}</div>
                             ${showTimestamp ? `<div class="timeline-step-time">${formatDateTime(state.timestamp)}</div>` : ''}
+                            ${state.user ? `<div class="timeline-step-user" style="font-size: 0.75rem; color: var(--primary-blue); margin-top: 4px; font-weight: 500;">👤 ${state.user}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -1098,6 +1124,13 @@ function addCommentFromModal() {
     const commentText = document.getElementById('newComment').value.trim();
     if (!commentText || !currentRequestId) return;
     
+    // Registrar ação de auditoria
+    AdminAuth.logUserAction('addComment', {
+        description: `Comentário adicionado na solicitação`,
+        requestId: currentRequestId,
+        commentPreview: commentText.substring(0, 50) + (commentText.length > 50 ? '...' : '')
+    });
+    
     submitCommentText(commentText);
 }
 
@@ -1106,7 +1139,11 @@ async function submitCommentText(comment) {
     if (!comment || !currentRequestId) return;
 
     try {
-        const success = await firebaseService.addComment(currentRequestId, comment, 'Administrador');
+        // Obter nome do usuário autenticado
+        const userName = AdminAuth.getCurrentUserName();
+        const userAvatar = AdminAuth.getCurrentUserAvatar();
+        
+        const success = await firebaseService.addComment(currentRequestId, comment, `${userAvatar} ${userName}`);
 
         if (success) {
             ToastManager.show('Comentário adicionado com sucesso!', 'success');
@@ -1196,6 +1233,18 @@ async function executeActionWithRefresh(actionFunction, requestId, ...args) {
 
 async function updateStatus(requestId, newStatus) {
     if (newStatus) {
+        // Obter status atual para auditoria
+        const currentRequest = currentRequests.find(r => r.id === requestId);
+        const currentStatus = currentRequest?.admin?.status || 'pendente';
+        
+        // Registrar ação de auditoria
+        AdminAuth.logUserAction('updateStatus', {
+            description: `Status alterado de "${currentStatus}" para "${newStatus}" via modal`,
+            requestId: requestId,
+            previousStatus: currentStatus,
+            newStatus: newStatus
+        });
+        
         await executeActionWithRefresh(
             async (id, status) => await DashboardManager.updateStatus(id, status),
             requestId,
@@ -1206,6 +1255,18 @@ async function updateStatus(requestId, newStatus) {
 
 async function setPriority(requestId, priority) {
     if (priority) {
+        // Obter prioridade atual para auditoria
+        const currentRequest = currentRequests.find(r => r.id === requestId);
+        const currentPriority = currentRequest?.admin?.prioridade || 'normal';
+        
+        // Registrar ação de auditoria
+        AdminAuth.logUserAction('setPriority', {
+            description: `Prioridade alterada de "${currentPriority}" para "${priority}"`,
+            requestId: requestId,
+            previousPriority: currentPriority,
+            newPriority: priority
+        });
+        
         await executeActionWithRefresh(
             async (id, prio) => await DashboardManager.setPriority(id, prio),
             requestId,

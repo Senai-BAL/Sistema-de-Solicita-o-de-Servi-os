@@ -20,6 +20,14 @@ class CompleteBackupManager {
 
         try {
             this.isProcessing = true;
+            
+            // Registrar ação de auditoria
+            AdminAuth.logUserAction('backupData', {
+                description: 'Backup completo iniciado',
+                type: 'complete_backup',
+                timestamp: new Date().toISOString()
+            });
+            
             LoadingManager.show('🚀 Iniciando backup completo...');
 
             // 1. Coletar dados do Firestore
@@ -45,6 +53,14 @@ class CompleteBackupManager {
             LoadingManager.hide();
             ToastManager.show(`🎉 Backup COMPLETO baixado! ${downloadedFiles.length} arquivos incluídos.`, 'success');
 
+            // Registrar conclusão do backup
+            AdminAuth.logUserAction('backupData', {
+                description: `Backup completo finalizado com ${downloadedFiles.length} arquivos`,
+                type: 'complete_backup_finished',
+                fileCount: downloadedFiles.length,
+                requestCount: firestoreData.requests.length
+            });
+
             // 6. Confirmar limpeza total
             this.confirmTotalCleanup(firestoreData.requests.length, downloadedFiles.length);
 
@@ -52,6 +68,13 @@ class CompleteBackupManager {
             console.error('❌ Erro no backup completo:', error);
             LoadingManager.hide();
             ToastManager.show('Erro no backup: ' + error.message, 'error');
+            
+            // Registrar erro no backup
+            AdminAuth.logUserAction('backupData', {
+                description: `Erro no backup: ${error.message}`,
+                type: 'backup_error',
+                error: error.message
+            });
         } finally {
             this.isProcessing = false;
         }

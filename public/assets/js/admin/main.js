@@ -46,7 +46,20 @@ async function loadDashboard() {
             LoadingManager.show('Carregando dados do dashboard...');
         }
 
+        // Registrar ação de carregamento
+        AdminAuth.logUserAction('loadStats', {
+            description: 'Carregamento do dashboard iniciado',
+            timestamp: new Date().toISOString()
+        });
+
         const { stats, requests } = await DashboardManager.loadStats();
+
+        // Registrar ação de auditoria
+        AdminAuth.logUserAction('loadStats', {
+            description: `Dashboard carregado com ${requests.length} solicitações`,
+            requestCount: requests.length,
+            statsLoaded: Object.keys(stats).length
+        });
 
         // Atualizar variáveis globais
         currentRequests = requests;

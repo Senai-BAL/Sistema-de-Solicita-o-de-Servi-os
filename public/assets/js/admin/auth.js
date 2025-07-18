@@ -26,12 +26,12 @@ const ADMIN_USERS = {
     role: 'admin',
     department: 'Gestão'
   },
-  'brunete.tech': {
+  'brunete.designer': {
     name: 'Bruna',
-    passwordHash: '5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b8e', // Hash de 'Senai@brunete.tech'
-    avatar: '💻',
+    passwordHash: '5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b8e', // Hash de 'Senai@brunete.designer'
+    avatar: '🎨',
     role: 'admin',
-    department: 'TI'
+    department: 'Designer'
   },
   'luy.jedi': {
     name: 'Luy',
@@ -160,9 +160,9 @@ class AdminAuth {
     const logs = this.getActionLogs();
     logs.push(logEntry);
     
-    // Manter apenas os últimos 1000 logs
-    if (logs.length > 1000) {
-      logs.splice(0, logs.length - 1000);
+    // Manter apenas os últimos 50 logs
+    if (logs.length > 50) {
+      logs.splice(0, logs.length - 50);
     }
     
     localStorage.setItem('senai_admin_logs', JSON.stringify(logs));
@@ -255,9 +255,9 @@ class AdminAuth {
     const accessLogs = this.getAccessLogs();
     accessLogs.push(accessLog);
     
-    // Manter apenas os últimos 500 logs de acesso
-    if (accessLogs.length > 500) {
-      accessLogs.splice(0, accessLogs.length - 500);
+    // Manter apenas os últimos 50 logs de acesso
+    if (accessLogs.length > 50) {
+      accessLogs.splice(0, accessLogs.length - 50);
     }
     
     localStorage.setItem('senai_access_logs', JSON.stringify(accessLogs));
