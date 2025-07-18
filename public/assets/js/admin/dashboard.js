@@ -38,20 +38,52 @@ function getServiceName(service, subService) {
 
 function getStatusBadge(status) {
     const badges = {
-        'pendente': '<span class="status-badge pendente">⏳ Pendente</span>',
-        'em_andamento': '<span class="status-badge em_andamento">🔄 Em Andamento</span>',
-        'concluido': '<span class="status-badge concluido">✅ Concluído</span>',
-        'cancelado': '<span class="status-badge cancelado">❌ Cancelado</span>'
+        'pendente': '<span class="status-badge status-pendente">⏳ Pendente</span>',
+        'aprovado': '<span class="status-badge status-aprovado">✅ Aprovado</span>',
+        'em_andamento': '<span class="status-badge status-em_andamento">🔄 Em Andamento</span>',
+        'concluido': '<span class="status-badge status-concluido">🎉 Concluído</span>',
+        'cancelado': '<span class="status-badge status-cancelado">❌ Cancelado</span>',
+        'reaberto': '<span class="status-badge status-reaberto">🔄 Reaberto</span>'
     };
 
     return badges[status] || badges['pendente'];
+}
+
+function getServiceIcon(service, subService) {
+    const icons = {
+        'espaco_maker': '🔧',
+        'servicos': {
+            'impressao': '🖨️',
+            'impressao_3d': '🏗️',
+            'manutencao': '🔧',
+            'arte_digital': '🎨',
+            'projeto': '📐'
+        },
+        'emprestimo': '📦'
+    };
+
+    if (service === 'servicos' && subService) {
+        return icons.servicos[subService] || '⚙️';
+    }
+
+    return icons[service] || '📋';
 }
 
 function getPriorityClass(priority) {
     return priority ? `priority-${priority}` : '';
 }
 
+function getPriorityIcon(priority) {
+    const icons = {
+        'alta': '🔴',
+        'media': '🟡',
+        'baixa': '🟢'
+    };
+    return icons[priority] || '';
+}
+
 // 📋 RENDERIZAÇÃO DA LISTA
+/* 🎨 MODELO TABELA RESPONSIVA - Renderização Principal */
 async function renderRequestsList(requests) {
     const container = document.getElementById('requestsList');
 
@@ -60,100 +92,95 @@ async function renderRequestsList(requests) {
         return;
     }
 
-    let html = '';
+    let html = `
+        <div class="table-container">
+            <table class="requests-table">
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Solicitante</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th>Prioridade</th>
+                        <th>Arquivos</th>
+                        <th>Comentários</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
 
     requests.forEach(request => {
         const status = request.admin?.status || 'pendente';
-        const priority = request.admin?.prioridade || '';
+        const priority = request.admin?.prioridade || 'baixa';
         const serviceName = getServiceName(request.s, request.ts);
         const priorityClass = getPriorityClass(priority);
 
         html += `
-          <div class="request-card ${priorityClass}" onclick="viewDetails('${request.id}')">
-            ${priority ? `<div class="priority-indicator priority-${priority}">${priority.toUpperCase()}</div>` : ''}
-            
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-              <div style="flex: 1;">
-                <h3 style="color: #1e3c72; margin-bottom: 8px; font-size: 1.1rem;">
-                  ${serviceName} - ${request.c}
-                </h3>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 5px;">
-                  📧 ${request.e} | 📱 ${request.w || 'N/A'}
-                </p>
-                <p style="color: #888; font-size: 0.8rem;">
-                  📅 ${formatDate(request.d)}
-                </p>
-              </div>
-              <div style="text-align: right;">
-                ${getStatusBadge(status)}
-              </div>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
-              <h4 style="color: #333; font-size: 0.9rem; margin-bottom: 8px;">📋 Detalhes:</h4>
-              <div style="font-size: 0.85rem; color: #555;">
-                ${formatRequestDetails(request)}
-              </div>
-              ${request.arq && request.arq.length > 0 ? `
-                <div style="margin-top: 10px;">
-                  <strong>📎 Arquivos:</strong>
-                  ${request.arq.map(arquivo => `
-                    <a href="${arquivo.u}" target="_blank" style="display: inline-block; margin: 5px 5px 0 0; padding: 4px 8px; background: #e3f2fd; color: #1976d2; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">
-                      📄 ${arquivo.n}
-                    </a>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-
-            <div class="quick-actions" onclick="event.stopPropagation();">
-              <select onchange="updateStatus('${request.id}', this.value)" class="quick-action" style="margin-right: 8px;">
-                <option value="">Status</option>
-                <option value="pendente" ${status === 'pendente' ? 'selected' : ''}>⏳ Pendente</option>
-                <option value="em_andamento" ${status === 'em_andamento' ? 'selected' : ''}>🔄 Em Andamento</option>
-                <option value="concluido" ${status === 'concluido' ? 'selected' : ''}>✅ Concluído</option>
-                <option value="cancelado" ${status === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
-              </select>
-              
-              <select onchange="setPriority('${request.id}', this.value)" class="quick-action">
-                <option value="">Prioridade</option>
-                <option value="alta" ${priority === 'alta' ? 'selected' : ''}>🔴 Alta</option>
-                <option value="media" ${priority === 'media' ? 'selected' : ''}>🟡 Média</option>
-                <option value="baixa" ${priority === 'baixa' ? 'selected' : ''}>🟢 Baixa</option>
-              </select>
-              
-              <button onclick="addComment('${request.id}')" class="quick-action comment">
-                💬 Comentar
-              </button>
-              
-              <button onclick="viewDetails('${request.id}')" class="quick-action details">
-                👁️ Detalhes
-              </button>
-            </div>
-
-            ${request.admin?.comentarios && request.admin.comentarios.length > 0 ? `
-              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
-                <h4 style="color: #333; font-size: 0.9rem; margin-bottom: 10px;">💬 Comentários (${request.admin.comentarios.length}):</h4>
-                ${request.admin.comentarios.slice(-2).map(comment => `
-                  <div style="background: #f0f8ff; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 3px solid #2196f3;">
-                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 5px;">
-                      <strong>${comment.autor}</strong> - ${formatDate(comment.timestamp)}
+            <tr class="table-row ${priorityClass}" onclick="viewDetails('${request.id}')">
+                <!-- Serviço -->
+                <td class="service-cell">
+                    <div class="service-info-table">
+                        <span class="service-icon-table">${getServiceIcon(request.s, request.ts)}</span>
+                        <div class="service-details-table">
+                            <strong>${serviceName}</strong>
+                            <small>#${request.id.substr(0, 8)}</small>
+                        </div>
                     </div>
-                    <div style="font-size: 0.9rem; color: #333;">
-                      ${comment.texto}
+                </td>
+
+                <!-- Solicitante -->
+                <td class="requester-cell">
+                    <div class="requester-info">
+                        <span class="requester-name">${request.c}</span>
+                        <small class="requester-email">${request.e}</small>
                     </div>
-                  </div>
-                `).join('')}
-                ${request.admin.comentarios.length > 2 ? `
-                  <p style="font-size: 0.8rem; color: #666; text-align: center; margin-top: 5px;">
-                    +${request.admin.comentarios.length - 2} comentários mais antigos (clique em "Detalhes" para ver todos)
-                  </p>
-                ` : ''}
-              </div>
-            ` : ''}
-          </div>
+                </td>
+
+                <!-- Data -->
+                <td class="date-cell">
+                    <span class="date-text">${formatDate(request.d)}</span>
+                </td>
+
+                <!-- Status -->
+                <td class="status-cell">
+                    ${getStatusBadge(status)}
+                </td>
+
+                <!-- Prioridade -->
+                <td class="priority-cell">
+                    ${priority ? `
+                        <span class="priority-badge-table priority-${priority}">
+                            ${getPriorityIcon(priority)} ${priority.toUpperCase()}
+                        </span>
+                    ` : '<span class="no-priority">-</span>'}
+                </td>
+
+                <!-- Arquivos -->
+                <td class="files-cell">
+                    ${request.arq?.length ? `
+                        <span class="files-count">
+                            📎 ${request.arq.length} arquivo(s)
+                        </span>
+                    ` : '<span class="no-files">-</span>'}
+                </td>
+
+                <!-- Comentários -->
+                <td class="comments-cell">
+                    ${request.admin?.comentarios?.length ? `
+                        <span class="comments-count">
+                            💬 ${request.admin.comentarios.length}
+                        </span>
+                    ` : '<span class="no-comments">-</span>'}
+                </td>
+            </tr>
         `;
     });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
 
     container.innerHTML = html;
 }
@@ -305,16 +332,14 @@ function viewDetails(requestId) {
             <div class="info-label">Tipo de Serviço</div>
             <div class="info-value">${getServiceName(request.s, request.ts)}</div>
         </div>
-        ${request.admin?.prioridade ? `
-            <div class="info-item">
-                <div class="info-label">Prioridade</div>
-                <div class="info-value">
-                    <span class="priority-indicator priority-${request.admin.prioridade}">
-                        ${request.admin.prioridade.toUpperCase()}
-                    </span>
-                </div>
+        <div class="info-item">
+            <div class="info-label">Prioridade</div>
+            <div class="info-value">
+                <span class="priority-indicator priority-${request.admin?.prioridade || 'baixa'}">
+                    ${getPriorityIcon(request.admin?.prioridade || 'baixa')} ${(request.admin?.prioridade || 'baixa').toUpperCase()}
+                </span>
             </div>
-        ` : ''}
+        </div>
         ${request.admin?.ultimaAtualizacao ? `
             <div class="info-item">
                 <div class="info-label">Última Atualização</div>
@@ -570,53 +595,84 @@ function previewFile(fileUrl, fileName, fileType) {
     }
 }
 
-// ⏱️ FUNÇÃO PARA POPULAR A TIMELINE (ESTILO CORREIOS)
+// ⏱️ FUNÇÃO PARA POPULAR A TIMELINE COM NOVA ESTRUTURA DE STATUS
 function populateTimeline(request) {
     const timeline = document.getElementById('modalTimeline');
     if (!timeline) return;
     
     const currentStatus = request.admin?.status || 'pendente';
     const createdDate = request.d || Date.now();
-    const updatedDate = request.admin?.ultimaAtualizacao || createdDate;
+    const adminData = request.admin || {};
     
-    // Definir os 4 estados da timeline
+    // Buscar datas reais dos logs administrativos com nova estrutura
+    const statusHistory = getStatusHistory(request);
+    
+    // Definir os estados da timeline baseado no fluxo: Pendente → Aprovado → Iniciar → Concluir → Reabrir
     const timelineStates = [
         {
             key: 'created',
-            title: 'Solicitação criada',
+            title: 'Solicitação Criada',
             icon: '📋',
-            timestamp: createdDate,
-            completed: true // Sempre completo
+            timestamp: statusHistory.created || createdDate,
+            completed: true, // Sempre completo
+            description: 'Solicitação enviada pelo colaborador'
         },
         {
-            key: 'pending',
-            title: 'Espera de aprovação',
-            icon: '⏳',
-            timestamp: createdDate,
-            completed: currentStatus !== 'pendente'
+            key: 'approved',
+            title: currentStatus === 'cancelado' ? 'Cancelada' : 'Aprovada',
+            icon: currentStatus === 'cancelado' ? '❌' : '✅',
+            timestamp: statusHistory.approved || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
+            completed: ['aprovado', 'em_andamento', 'concluido', 'reaberto', 'cancelado'].includes(currentStatus),
+            description: currentStatus === 'cancelado' ? 'Solicitação cancelada' : 'Aprovada para execução'
         },
         {
-            key: 'processing',
-            title: currentStatus === 'cancelado' ? 'Cancelado' : 'Em processo',
-            icon: currentStatus === 'cancelado' ? '❌' : '🔄',
-            timestamp: currentStatus === 'em_andamento' || currentStatus === 'cancelado' ? updatedDate : null,
-            completed: currentStatus === 'em_andamento' || currentStatus === 'cancelado' || currentStatus === 'concluido'
+            key: 'started',
+            title: currentStatus === 'cancelado' ? 'Processo Interrompido' : 'Execução Iniciada',
+            icon: currentStatus === 'cancelado' ? '⚠️' : '�',
+            timestamp: statusHistory.processing || statusHistory.started || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
+            completed: ['em_andamento', 'concluido', 'reaberto'].includes(currentStatus) || (currentStatus === 'cancelado' && statusHistory.processing),
+            description: currentStatus === 'cancelado' ? 'Execução foi interrompida' : 'Serviço em andamento'
         },
         {
             key: 'completed',
-            title: 'Concluído',
-            icon: '✅',
-            timestamp: currentStatus === 'concluido' ? updatedDate : null,
-            completed: currentStatus === 'concluido'
+            title: currentStatus === 'reaberto' ? 'Reaberto para Nova Execução' : 'Concluído',
+            icon: currentStatus === 'reaberto' ? '🔄' : '🎉',
+            timestamp: statusHistory.completed || statusHistory.reopened || (currentStatus === 'concluido' ? adminData.data_atualizacao : null),
+            completed: currentStatus === 'concluido' || currentStatus === 'reaberto',
+            description: currentStatus === 'reaberto' ? 'Reaberto para nova execução' : 'Serviço finalizado com sucesso'
         }
     ];
     
-    // Gerar HTML da timeline estilo Correios
+    // Ajustar estados para reaberto
+    if (currentStatus === 'reaberto') {
+        timelineStates.push({
+            key: 'reexecution',
+            title: 'Aguardando Nova Execução',
+            icon: '⏳',
+            timestamp: null,
+            completed: false,
+            description: 'Aguardando início da nova execução'
+        });
+    }
+    
+    // Filtrar estados baseado no status atual
+    let visibleStates = timelineStates;
+    if (currentStatus === 'cancelado') {
+        // Para cancelados, mostrar até onde chegou
+        const cancelIndex = timelineStates.findIndex(state => state.timestamp === statusHistory.cancelled);
+        if (cancelIndex > 0) {
+            visibleStates = timelineStates.slice(0, cancelIndex + 1);
+        } else {
+            visibleStates = timelineStates.slice(0, 2); // Criada + Cancelada
+        }
+    }
+    
+    // Gerar HTML da timeline estilo Correios com dados reais
     timeline.innerHTML = `
         <div class="timeline-correios">
-            ${timelineStates.map((state, index) => {
+            ${visibleStates.map((state, index) => {
                 const isActive = state.completed;
-                const isLast = index === timelineStates.length - 1;
+                const isLast = index === visibleStates.length - 1;
                 const showTimestamp = state.timestamp && isActive;
                 
                 return `
@@ -627,13 +683,137 @@ function populateTimeline(request) {
                         </div>
                         <div class="timeline-step-content">
                             <div class="timeline-step-title">${state.title}</div>
-                            ${showTimestamp ? `<div class="timeline-step-time">${formatDate(state.timestamp)}</div>` : ''}
+                            <div class="timeline-step-description" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${state.description}</div>
+                            ${showTimestamp ? `<div class="timeline-step-time">${formatDateTime(state.timestamp)}</div>` : ''}
                         </div>
                     </div>
                 `;
             }).join('')}
         </div>
     `;
+}
+
+// 📜 FUNÇÃO PARA OBTER HISTÓRICO DE STATUS COM NOVA ESTRUTURA
+function getStatusHistory(request) {
+    const history = {
+        created: request.d,
+        approved: null,
+        processing: null,
+        completed: null,
+        cancelled: null,
+        reopened: null
+    };
+    
+    const adminData = request.admin || {};
+    
+    // PRIORIDADE 1: Usar admin.timestamps se existir (nova estrutura)
+    if (adminData.timestamps) {
+        history.created = adminData.timestamps.created || request.d;
+        history.approved = adminData.timestamps.approved;
+        history.processing = adminData.timestamps.started;
+        history.completed = adminData.timestamps.completed;
+        history.cancelled = adminData.timestamps.cancelled;
+        history.reopened = adminData.timestamps.reopened;
+        return history;
+    }
+    
+    // PRIORIDADE 2: Usar status_history se existir
+    if (adminData.status_history && adminData.status_history.length > 0) {
+        adminData.status_history.forEach(entry => {
+            switch(entry.status) {
+                case 'aprovado':
+                    if (!history.approved) history.approved = entry.timestamp;
+                    break;
+                case 'em_andamento':
+                    if (!history.approved) history.approved = entry.timestamp;
+                    history.processing = entry.timestamp;
+                    break;
+                case 'concluido':
+                    if (!history.approved) history.approved = adminData.data_atualizacao || adminData.ultimaAtualizacao;
+                    if (!history.processing) history.processing = adminData.data_atualizacao || adminData.ultimaAtualizacao;
+                    history.completed = entry.timestamp;
+                    break;
+                case 'cancelado':
+                    history.cancelled = entry.timestamp;
+                    break;
+                case 'reaberto':
+                    history.reopened = entry.timestamp;
+                    // Reset completed/cancelled se foi reaberto
+                    history.completed = null;
+                    history.cancelled = null;
+                    break;
+            }
+        });
+        return history;
+    }
+    
+    // FALLBACK: Usar logs antigos
+    const logs = adminData.logs || [];
+    logs.forEach(log => {
+        if (log.action === 'status_update') {
+            const newStatus = log.details?.new_status;
+            const timestamp = log.timestamp;
+            
+            switch(newStatus) {
+                case 'aprovado':
+                    if (!history.approved) history.approved = timestamp;
+                    break;
+                case 'em_andamento':
+                    if (!history.approved) history.approved = timestamp;
+                    history.processing = timestamp;
+                    break;
+                case 'concluido':
+                    if (!history.approved) history.approved = adminData.data_atualizacao || adminData.ultimaAtualizacao;
+                    if (!history.processing) history.processing = adminData.data_atualizacao || adminData.ultimaAtualizacao;
+                    history.completed = timestamp;
+                    break;
+                case 'cancelado':
+                    history.cancelled = timestamp;
+                    break;
+                case 'reaberto':
+                    history.reopened = timestamp;
+                    break;
+            }
+        }
+    });
+    
+    // Se não houver dados específicos, usar as datas de admin como último fallback
+    if (!history.approved && adminData.data_atualizacao && (adminData.status !== 'pendente')) {
+        history.approved = adminData.data_atualizacao;
+    }
+    
+    return history;
+}
+
+// 🕐 FUNÇÃO PARA FORMATAÇÃO DE DATA E HORA MAIS COMPLETA
+function formatDateTime(timestamp) {
+    if (!timestamp) return '';
+    
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    const timeStr = date.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    if (diffDays === 0) {
+        return `Hoje às ${timeStr}`;
+    } else if (diffDays === 1) {
+        return `Ontem às ${timeStr}`;
+    } else if (diffDays < 7) {
+        return `${diffDays} dias atrás às ${timeStr}`;
+    } else {
+        return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
 }
 
 // Função auxiliar para texto do status
@@ -647,51 +827,76 @@ function getStatusText(status) {
     }
 }
 
-// ⚡ FUNÇÃO PARA POPULAR AS AÇÕES
+// ⚡ FUNÇÃO PARA POPULAR AS AÇÕES COM FLUXO CORRETO
 function populateActions(request) {
     const actions = document.getElementById('modalActions');
     if (!actions) return;
     
     const status = request.admin?.status || 'pendente';
-    const priority = request.admin?.prioridade || 'media';
+    const priority = request.admin?.prioridade || 'baixa';
     
     let actionCards = '';
     
-    // Card de Status
+    // Card de Status com fluxo: Pendente -> Aprovado/Cancelar -> Iniciar/Cancelar -> Concluir/Cancelar -> Reabrir
     actionCards += `
         <div class="action-card">
-            <div class="card-title">🔄 Status</div>
+            <div class="card-title">🔄 Controle de Status</div>
             <div class="card-buttons">
     `;
     
+    // FLUXO CORRETO: Pendente → Aprovado → Iniciar → Concluir → Reabrir
     if (status === 'pendente') {
         actionCards += `
-            <button class="btn-action success" onclick="updateStatus('${request.id}', 'em_andamento')">
-                🔄 Iniciar
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'aprovado')" title="Aprovar solicitação">
+                ✅ Aprovar
             </button>
-            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')">
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')" title="Cancelar solicitação">
+                ❌ Cancelar
+            </button>
+        `;
+    } else if (status === 'aprovado') {
+        actionCards += `
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'em_andamento')" title="Iniciar execução do serviço">
+                🚀 Iniciar
+            </button>
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')" title="Cancelar após aprovação">
                 ❌ Cancelar
             </button>
         `;
     } else if (status === 'em_andamento') {
         actionCards += `
-            <button class="btn-action success" onclick="updateStatus('${request.id}', 'concluido')">
-                ✅ Concluir
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'concluido')" title="Marcar como concluído">
+                🎉 Concluir
             </button>
-            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')">
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')" title="Cancelar execução">
                 ❌ Cancelar
             </button>
         `;
     } else if (status === 'concluido') {
         actionCards += `
-            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'em_andamento')">
+            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'reaberto')" title="Reabrir para nova execução">
                 🔄 Reabrir
             </button>
+            <div style="margin-top: 8px; padding: 8px; background: #e8f5e8; border-radius: 6px; font-size: 12px; color: #2e7d32;">
+                ✅ Serviço concluído com sucesso!
+            </div>
         `;
     } else if (status === 'cancelado') {
         actionCards += `
-            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'pendente')">
+            <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'pendente')" title="Reativar solicitação">
                 🔄 Reativar
+            </button>
+            <div style="margin-top: 8px; padding: 8px; background: #ffebee; border-radius: 6px; font-size: 12px; color: #c62828;">
+                ❌ Solicitação cancelada
+            </div>
+        `;
+    } else if (status === 'reaberto') {
+        actionCards += `
+            <button class="btn-action success" onclick="updateStatus('${request.id}', 'em_andamento')" title="Iniciar nova execução">
+                🚀 Iniciar
+            </button>
+            <button class="btn-action danger" onclick="updateStatus('${request.id}', 'cancelado')" title="Cancelar reexecução">
+                ❌ Cancelar
             </button>
         `;
     }
@@ -704,22 +909,105 @@ function populateActions(request) {
     // Card de Prioridade com visual melhorada
     actionCards += `
         <div class="action-card">
-            <div class="card-title">🎯 Prioridade</div>
+            <div class="card-title">🎯 Definir Prioridade</div>
             <div class="card-buttons priority-buttons">
-                <button class="btn-action priority-high ${priority === 'alta' ? 'active' : ''}" onclick="setPriority('${request.id}', 'alta')">
+                <button class="btn-action priority-high ${priority === 'alta' ? 'active' : ''}" onclick="setPriority('${request.id}', 'alta')" title="Prioridade alta - Urgente">
                     🔴 Alta
                 </button>
-                <button class="btn-action priority-medium ${priority === 'media' ? 'active' : ''}" onclick="setPriority('${request.id}', 'media')">
+                <button class="btn-action priority-medium ${priority === 'media' ? 'active' : ''}" onclick="setPriority('${request.id}', 'media')" title="Prioridade média - Normal">
                     🟡 Média
                 </button>
-                <button class="btn-action priority-low ${priority === 'baixa' ? 'active' : ''}" onclick="setPriority('${request.id}', 'baixa')">
+                <button class="btn-action priority-low ${priority === 'baixa' ? 'active' : ''}" onclick="setPriority('${request.id}', 'baixa')" title="Prioridade baixa - Quando possível">
                     🟢 Baixa
                 </button>
             </div>
         </div>
     `;
+
+    // Card de Informações do Status Atual
+    const statusInfo = getStatusInfo(status);
+    actionCards += `
+        <div class="action-card">
+            <div class="card-title">📊 Status Atual</div>
+            <div style="padding: 12px; background: ${statusInfo.bgColor}; border-radius: 8px; border-left: 4px solid ${statusInfo.borderColor};">
+                <div style="font-weight: 600; color: ${statusInfo.textColor}; margin-bottom: 4px;">
+                    ${statusInfo.icon} ${statusInfo.title}
+                </div>
+                <div style="font-size: 12px; color: ${statusInfo.descColor};">
+                    ${statusInfo.description}
+                </div>
+                ${request.admin?.data_atualizacao ? `
+                    <div style="font-size: 11px; color: #666; margin-top: 6px;">
+                        Atualizado: ${formatDateTime(request.admin.data_atualizacao)}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
     
     actions.innerHTML = actionCards;
+}
+
+// 📊 FUNÇÃO PARA OBTER INFORMAÇÕES DO STATUS COM NOVOS STATUS
+function getStatusInfo(status) {
+    const statusMap = {
+        'pendente': {
+            icon: '⏳',
+            title: 'Aguardando Aprovação',
+            description: 'Solicitação precisa ser analisada e aprovada',
+            bgColor: '#fff8e1',
+            borderColor: '#ff9800',
+            textColor: '#e65100',
+            descColor: '#bf360c'
+        },
+        'aprovado': {
+            icon: '✅',
+            title: 'Aprovado',
+            description: 'Solicitação aprovada, aguardando início da execução',
+            bgColor: '#e8f8f5',
+            borderColor: '#26a69a',
+            textColor: '#00695c',
+            descColor: '#00796b'
+        },
+        'em_andamento': {
+            icon: '🔄',
+            title: 'Em Execução',
+            description: 'Serviço sendo executado ativamente',
+            bgColor: '#e3f2fd',
+            borderColor: '#2196f3',
+            textColor: '#0d47a1',
+            descColor: '#1565c0'
+        },
+        'concluido': {
+            icon: '🎉',
+            title: 'Concluído',
+            description: 'Serviço finalizado com sucesso',
+            bgColor: '#e8f5e8',
+            borderColor: '#4caf50',
+            textColor: '#2e7d32',
+            descColor: '#388e3c'
+        },
+        'cancelado': {
+            icon: '❌',
+            title: 'Cancelado',
+            description: 'Solicitação foi cancelada',
+            bgColor: '#ffebee',
+            borderColor: '#f44336',
+            textColor: '#c62828',
+            descColor: '#d32f2f'
+        },
+        'reaberto': {
+            icon: '🔄',
+            title: 'Reaberto',
+            description: 'Solicitação reaberta para nova execução',
+            bgColor: '#f3e5f5',
+            borderColor: '#9c27b0',
+            textColor: '#6a1b9a',
+            descColor: '#7b1fa2'
+        }
+    };
+    
+    return statusMap[status] || statusMap['pendente'];
 }
 
 // Função auxiliar para texto da prioridade
@@ -728,7 +1016,7 @@ function getPriorityText(priority) {
         case 'alta': return '🔴 Alta';
         case 'media': return '🟡 Média';
         case 'baixa': return '🟢 Baixa';
-        default: return '🟡 Média';
+        default: return '� Baixa';
     }
 }
 

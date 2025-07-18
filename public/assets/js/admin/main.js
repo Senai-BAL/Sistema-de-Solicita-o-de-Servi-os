@@ -3,7 +3,12 @@
  * Descrição: Carregamento principal, event listeners e inicialização do dashboard
  */
 
-// 🔄 INICIALIZAÇÃO DE VARIÁVEIS GLOBAIS
+// 🔄 INICIALIZAÇÃO     // Auto-refresh a cada 5 minutos se estiver autenticado
+    setInterval(() => {
+        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
+            loadDashboard();
+        }
+    }, 300000); // 5 minutos = 300000msIÁVEIS GLOBAIS
 function initializeGlobalVariables() {
     window.firebaseService = window.firebaseService || null;
     window.currentRequests = window.currentRequests || [];
@@ -199,12 +204,17 @@ document.addEventListener('DOMContentLoaded', function () {
         showLogin();
     }
 
-    // Auto-refresh a cada 30 segundos se estiver autenticado
+    // Auto-refresh a cada 1 minuto se estiver autenticado
     setInterval(() => {
         if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
             loadDashboard();
         }
-    }, 30000);
+    }, 60000);
+
+    // Atualização imediata ao carregar
+    if (AdminAuth.isAuthenticated()) {
+        loadDashboard();
+    }
 
     // Mostrar toast de boas-vindas
     setTimeout(() => {
@@ -256,5 +266,47 @@ console.log(`
 
 // Inicializar variáveis globais
 initializeGlobalVariables();
+
+// 🔄 FUNÇÃO DE ATUALIZAÇÃO MANUAL
+async function refreshDashboard() {
+    const refreshBtn = document.querySelector('.btn-refresh');
+    
+    if (!refreshBtn) return;
+    
+    try {
+        // Adicionar classe de loading
+        refreshBtn.classList.add('updating');
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = '⏳ Atualizando...';
+        
+        // Mostrar loading manager
+        LoadingManager.show('Atualizando dados...');
+        
+        // Aguardar um pouco para UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Carregar dashboard
+        await loadDashboard();
+        
+        // Esconder loading
+        LoadingManager.hide();
+        
+        // Mostrar toast de sucesso
+        ToastManager.show('Dados atualizados com sucesso! 🔄', 'success');
+        
+    } catch (error) {
+        console.error('❌ Erro ao atualizar dashboard:', error);
+        LoadingManager.hide();
+        ToastManager.show('Erro ao atualizar dados', 'error');
+    } finally {
+        // Restaurar botão
+        refreshBtn.classList.remove('updating');
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Atualizar';
+    }
+}
+
+// Tornar função global
+window.refreshDashboard = refreshDashboard;
 
 console.log('🚀 Admin Main - Sistema principal carregado');
