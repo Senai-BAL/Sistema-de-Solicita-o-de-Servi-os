@@ -3,55 +3,17 @@
  * Descrição: Funções principais do dashboard, renderização e interações
  */
 
-// 🔐 SISTEMA DE LOGIN/LOGOUT
-function showDashboard() {
-    document.getElementById('loginContainer').style.display = 'none';
-    document.getElementById('dashboard').classList.add('show');
-
-    // ✨ INICIALIZAR NOTIFICAÇÕES
-    if (!dashboardNotifications) {
-        dashboardNotifications = new DashboardWithNotifications();
-    }
-    dashboardNotifications.onAdminLogin();
-
-    loadDashboard();
-}
-
-function logout() {
-    if (confirm('Tem certeza que deseja sair?')) {
-        // ✨ PARAR NOTIFICAÇÕES
-        if (dashboardNotifications) {
-            dashboardNotifications.onAdminLogout();
-        }
-
-        AdminAuth.logout();
-        ToastManager.show('Logout realizado com sucesso!', 'success');
-        showLogin();
-    }
-}
-
-function showLogin() {
-    document.getElementById('loginContainer').style.display = 'flex';
-    document.getElementById('dashboard').classList.remove('show');
-    document.getElementById('adminPassword').focus();
-}
-
 // 🎨 SISTEMA DE INTERFACE
-function updateStatsDisplay(stats) {
-    document.getElementById('totalRequests').textContent = stats.total || 0;
-    document.getElementById('pendingRequests').textContent = stats.pending || 0;
-    document.getElementById('inProgressRequests').textContent = stats.inProgress || 0;
-    document.getElementById('completedRequests').textContent = stats.completed || 0;
-
-    // Atualizar indicadores de mudança
-    document.getElementById('totalChange').textContent = `+${stats.today || 0} hoje`;
-    document.getElementById('pendingChange').textContent = stats.pending > 5 ? 'Requer atenção' : 'Sob controle';
-    document.getElementById('progressChange').textContent = 'Em processo';
-    document.getElementById('completedChange').textContent = 'Finalizadas';
-}
-
 function formatDate(timestamp) {
-    return new Date(timestamp).toLocaleString('pt-BR');
+    try {
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) {
+            return new Date().toLocaleString('pt-BR');
+        }
+        return date.toLocaleString('pt-BR');
+    } catch (error) {
+        return new Date().toLocaleString('pt-BR');
+    }
 }
 
 function getServiceName(service, subService) {
@@ -287,7 +249,16 @@ async function handleDrop(e, newStatus) {
     const currentStatus = card.dataset.currentStatus;
 
     if (currentStatus !== newStatus) {
-        await DashboardManager.updateStatus(requestId, newStatus);
+        try {
+            LoadingManager.show('Atualizando status...');
+            await DashboardManager.updateStatus(requestId, newStatus);
+            await loadDashboard();
+            LoadingManager.hide();
+            ToastManager.show('Status atualizado com sucesso!', 'success');
+        } catch (error) {
+            LoadingManager.hide();
+            ToastManager.show('Erro ao atualizar status', 'error');
+        }
     }
 }
 
@@ -299,6 +270,9 @@ function viewDetails(requestId) {
         ToastManager.show('Solicitação não encontrada!', 'error');
         return;
     }
+
+    // Armazenar o ID da solicitação atual para uso global
+    currentRequestId = requestId;
 
     // Preencher cabeçalho do modal
     document.getElementById('modalSubtitle').textContent = `Solicitação #${requestId.substr(0, 8)}`;
@@ -375,16 +349,19 @@ function viewDetails(requestId) {
     if (request.arq && request.arq.length > 0) {
         fileList.innerHTML = request.arq.map(arquivo => `
             <div class="file-item">
-                <div class="file-icon">📄</div>
-                <div class="file-info">
-                    <div class="file-name">${arquivo.n}</div>
-                    <div class="file-meta">${(arquivo.s / 1024).toFixed(1)} KB • ${arquivo.t}</div>
-                </div>
-                <div class="file-actions">
-                    <a href="${arquivo.u}" target="_blank" class="file-action-btn">
-                        📥 Download
-                    </a>
-                </div>
+            <div class="file-icon">${getFileIcon(arquivo.n)}</div>
+            <div class="file-info">
+                <div class="file-name">${arquivo.n}</div>
+                <div class="file-meta">${(arquivo.s / 1024).toFixed(1)} KB • ${arquivo.t}</div>
+            </div>
+            <div class="file-actions">
+                <button onclick="previewFile('${arquivo.u}', '${arquivo.n}', '${arquivo.t}')" class="btn-outline btn-sm">
+                👁️ Visualizar
+                </button>
+                <button class="btn-secondary btn-sm" onclick="downloadArquivo('${arquivo.u}', '${arquivo.n}')">
+                📥 Download
+                </button>
+            </div>
             </div>
         `).join('');
     } else {
@@ -404,84 +381,259 @@ function viewDetails(requestId) {
     openModal('detailsModal');
 }
 
-// ⏱️ FUNÇÃO PARA POPULAR A TIMELINE
+// 📁 FUNÇÃO PARA ÍCONES DE ARQUIVO
+function getFileIcon(filename) {
+    const extension = filename.split('.').pop().toLowerCase();
+    
+    const icons = {
+        // Imagens
+        'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'svg': '🖼️', 'webp': '🖼️',
+        // Documentos
+        'pdf': '📄', 'doc': '📝', 'docx': '📝', 'txt': '📝', 'rtf': '📝',
+        // Planilhas
+        'xls': '📊', 'xlsx': '📊', 'csv': '📊',
+        // Apresentações
+        'ppt': '📊', 'pptx': '📊',
+        // Vídeos
+        'mp4': '🎥', 'avi': '🎥', 'mkv': '🎥', 'mov': '🎥', 'wmv': '🎥',
+        // Áudios
+        'mp3': '🎵', 'wav': '🎵', 'flac': '🎵', 'aac': '🎵',
+        // Arquivos
+        'zip': '📦', 'rar': '📦', '7z': '📦', 'tar': '📦',
+        // Código
+        'js': '💻', 'html': '💻', 'css': '💻', 'py': '💻', 'java': '💻', 'cpp': '💻'
+    };
+    
+    return icons[extension] || '📄';
+}
+
+// 👁️ FUNÇÃO PARA VISUALIZAR ARQUIVO
+function previewFile(fileUrl, fileName, fileType) {
+    const extension = fileName.split('.').pop().toLowerCase();
+    
+    // Tipos de arquivo que podem ser visualizados diretamente
+    const previewableTypes = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'pdf', 'txt', 'mp4', 'mp3'];
+    
+    if (previewableTypes.includes(extension)) {
+        // Abrir em uma nova janela para visualização
+        const previewWindow = window.open('', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        
+        if (extension === 'pdf') {
+            previewWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Visualizar: ${fileName}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+                            .header { background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+                            .file-name { font-weight: bold; color: #333; }
+                            .file-meta { color: #666; font-size: 0.9rem; margin-top: 5px; }
+                            .actions { margin-top: 10px; }
+                            .btn { padding: 8px 16px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+                            .btn-primary { background: #007cba; color: white; }
+                            .btn-secondary { background: #6c757d; color: white; }
+                            iframe { width: 100%; height: 70vh; border: 1px solid #ddd; border-radius: 5px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div class="file-name">📄 ${fileName}</div>
+                            <div class="file-meta">Tipo: ${fileType}</div>
+                            <div class="actions">
+                                <button class="btn btn-primary" onclick="window.open('${fileUrl}', '_blank')">📥 Download</button>
+                                <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
+                            </div>
+                        </div>
+                        <iframe src="${fileUrl}" frameborder="0"></iframe>
+                    </body>
+                </html>
+            `);
+        } else if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension)) {
+            previewWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Visualizar: ${fileName}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background: #f8f9fa; }
+                            .header { background: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                            .file-name { font-weight: bold; color: #333; }
+                            .file-meta { color: #666; font-size: 0.9rem; margin-top: 5px; }
+                            .actions { margin-top: 10px; }
+                            .btn { padding: 8px 16px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+                            .btn-primary { background: #007cba; color: white; }
+                            .btn-secondary { background: #6c757d; color: white; }
+                            .image-container { text-align: center; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                            .image-container img { max-width: 100%; max-height: 70vh; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div class="file-name">🖼️ ${fileName}</div>
+                            <div class="file-meta">Tipo: ${fileType}</div>
+                            <div class="actions">
+                                <button class="btn btn-primary" onclick="window.open('${fileUrl}', '_blank')">📥 Download</button>
+                                <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
+                            </div>
+                        </div>
+                        <div class="image-container">
+                            <img src="${fileUrl}" alt="${fileName}" />
+                        </div>
+                    </body>
+                </html>
+            `);
+        } else if (extension === 'txt') {
+            // Para arquivos de texto, fazer uma requisição para pegar o conteúdo
+            fetch(fileUrl)
+                .then(response => response.text())
+                .then(text => {
+                    previewWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>Visualizar: ${fileName}</title>
+                                <style>
+                                    body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background: #f8f9fa; }
+                                    .header { background: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                                    .file-name { font-weight: bold; color: #333; }
+                                    .file-meta { color: #666; font-size: 0.9rem; margin-top: 5px; }
+                                    .actions { margin-top: 10px; }
+                                    .btn { padding: 8px 16px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+                                    .btn-primary { background: #007cba; color: white; }
+                                    .btn-secondary { background: #6c757d; color: white; }
+                                    .text-content { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: pre-wrap; font-family: monospace; font-size: 14px; line-height: 1.5; }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="header">
+                                    <div class="file-name">📝 ${fileName}</div>
+                                    <div class="file-meta">Tipo: ${fileType}</div>
+                                    <div class="actions">
+                                        <button class="btn btn-primary" onclick="window.open('${fileUrl}', '_blank')">📥 Download</button>
+                                        <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
+                                    </div>
+                                </div>
+                                <div class="text-content">${text}</div>
+                            </body>
+                        </html>
+                    `);
+                })
+                .catch(error => {
+                    previewWindow.document.write(`
+                        <html>
+                            <head><title>Erro</title></head>
+                            <body>
+                                <p>Erro ao carregar o arquivo: ${error.message}</p>
+                                <button onclick="window.close()">Fechar</button>
+                            </body>
+                        </html>
+                    `);
+                });
+        } else if (['mp4'].includes(extension)) {
+            previewWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Visualizar: ${fileName}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background: #f8f9fa; }
+                            .header { background: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                            .file-name { font-weight: bold; color: #333; }
+                            .file-meta { color: #666; font-size: 0.9rem; margin-top: 5px; }
+                            .actions { margin-top: 10px; }
+                            .btn { padding: 8px 16px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+                            .btn-primary { background: #007cba; color: white; }
+                            .btn-secondary { background: #6c757d; color: white; }
+                            .video-container { text-align: center; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                            video { max-width: 100%; max-height: 70vh; border-radius: 5px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div class="file-name">🎥 ${fileName}</div>
+                            <div class="file-meta">Tipo: ${fileType}</div>
+                            <div class="actions">
+                                <button class="btn btn-primary" onclick="window.open('${fileUrl}', '_blank')">📥 Download</button>
+                                <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
+                            </div>
+                        </div>
+                        <div class="video-container">
+                            <video controls>
+                                <source src="${fileUrl}" type="video/mp4">
+                                Seu navegador não suporta o elemento de vídeo.
+                            </video>
+                        </div>
+                    </body>
+                </html>
+            `);
+        }
+    } else {
+        // Para tipos não suportados, mostrar modal de informação
+        alert(`Tipo de arquivo não suportado para visualização: ${extension}\n\nClique em "Download" para baixar o arquivo.`);
+    }
+}
+
+// ⏱️ FUNÇÃO PARA POPULAR A TIMELINE (ESTILO CORREIOS)
 function populateTimeline(request) {
     const timeline = document.getElementById('modalTimeline');
     if (!timeline) return;
     
-    let timelineItems = [];
+    const currentStatus = request.admin?.status || 'pendente';
+    const createdDate = request.d || Date.now();
+    const updatedDate = request.admin?.ultimaAtualizacao || createdDate;
     
-    // Criação da solicitação
-    timelineItems.push({
-        timestamp: request.d || Date.now(),
-        title: 'Solicitação Criada',
-        description: `Solicitação de ${getServiceName(request.s, request.ts)} foi criada por ${request.c || 'Usuário'}`,
-        type: 'created'
-    });
+    // Definir os 4 estados da timeline
+    const timelineStates = [
+        {
+            key: 'created',
+            title: 'Solicitação criada',
+            icon: '📋',
+            timestamp: createdDate,
+            completed: true // Sempre completo
+        },
+        {
+            key: 'pending',
+            title: 'Espera de aprovação',
+            icon: '⏳',
+            timestamp: createdDate,
+            completed: currentStatus !== 'pendente'
+        },
+        {
+            key: 'processing',
+            title: currentStatus === 'cancelado' ? 'Cancelado' : 'Em processo',
+            icon: currentStatus === 'cancelado' ? '❌' : '🔄',
+            timestamp: currentStatus === 'em_andamento' || currentStatus === 'cancelado' ? updatedDate : null,
+            completed: currentStatus === 'em_andamento' || currentStatus === 'cancelado' || currentStatus === 'concluido'
+        },
+        {
+            key: 'completed',
+            title: 'Concluído',
+            icon: '✅',
+            timestamp: currentStatus === 'concluido' ? updatedDate : null,
+            completed: currentStatus === 'concluido'
+        }
+    ];
     
-    // Comentários (verificar se existem)
-    if (request.admin?.comments && Array.isArray(request.admin.comments)) {
-        request.admin.comments.forEach(comment => {
-            timelineItems.push({
-                timestamp: comment.timestamp || Date.now(),
-                title: 'Comentário Adicionado',
-                description: `${comment.autor || 'Administrador'}: ${comment.texto}`,
-                type: 'comment'
-            });
-        });
-    }
-    
-    // Mudanças de status
-    if (request.admin?.status && request.admin.status !== 'pendente') {
-        timelineItems.push({
-            timestamp: request.admin.ultimaAtualizacao || request.d || Date.now(),
-            title: 'Status Atualizado',
-            description: `Status alterado para: ${getStatusText(request.admin.status)}`,
-            type: 'status'
-        });
-    }
-    
-    // Mudanças de prioridade
-    if (request.admin?.priority) {
-        timelineItems.push({
-            timestamp: request.admin.ultimaAtualizacao || request.d || Date.now(),
-            title: 'Prioridade Definida',
-            description: `Prioridade definida como: ${getPriorityText(request.admin.priority)}`,
-            type: 'priority'
-        });
-    }
-    
-    // Ordenar por timestamp
-    timelineItems.sort((a, b) => a.timestamp - b.timestamp);
-    
-    // Se não há itens, mostrar mensagem
-    if (timelineItems.length === 0) {
-        timeline.innerHTML = `
-            <div class="timeline-empty">
-                <div class="timeline-empty-icon">📋</div>
-                <div class="timeline-empty-text">Nenhum evento registrado ainda</div>
-            </div>
-        `;
-        return;
-    }
-    
-    timeline.innerHTML = timelineItems.map(item => {
-        const icon = item.type === 'created' ? '📋' : 
-                    item.type === 'comment' ? '💬' : 
-                    item.type === 'status' ? '🔄' : 
-                    item.type === 'priority' ? '🎯' : '📝';
-        
-        return `
-            <div class="timeline-item">
-                <div class="timeline-marker">${icon}</div>
-                <div class="timeline-content">
-                    <div class="timeline-title">${item.title}</div>
-                    <div class="timeline-description">${item.description}</div>
-                    <div class="timeline-time">${formatDate(item.timestamp)}</div>
-                </div>
-            </div>
-        `;
-    }).join('');
+    // Gerar HTML da timeline estilo Correios
+    timeline.innerHTML = `
+        <div class="timeline-correios">
+            ${timelineStates.map((state, index) => {
+                const isActive = state.completed;
+                const isLast = index === timelineStates.length - 1;
+                const showTimestamp = state.timestamp && isActive;
+                
+                return `
+                    <div class="timeline-step ${isActive ? 'active' : 'inactive'}">
+                        <div class="timeline-step-marker">
+                            <div class="timeline-step-icon">${state.icon}</div>
+                            ${!isLast ? '<div class="timeline-step-line"></div>' : ''}
+                        </div>
+                        <div class="timeline-step-content">
+                            <div class="timeline-step-title">${state.title}</div>
+                            ${showTimestamp ? `<div class="timeline-step-time">${formatDate(state.timestamp)}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
 }
 
 // Função auxiliar para texto do status
@@ -501,7 +653,7 @@ function populateActions(request) {
     if (!actions) return;
     
     const status = request.admin?.status || 'pendente';
-    const priority = request.admin?.priority || 'media';
+    const priority = request.admin?.prioridade || 'media';
     
     let actionCards = '';
     
@@ -549,14 +701,10 @@ function populateActions(request) {
         </div>
     `;
     
-    // Card de Prioridade com visual melhorado
+    // Card de Prioridade com visual melhorada
     actionCards += `
         <div class="action-card">
             <div class="card-title">🎯 Prioridade</div>
-            <div class="priority-current">
-                <span class="priority-label">Atual:</span>
-                <span class="priority-badge priority-${priority}">${getPriorityText(priority)}</span>
-            </div>
             <div class="card-buttons priority-buttons">
                 <button class="btn-action priority-high ${priority === 'alta' ? 'active' : ''}" onclick="setPriority('${request.id}', 'alta')">
                     🔴 Alta
@@ -605,15 +753,56 @@ function populateComments(request) {
         return;
     }
     
-    comments.innerHTML = requestComments.map(comment => `
-        <div class="comment-item">
-            <div class="comment-header">
-                <div class="comment-author">${comment.autor || 'Administrador'}</div>
-                <div class="comment-date">${formatDate(comment.timestamp || Date.now())}</div>
+    comments.innerHTML = requestComments.map((comment, index) => {
+        // Tratar diferentes formatos de comentário com mais robustez
+        let commentText = '';
+        let commentAuthor = 'Administrador';
+        let commentTimestamp = Date.now();
+        
+        if (typeof comment === 'string') {
+            commentText = comment;
+        } else if (typeof comment === 'object' && comment !== null) {
+            // Verificar se o objeto tem as propriedades esperadas
+            commentText = comment.texto || comment.text || comment.comment || comment.message || '';
+            commentAuthor = comment.autor || comment.author || comment.user || 'Administrador';
+            commentTimestamp = comment.timestamp || comment.time || comment.date || Date.now();
+            
+            // Se ainda não conseguimos extrair o texto, tentar JSON.stringify
+            if (!commentText && comment !== null) {
+                try {
+                    // Tentar extrair texto de um objeto mais complexo
+                    if (comment.toString() !== '[object Object]') {
+                        commentText = comment.toString();
+                    } else {
+                        commentText = JSON.stringify(comment);
+                    }
+                } catch (e) {
+                    commentText = 'Comentário inválido';
+                }
+            }
+        } else {
+            commentText = String(comment);
+        }
+        
+        // Garantir que commentText seja uma string e não seja vazio
+        commentText = String(commentText || '');
+        commentAuthor = String(commentAuthor || 'Administrador');
+        commentTimestamp = Number(commentTimestamp) || Date.now();
+        
+        if (!commentText || commentText.trim() === '') {
+            commentText = 'Comentário sem texto';
+        }
+        
+        return `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <div class="comment-author">${commentAuthor}</div>
+                    <div class="comment-date">${formatDate(commentTimestamp)}</div>
+                </div>
+                <div class="comment-content">${commentText}</div>
             </div>
-            <div class="comment-content">${comment.texto || comment.text || ''}</div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Função modificada para adicionar comentário da modal
@@ -629,41 +818,111 @@ async function submitCommentText(comment) {
     if (!comment || !currentRequestId) return;
 
     try {
-        LoadingManager.show('Adicionando comentário...');
-
-        const success = await firebaseService.addComment(currentRequestId, {
-            texto: comment,
-            autor: 'Administrador',
-            timestamp: Date.now()
-        });
+        const success = await firebaseService.addComment(currentRequestId, comment, 'Administrador');
 
         if (success) {
             ToastManager.show('Comentário adicionado com sucesso!', 'success');
             document.getElementById('newComment').value = '';
-            // Recarregar comentários na aba
-            const request = await firebaseService.getRequestById(currentRequestId);
-            if (request) {
-                populateComments(request);
-            }
+            
+            // Usar nossa função de refresh do modal
+            await executeActionWithRefresh(
+                async () => {}, // Ação vazia pois já foi executada
+                currentRequestId
+            );
         }
-
-        LoadingManager.hide();
     } catch (error) {
-        LoadingManager.hide();
+        console.error('❌ Erro ao adicionar comentário:', error);
         ToastManager.show('Erro ao adicionar comentário', 'error');
     }
 }
 
-// 🔄 FUNÇÕES DE INTERAÇÃO
+// � FUNÇÃO PARA ADICIONAR COMENTÁRIO (BOTÃO DE AÇÃO RÁPIDA)
+function addComment(requestId) {
+    const comment = prompt('Digite seu comentário:');
+    if (comment && comment.trim()) {
+        // Definir o currentRequestId temporariamente
+        const tempCurrentRequestId = currentRequestId;
+        currentRequestId = requestId;
+        
+        // Submeter comentário
+        submitCommentText(comment.trim()).then(() => {
+            // Restaurar o currentRequestId original
+            currentRequestId = tempCurrentRequestId;
+        });
+    }
+}
+
+// Função para forçar download do arquivo anexado
+function downloadArquivo(url, nome) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = nome || '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// �🔄 FUNÇÕES DE INTERAÇÃO
+// 🔄 FUNCIONALIDADE: AÇÃO → FECHAR MODAL → ATUALIZAR → REABRIR
+async function executeActionWithRefresh(actionFunction, requestId, ...args) {
+    try {
+        // Executar a ação
+        await actionFunction(requestId, ...args);
+        
+        // Fechar modal suavemente
+        closeModal('detailsModal');
+        
+        // Mostrar loading com mensagem personalizada
+        LoadingManager.show('Atualizando informações...');
+        
+        // Aguardar para garantir que o modal fechou
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Recarregar dashboard
+        await loadDashboard();
+        
+        // Aguardar para garantir que os dados foram atualizados
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Esconder loading
+        LoadingManager.hide();
+        
+        // Verificar se a solicitação ainda existe (não foi deletada)
+        const updatedRequest = currentRequests.find(r => r.id === requestId);
+        if (updatedRequest) {
+            // Reabrir modal com dados atualizados
+            setTimeout(() => {
+                viewDetails(requestId);
+                ToastManager.show('Informações atualizadas com sucesso!', 'success');
+            }, 100);
+        } else {
+            ToastManager.show('Solicitação não encontrada após atualização', 'warning');
+        }
+        
+    } catch (error) {
+        LoadingManager.hide();
+        console.error('❌ Erro ao executar ação:', error);
+        ToastManager.show('Erro ao executar ação. Tente novamente.', 'error');
+    }
+}
+
 async function updateStatus(requestId, newStatus) {
     if (newStatus) {
-        await DashboardManager.updateStatus(requestId, newStatus);
+        await executeActionWithRefresh(
+            async (id, status) => await DashboardManager.updateStatus(id, status),
+            requestId,
+            newStatus
+        );
     }
 }
 
 async function setPriority(requestId, priority) {
     if (priority) {
-        await DashboardManager.setPriority(requestId, priority);
+        await executeActionWithRefresh(
+            async (id, prio) => await DashboardManager.setPriority(id, prio),
+            requestId,
+            priority
+        );
     }
 }
 
@@ -676,6 +935,35 @@ function switchTab(tabName) {
     // Adicionar classes ativas
     document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
+    
+    // Debug específico para aba de comentários
+    if (tabName === 'comments') {
+        console.log('🔍 Aba de comentários ativada');
+        
+        // Verificar se elementos existem
+        const commentsTab = document.getElementById('comments-tab');
+        const addCommentSection = document.querySelector('.add-comment-section');
+        const commentForm = document.querySelector('.comment-form');
+        const button = document.querySelector('.comment-form button');
+        
+        console.log('📋 Elementos encontrados:', {
+            commentsTab: commentsTab ? 'OK' : 'ERRO',
+            addCommentSection: addCommentSection ? 'OK' : 'ERRO',
+            commentForm: commentForm ? 'OK' : 'ERRO',
+            button: button ? 'OK' : 'ERRO'
+        });
+        
+        // Verificar dimensões
+        if (commentsTab) {
+            const rect = commentsTab.getBoundingClientRect();
+            console.log('📏 Dimensões da aba de comentários:', {
+                width: rect.width,
+                height: rect.height,
+                top: rect.top,
+                bottom: rect.bottom
+            });
+        }
+    }
 }
 
 console.log('📋 Admin Dashboard - Funções do dashboard carregadas');
