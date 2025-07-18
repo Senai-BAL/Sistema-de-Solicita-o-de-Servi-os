@@ -4,7 +4,25 @@
 
 > 📖 **Changelog Completo**: Para um histórico detalhado com todos os commits, consulte [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md)
 
-## [2.6.0] - 2025-07-16 🏗️
+## [2.6.0] - 2025-07-18 🔄
+
+### **OTIMIZAÇÕES DE INTERFACE E PERFORMANCE**
+
+#### ⚡ **Principais Melhorias**
+- **Sistema de Atualização Inteligente**: Auto-refresh de 5min + botão manual (90% menos requisições)
+- **Lista Otimizada**: Scroll infinito, ações centralizadas no modal
+- **Prioridades Aprimoradas**: Padrão "baixa" automático, sempre visível
+- **Modal Híbrido**: Timeline, ações e comentários centralizados
+
+#### 🎯 **Impacto**
+- **Performance**: 90% redução nas requisições automáticas
+- **UX**: Interface mais limpa e controle manual de atualização
+- **Consistência**: Prioridades padronizadas em todo sistema
+- **Escalabilidade**: Lista infinita sem limitações visuais
+
+---
+
+## [2.5.0] - 2025-07-16 🏗️
 
 ### **REFATORAÇÃO COMPLETA DA ARQUITETURA**
 
@@ -14,7 +32,7 @@
 - **Documentação Profissional**: READMEs em todas as pastas + sistema de navegação
 - **Ambiente de Teste**: Isolamento completo com branch e configurações dedicadas
 
-#### � **Impacto**
+#### 🎯 **Impacto**
 - **Manutenibilidade**: Código organizado por responsabilidade
 - **Escalabilidade**: Facilita adição de novas funcionalidades  
 - **Debugging**: Logs organizados por módulo
@@ -22,7 +40,25 @@
 
 ---
 
-## [2.5.0] - 2025-07-15 📁
+## [2.4.0] - 2025-07-15 📁
+
+### **SISTEMA DE MÚLTIPLOS ARQUIVOS**
+
+#### ⚡ **Principais Melhorias**
+- **Upload Múltiplo**: Vários arquivos por categoria de serviço
+- **Interface Visual**: Cards interativos para cada arquivo
+- **Preview de Imagens**: Visualização antes do envio
+- **Nomenclatura Inteligente**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
+
+#### 🎯 **Impacto**
+- **Experiência do Usuário**: Interface moderna e intuitiva
+- **Organização**: Arquivos padronizados no GitHub
+- **Produtividade**: Múltiplos arquivos em uma única solicitação
+- **Controle**: Progress individual e global
+
+---
+
+## [2.3.0] - 2025-07-10 📋
 
 ### **SISTEMA DE MÚLTIPLOS ARQUIVOS**
 

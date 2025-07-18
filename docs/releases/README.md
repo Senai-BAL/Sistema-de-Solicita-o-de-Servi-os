@@ -4,6 +4,11 @@ Esta pasta contém as documentações detalhadas de cada release do sistema.
 
 ## 🗂️ Releases Disponíveis
 
+### v2.6.0 - Otimizações de Interface e Performance
+- **Data**: 18 de julho de 2025
+- **Arquivo**: [`RELEASE-v2.6.0.md`](RELEASE-v2.6.0.md)
+- **Destaque**: Sistema de atualização inteligente, lista otimizada e prioridades aprimoradas
+
 ### v2.5.0 - Sistema de Múltiplos Arquivos
 - **Data**: 15 de julho de 2025
 - **Arquivo**: [`RELEASE-v2.5.0.md`](RELEASE-v2.5.0.md)

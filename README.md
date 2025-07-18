@@ -32,13 +32,16 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ### 🔐 **Para Administradores (admin.html)**
 - ✅ **Autenticação Segura**: Login por senha com sessão persistente
-- ✅ **Dashboard Completo**: Visualização de todas as solicitações
+- ✅ **Dashboard Completo**: Visualização de todas as solicitações em lista otimizada
 - ✅ **Estatísticas em Tempo Real**: Cards com métricas importantes
-- ✅ **Gestão de Status**: Atualização de status das solicitações
+- ✅ **Gestão de Status**: Atualização via modal com fluxo inteligente
+- ✅ **Sistema de Prioridades**: Definição automática (baixa) e gestão manual
 - ✅ **Sistema de Comentários**: Adição de comentários administrativos
 - ✅ **Filtros Avançados**: Por serviço, status e período
-- ✅ **Visualização de Arquivos**: Acesso direto aos arquivos enviados
-- ✅ **Auto-refresh**: Atualização automática a cada 30 segundos
+- ✅ **Lista Infinita**: Scroll infinito sem limitação de altura
+- ✅ **Atualização Inteligente**: Auto-refresh de 5min + botão manual
+- ✅ **Modal Híbrido**: Timeline, ações e comentários centralizados
+- ✅ **Visualização de Arquivos**: Preview e download direto
 - ✅ **Design Responsivo**: Interface otimizada para todos os dispositivos
 
 ## 🚀 Tecnologias
@@ -51,8 +54,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.5.0 (Sistema de Múltiplos Arquivos)  
-**Detalhes**: Consulte [`docs/releases/RELEASE-v2.5.0.md`](docs/releases/RELEASE-v2.5.0.md) para informações completas
+**Versão Atual**: v2.6.0 (Otimizações de Interface e Performance)  
+**Detalhes**: Consulte [`docs/releases/RELEASE-v2.6.0.md`](docs/releases/RELEASE-v2.6.0.md) para informações completas
 
 ## � Configuração
 
