@@ -2,7 +2,7 @@
 // Arquivo: public/assets/js/shared/toast-manager.js
 // Descrição: Gerenciamento de notificações toast elegantes
 
-export class ToastManager {
+class ToastManager {
   static toastContainer = null;
   static toastCounter = 0;
 

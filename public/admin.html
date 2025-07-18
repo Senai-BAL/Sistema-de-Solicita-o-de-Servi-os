@@ -29,18 +29,37 @@
     <div class="login-box">
       <div class="login-header">
         <h1>🔧 SENAI Lab</h1>
-        <p>Dashboard Administrativo v2.0</p>
+        <p>Dashboard Administrativo v2.6.0</p>
+        <small>Sistema Multiusuário</small>
       </div>
       <form id="loginForm">
         <div class="form-group">
-          <label for="adminPassword">Senha de Acesso</label>
-          <input type="password" id="adminPassword" placeholder="Digite a senha administrativa" required>
+          <label for="adminUsername">👤 Usuário</label>
+          <input type="text" id="adminUsername" placeholder="Digite seu usuário" required>
+          <small class="input-hint">Ex: presidentinho, dr.chaguinha, rainha.cat...</small>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">🔐 Senha</label>
+          <input type="password" id="adminPassword" placeholder="Digite sua senha" required>
         </div>
         <button type="submit" class="btn" id="loginBtn">
-          <span id="loginText">🔐 Entrar</span>
+          <span id="loginText">� Entrar</span>
           <span id="loginLoading" style="display: none;">⏳ Verificando...</span>
         </button>
         <div class="error-message" id="loginError"></div>
+        <div class="login-info">
+          <details>
+            <summary>👥 Usuários de Teste</summary>
+            <div class="users-list">
+              <div class="user-item">🏛️ <strong>presidentinho</strong> (Getulio)</div>
+              <div class="user-item">👨‍⚕️ <strong>dr.chaguinha</strong> (Chagas)</div>
+              <div class="user-item">👸 <strong>rainha.cat</strong> (Catarina)</div>
+              <div class="user-item">💻 <strong>brunete.tech</strong> (Bruna)</div>
+              <div class="user-item">🌟 <strong>luy.jedi</strong> (Luy)</div>
+            </div>
+            <small>Senha padrão: Senai@[username]</small>
+          </details>
+        </div>
       </form>
     </div>
   </div>
@@ -51,12 +70,15 @@
     <nav class="navbar">
       <div class="navbar-brand">
         <span>🔧</span>
-        <h1>SENAI Lab - Admin v2.0</h1>
+        <h1>SENAI Lab - Admin v2.6.0</h1>
       </div>
       <div class="navbar-user">
-        <div class="user-info">
-          <div class="user-name">Administrador</div>
-          <div class="user-role">Dashboard Avançado</div>
+        <div class="user-info" id="currentUserInfo">
+          <div class="user-avatar" id="userAvatar">👤</div>
+          <div class="user-details">
+            <div class="user-name" id="userName">Carregando...</div>
+            <div class="user-role" id="userRole">Sistema Multiusuário</div>
+          </div>
         </div>
         <button class="btn-logout" onclick="logout()">🚪 Sair</button>
       </div>
@@ -372,8 +394,13 @@
   <script src="shared/github-config.js"></script>
   <script src="shared/firebase-service.js"></script>
 
+  <!-- Módulos Compartilhados -->
+  <script src="assets/js/shared/loading-manager.js"></script>
+  <script src="assets/js/shared/toast-manager.js"></script>
+
   <!-- JavaScript Modularizado Admin -->
   <script src="assets/js/admin/config.js"></script>
+  <script src="assets/js/admin/auth.js"></script>
   <script src="assets/js/admin/ui.js"></script>
   <script src="assets/js/admin/utils.js"></script>
   <script src="assets/js/admin/notifications.js"></script>

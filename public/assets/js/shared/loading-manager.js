@@ -2,7 +2,7 @@
 // Arquivo: public/assets/js/shared/loading-manager.js
 // Descrição: Gerenciamento de estados de loading com overlay
 
-export class LoadingManager {
+class LoadingManager {
   static overlay = null;
   static isVisible = false;
 
