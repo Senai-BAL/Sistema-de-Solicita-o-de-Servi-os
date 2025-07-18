@@ -7,6 +7,13 @@
 function exportToExcel() {
     ToastManager.show('Preparando exportação para Excel...', 'info');
 
+    // Registrar ação de auditoria
+    AdminAuth.logUserAction('exportData', {
+        description: `Exportação Excel iniciada com ${filteredRequests.length} registros`,
+        format: 'excel',
+        recordCount: filteredRequests.length
+    });
+
     // Criar dados para exportação
     const exportData = filteredRequests.map(request => ({
         'ID': request.id,
@@ -99,6 +106,16 @@ function generatePDFWithConfig() {
 function generatePDFReportNow(includeStats = true, includeDetails = true, colorStatus = true) {
     try {
         ToastManager.show('Gerando relatório PDF...', 'info');
+
+        // Registrar ação de auditoria
+        AdminAuth.logUserAction('exportData', {
+            description: `Exportação PDF iniciada com ${filteredRequests.length} registros`,
+            format: 'pdf',
+            recordCount: filteredRequests.length,
+            includeStats,
+            includeDetails,
+            colorStatus
+        });
 
         // Verificar se jsPDF está disponível
         if (typeof window.jspdf === 'undefined' && typeof window.jsPDF === 'undefined') {

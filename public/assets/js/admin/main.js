@@ -3,12 +3,32 @@
  * Descrição: Carregamento principal, event listeners e inicialização do dashboard
  */
 
-// 🔄 INICIALIZAÇÃO     // Auto-refresh a cada 5 minutos se estiver autenticado
-    setInterval(() => {
-        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
-            loadDashboard();
-        }
-    }, 300000); // 5 minutos = 300000msIÁVEIS GLOBAIS
+// 🔄 INICIALIZAÇÃO DE MANAGERS
+function initializeManagers() {
+    // Verificar se os managers estão disponíveis
+    if (typeof LoadingManager !== 'undefined') {
+        LoadingManager.init();
+    } else {
+        console.warn('⚠️ LoadingManager não encontrado');
+    }
+    
+    if (typeof ToastManager !== 'undefined') {
+        ToastManager.init();
+    } else {
+        console.warn('⚠️ ToastManager não encontrado');
+    }
+}
+
+// 🍞 HELPER PARA TOASTS COM VERIFICAÇÃO
+function showToast(message, type = 'info', duration = 3000) {
+    if (typeof ToastManager !== 'undefined') {
+        ToastManager.show(message, type, duration);
+    } else {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+}
+
+// 🔄 INICIALIZAÇÃO DE VARIÁVEIS GLOBAIS
 function initializeGlobalVariables() {
     window.firebaseService = window.firebaseService || null;
     window.currentRequests = window.currentRequests || [];
@@ -19,9 +39,27 @@ function initializeGlobalVariables() {
 // 🔄 CARREGAMENTO DO DASHBOARD
 async function loadDashboard() {
     try {
-        LoadingManager.show('Carregando dados do dashboard...');
+        // Verificar se os managers estão disponíveis
+        if (typeof LoadingManager === 'undefined') {
+            console.warn('⚠️ LoadingManager não disponível, carregando sem overlay');
+        } else {
+            LoadingManager.show('Carregando dados do dashboard...');
+        }
+
+        // Registrar ação de carregamento
+        AdminAuth.logUserAction('loadStats', {
+            description: 'Carregamento do dashboard iniciado',
+            timestamp: new Date().toISOString()
+        });
 
         const { stats, requests } = await DashboardManager.loadStats();
+
+        // Registrar ação de auditoria
+        AdminAuth.logUserAction('loadStats', {
+            description: `Dashboard carregado com ${requests.length} solicitações`,
+            requestCount: requests.length,
+            statsLoaded: Object.keys(stats).length
+        });
 
         // Atualizar variáveis globais
         currentRequests = requests;
@@ -39,7 +77,7 @@ async function loadDashboard() {
         }
 
         LoadingManager.hide();
-        ToastManager.show(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
+        showToast(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
 
         // ✨ INICIALIZAR SISTEMA DE BACKUP COMPLETO (apenas uma vez)
         setTimeout(() => {
@@ -47,9 +85,11 @@ async function loadDashboard() {
         }, 1000);
 
     } catch (error) {
-        LoadingManager.hide();
+        if (typeof LoadingManager !== 'undefined') {
+            LoadingManager.hide();
+        }
         console.error('❌ Erro ao carregar dashboard:', error);
-        ToastManager.show('Erro ao carregar dashboard', 'error');
+        showToast('Erro ao carregar dashboard', 'error');
     }
 }
 
@@ -99,6 +139,7 @@ function initializeCompleteBackupSystem() {
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
+    const username = document.getElementById('adminUsername').value;
     const password = document.getElementById('adminPassword').value;
     const loginBtn = document.getElementById('loginBtn');
     const loginText = document.getElementById('loginText');
@@ -112,12 +153,17 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     errorDiv.style.display = 'none';
 
     // Simular delay de verificação
-    setTimeout(() => {
-        if (AdminAuth.login(password)) {
-            ToastManager.show('Login realizado com sucesso!', 'success');
-            showDashboard();
-        } else {
-            errorDiv.textContent = '❌ Senha incorreta. Tente novamente.';
+    setTimeout(async () => {
+        try {
+            const success = await AdminAuth.login(username, password);
+            
+            if (success) {
+                const currentUser = AdminAuth.getCurrentUser();
+                showToast(`${currentUser.avatar} Bem-vindo, ${currentUser.name}!`, 'success');
+                showDashboard();
+            }
+        } catch (error) {
+            errorDiv.textContent = `❌ ${error.message}`;
             errorDiv.style.display = 'block';
 
             // Reset do formulário
@@ -125,7 +171,13 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
             loginText.style.display = 'inline';
             loginLoading.style.display = 'none';
             document.getElementById('adminPassword').value = '';
-            document.getElementById('adminPassword').focus();
+            
+            // Se o erro for de usuário não encontrado, focar no campo username
+            if (error.message && error.message.includes('Usuário')) {
+                document.getElementById('adminUsername').focus();
+            } else {
+                document.getElementById('adminPassword').focus();
+            }
         }
     }, 1000);
 });
@@ -134,6 +186,9 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 function showDashboard() {
     document.getElementById('loginContainer').style.display = 'none';
     document.getElementById('dashboard').classList.add('show');
+
+    // ✨ ATUALIZAR INFO DO USUÁRIO NO NAVBAR
+    updateUserNavbar();
 
     // ✨ INICIALIZAR NOTIFICAÇÕES
     if (!dashboardNotifications) {
@@ -144,6 +199,16 @@ function showDashboard() {
     loadDashboard();
 }
 
+// 👤 ATUALIZAR NAVBAR COM INFO DO USUÁRIO
+function updateUserNavbar() {
+    const currentUser = AdminAuth.getCurrentUser();
+    if (currentUser) {
+        document.getElementById('userAvatar').textContent = currentUser.avatar;
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userRole').textContent = `@${currentUser.username}`;
+    }
+}
+
 function logout() {
     if (confirm('Tem certeza que deseja sair?')) {
         // ✨ PARAR NOTIFICAÇÕES
@@ -152,7 +217,7 @@ function logout() {
         }
 
         AdminAuth.logout();
-        ToastManager.show('Logout realizado com sucesso!', 'success');
+        showToast('Logout realizado com sucesso!', 'success');
         showLogin();
     }
 }
@@ -160,7 +225,9 @@ function logout() {
 function showLogin() {
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('dashboard').classList.remove('show');
-    document.getElementById('adminPassword').focus();
+    document.getElementById('adminUsername').value = '';
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminUsername').focus();
 }
 
 // 📱 EVENT LISTENERS - FORMULÁRIO DE LOGIN
@@ -185,7 +252,13 @@ function handleDragStart(e) {
 
 // ⚡ INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('🔧 SENAI Lab - Dashboard Administrativo v2.0 com Backup Completo Iniciado');
+    console.log('🔧 SENAI Lab - Dashboard Administrativo v2.6.0 Sistema Multiusuário Iniciado');
+
+    // ✨ Inicializar managers primeiro
+    initializeManagers();
+    
+    // Inicializar variáveis globais
+    initializeGlobalVariables();
 
     // Inicializar Firebase Service
     try {
@@ -193,7 +266,9 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('✅ Firebase Service inicializado');
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);
-        ToastManager.show('Erro ao conectar com Firebase', 'error');
+        if (typeof ToastManager !== 'undefined') {
+            ToastManager.show('Erro ao conectar com Firebase', 'error');
+        }
         return;
     }
 
@@ -257,11 +332,12 @@ console.log(`
 
 💰 RESULTADO: CUSTO ZERO PERMANENTE
 
-⚠️  CONFIGURAÇÃO DE SEGURANÇA:
-    Altere a senha em ADMIN_CONFIG.password
-    Senha atual: "${ADMIN_CONFIG.password}"
+⚠️  SISTEMA MULTIUSUÁRIO ATIVO:
+    ✅ 5 usuários configurados
+    ✅ Auditoria completa habilitada
+    ✅ Controle de acesso por usuário
     
-🎉 NOVO: Botão "🗂️ Backup Completo + Limpar" disponível!
+🎉 NOVO: Sistema de usuários admins + Botão "🗂️ Backup Completo + Limpar" disponível!
 `);
 
 // Inicializar variáveis globais
