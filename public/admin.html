@@ -7,6 +7,7 @@
   <title>SENAI Lab - Dashboard Administrativo v2</title>
 
   <!-- Estilos CSS -->
+  <link rel="stylesheet" href="assets/css/common.css">
   <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 
@@ -107,6 +108,7 @@
         <div class="section-header">
           <h2 class="section-title">📋 Gestão de Solicitações</h2>
           <div class="export-buttons">
+            <button class="btn-refresh" onclick="refreshDashboard()" title="Atualizar dados">🔄 Atualizar</button>
             <button class="btn-export excel" onclick="exportToExcel()">📊 Excel</button>
             <button class="btn-export pdf" onclick="openModal('pdfConfigModal')">📄 Relatório PDF</button>
           </div>
@@ -203,36 +205,98 @@
     </main>
   </div>
 
-  <!-- Modal de Detalhes -->
+  <!-- Modal de Detalhes Híbrido -->
   <div class="modal" id="detailsModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">📋 Detalhes da Solicitação</h3>
+        <div class="header-content">
+          <h3 class="modal-title">📋 Detalhes da Solicitação</h3>
+          <div>
+            <div class="modal-subtitle" id="modalSubtitle">Solicitação #</div>
+            <div class="modal-subtitle" id="modalDate">Data/Hora</div>
+          </div>
+        </div>
         <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
       </div>
-      <div id="modalContent">
-        <!-- Conteúdo será preenchido dinamicamente -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal de Comentário -->
-  <div class="modal" id="commentModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">💬 Adicionar Comentário</h3>
-        <button class="close-btn" onclick="closeModal('commentModal')">&times;</button>
-      </div>
-      <div>
-        <textarea id="commentText" placeholder="Digite seu comentário administrativo..."
-          class="comment-textarea"></textarea>
-        <div class="comment-actions">
-          <button onclick="closeModal('commentModal')" class="btn-cancel">
-            Cancelar
+      <div class="modal-body">
+        <div class="tab-navigation">
+          <button class="tab-button active" onclick="switchTab('info')">
+            📋 Informações da Solicitação
           </button>
-          <button onclick="submitComment()" class="btn-submit-comment">
-            💬 Adicionar Comentário
+          <button class="tab-button" onclick="switchTab('timeline')">
+            ⏱️ Timeline e Ações
           </button>
+          <button class="tab-button" onclick="switchTab('comments')">
+            💬 Comentários
+          </button>
+        </div>
+        <!-- Tab Content 1 - Informações -->
+        <div id="info-tab" class="tab-content active">
+          <div class="info-tab">
+            <div class="info-section">
+              <div class="section-title">👤 Dados do Solicitante</div>
+              <div class="info-grid" id="modalInfoGrid">
+                <!-- Dados do solicitante preenchidos via JS -->
+              </div>
+            </div>
+            <div class="info-section">
+              <div class="section-title">📋 Especificações da Solicitação</div>
+              <div class="info-grid" id="modalRequestGrid">
+                <!-- Dados da solicitação preenchidos via JS -->
+              </div>
+            </div>
+            <div class="info-section">
+              <div class="section-title">📎 Arquivos Anexados</div>
+              <div class="file-list" id="modalFileList">
+                <!-- Lista de arquivos preenchida via JS -->
+              </div>
+            </div>
+            <div class="observacoes" id="modalObservacoes" style="display:none;">
+              <div class="observacoes-title">💬 Comentários Administrativos</div>
+              <div class="observacoes-text"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Tab Content 2 - Timeline + Actions -->
+        <div id="timeline-tab" class="tab-content timeline-tab-container">
+          <div class="timeline-tab-layout">
+            <div class="timeline-column">
+              <div class="timeline-section">
+                <div class="timeline-title">⏱️ Histórico da Solicitação</div>
+                <div class="timeline" id="modalTimeline">
+                  <!-- Timeline preenchida via JS -->
+                </div>
+              </div>
+            </div>
+            <div class="actions-column">
+              <div class="actions-section">
+                <div class="action-buttons" id="modalActions">
+                  <!-- Botões de ação preenchidos via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Tab Content 3 - Comments -->
+        <div id="comments-tab" class="tab-content">
+          <div class="comments-tab">
+            <div class="comments-section">
+              <div class="comments-title">💬 Comentários da Solicitação</div>
+              <div class="comments-list" id="modalComments">
+                <!-- Comentários preenchidos via JS -->
+              </div>
+            </div>
+            <div class="add-comment-section">
+              <div class="comment-form">
+                <div class="comment-input-container">
+                  <textarea id="newComment" placeholder="Digite seu comentário aqui..." rows="3"></textarea>
+                  <button class="btn-primary" onclick="addCommentFromModal()">
+                    💬 Enviar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

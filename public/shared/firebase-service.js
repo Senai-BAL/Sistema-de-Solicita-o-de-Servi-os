@@ -158,7 +158,20 @@ class FirebaseService {
       const docRef = await this.db.collection(this.collectionName).add({
         ...data,
         d: Date.now(),
-        st: 'p' // status: pendente
+        st: 'p', // status: pendente
+        admin: {
+          status: 'pendente',
+          prioridade: 'baixa', // Prioridade baixa por padrão
+          data_criacao: Date.now(),
+          timestamps: {
+            created: Date.now(),
+            approved: null,
+            started: null,
+            completed: null,
+            cancelled: null,
+            reopened: null
+          }
+        }
       });
       
       console.log('✅ Solicitação criada:', docRef.id);
@@ -171,18 +184,75 @@ class FirebaseService {
 
   async updateRequestStatus(requestId, status, adminData = {}) {
     try {
+      // Primeiro, buscar o status atual para o log
+      const currentDoc = await this.db.collection(this.collectionName).doc(requestId).get();
+      const currentData = currentDoc.data();
+      const oldStatus = currentData?.admin?.status || 'pendente';
+      const currentTimestamp = Date.now();
+      
       const updateData = {
         'admin.status': status,
-        'admin.data_atualizacao': Date.now(),
+        'admin.data_atualizacao': currentTimestamp,
+        'admin.ultimaAtualizacao': currentTimestamp,
         'admin.responsavel': adminData.responsavel || 'Administrador'
       };
+
+      // Inicializar estrutura de timestamps se não existir
+      if (!currentData?.admin?.timestamps) {
+        updateData['admin.timestamps'] = {
+          created: currentData?.d || currentTimestamp,
+          approved: null,
+          started: null,
+          completed: null,
+          cancelled: null,
+          reopened: null
+        };
+      }
+
+      // Atualizar timestamp específico baseado no status
+      switch (status) {
+        case 'aprovado':
+          updateData['admin.timestamps.approved'] = currentTimestamp;
+          break;
+        case 'em_andamento':
+          updateData['admin.timestamps.started'] = currentTimestamp;
+          break;
+        case 'concluido':
+          updateData['admin.timestamps.completed'] = currentTimestamp;
+          break;
+        case 'cancelado':
+          updateData['admin.timestamps.cancelled'] = currentTimestamp;
+          break;
+        case 'reaberto':
+          updateData['admin.timestamps.reopened'] = currentTimestamp;
+          // Reset completed/cancelled se foi reaberto
+          updateData['admin.timestamps.completed'] = null;
+          updateData['admin.timestamps.cancelled'] = null;
+          break;
+      }
+
+      // Adicionar à timeline de histórico
+      if (!currentData?.admin?.status_history) {
+        updateData['admin.status_history'] = [];
+      }
+
+      updateData['admin.status_history'] = firebase.firestore.FieldValue.arrayUnion({
+        status: status,
+        timestamp: currentTimestamp,
+        admin: adminData.responsavel || 'Administrador',
+        comment: adminData.comment || null,
+        previous_status: oldStatus
+      });
 
       // Adicionar comentário se fornecido
       if (adminData.comment) {
         updateData['admin.comentarios'] = firebase.firestore.FieldValue.arrayUnion({
           texto: adminData.comment,
-          timestamp: Date.now(),
-          autor: adminData.responsavel || 'Administrador'
+          timestamp: currentTimestamp,
+          autor: adminData.responsavel || 'Administrador',
+          tipo: 'status_change',
+          status_anterior: oldStatus,
+          status_novo: status
         });
       }
 
@@ -191,17 +261,35 @@ class FirebaseService {
         updateData['admin.prioridade'] = adminData.priority;
       }
 
+      // Inicializar logs se não existir
+      if (!currentData?.admin?.logs) {
+        updateData['admin.logs'] = [];
+      }
+
+      // Adicionar log detalhado da mudança
+      updateData['admin.logs'] = firebase.firestore.FieldValue.arrayUnion({
+        timestamp: currentTimestamp,
+        action: 'status_update',
+        details: {
+          old_status: oldStatus,
+          new_status: status,
+          comment: adminData.comment || null,
+          admin: adminData.responsavel || 'Administrador'
+        }
+      });
+
       await this.db.collection(this.collectionName).doc(requestId).update(updateData);
       
       // Log da ação administrativa
       await this.logAdminAction(requestId, 'status_update', {
-        old_status: adminData.oldStatus,
+        old_status: oldStatus,
         new_status: status,
         comment: adminData.comment,
-        admin: adminData.responsavel || 'Administrador'
+        admin: adminData.responsavel || 'Administrador',
+        timestamp: currentTimestamp
       });
 
-      console.log('✅ Status atualizado:', requestId);
+      console.log('✅ Status atualizado:', requestId, `${oldStatus} → ${status}`);
       return true;
     } catch (error) {
       console.error('❌ Erro ao atualizar status:', error);

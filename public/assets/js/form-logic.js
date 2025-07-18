@@ -41,14 +41,16 @@ function collectFormData() {
         qc: parseInt(formData.get('qtdCopias')),
         fv: formData.get('frenteVerso') === 'on' ? 1 : 0,
         es: formData.get('escanear') === 'on' ? 1 : 0,
-        co: formData.get('colorido') === 'on' ? 1 : 0
+        co: formData.get('colorido') === 'on' ? 1 : 0,
+        obs: formData.get('observacoesImpressao') || ''
       };
     } else if (ts === 'impressao_3d') {
       data.dados = {
         mt: formData.get('material'),
         qt: parseInt(formData.get('quantidade3d')),
         stl: formData.get('possuiSTL') === 'on' ? 1 : 0,
-        dp: formData.get('descricaoPeca')
+        dp: formData.get('descricaoPeca'),
+        obs: formData.get('observacoes3d') || ''
       };
     } else if (ts === 'manutencao') {
       data.dados = {
@@ -63,7 +65,8 @@ function collectFormData() {
     data.dados = {
       ni: formData.get('nomeItem'),
       dr: formData.get('dataRetirada'),
-      dd: formData.get('dataDevolucao')
+      dd: formData.get('dataDevolucao'),
+      fin: formData.get('finalidadeEmprestimo') || ''
     };
   }
 
@@ -151,6 +154,13 @@ async function submitForm() {
         const manager = multiFileManagers['fotoProblema'];
         if (manager && manager.hasFiles()) {
           loadingText.textContent = '⏳ Enviando fotos do problema...';
+          const results = await manager.uploadAll(serviceInfo);
+          arquivos.push(...results);
+        }
+      } else if (tipoServico === 'arte_digital' || tipoServico === 'projeto') {
+        const manager = multiFileManagers['referenciaArte'];
+        if (manager && manager.hasFiles()) {
+          loadingText.textContent = '⏳ Enviando referências...';
           const results = await manager.uploadAll(serviceInfo);
           arquivos.push(...results);
         }

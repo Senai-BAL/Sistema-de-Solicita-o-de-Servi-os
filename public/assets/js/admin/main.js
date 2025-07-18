@@ -3,7 +3,12 @@
  * Descrição: Carregamento principal, event listeners e inicialização do dashboard
  */
 
-// � INICIALIZAÇÃO DE VARIÁVEIS GLOBAIS
+// 🔄 INICIALIZAÇÃO     // Auto-refresh a cada 5 minutos se estiver autenticado
+    setInterval(() => {
+        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
+            loadDashboard();
+        }
+    }, 300000); // 5 minutos = 300000msIÁVEIS GLOBAIS
 function initializeGlobalVariables() {
     window.firebaseService = window.firebaseService || null;
     window.currentRequests = window.currentRequests || [];
@@ -11,7 +16,7 @@ function initializeGlobalVariables() {
     window.currentViewMode = window.currentViewMode || 'list';
 }
 
-// �🔄 CARREGAMENTO DO DASHBOARD
+// 🔄 CARREGAMENTO DO DASHBOARD
 async function loadDashboard() {
     try {
         LoadingManager.show('Carregando dados do dashboard...');
@@ -48,7 +53,21 @@ async function loadDashboard() {
     }
 }
 
-// 🎛️ INTEGRAÇÃO COM O DASHBOARD (Backup)
+// � FUNÇÃO PARA ATUALIZAR DISPLAY DE ESTATÍSTICAS
+function updateStatsDisplay(stats) {
+    document.getElementById('totalRequests').textContent = stats.total || 0;
+    document.getElementById('pendingRequests').textContent = stats.pending || 0;
+    document.getElementById('inProgressRequests').textContent = stats.inProgress || 0;
+    document.getElementById('completedRequests').textContent = stats.completed || 0;
+
+    // Atualizar indicadores de mudança
+    document.getElementById('totalChange').textContent = `+${stats.today || 0} hoje`;
+    document.getElementById('pendingChange').textContent = stats.pending > 5 ? 'Requer atenção' : 'Sob controle';
+    document.getElementById('progressChange').textContent = 'Em processo';
+    document.getElementById('completedChange').textContent = 'Finalizadas';
+}
+
+// �🎛️ INTEGRAÇÃO COM O DASHBOARD (Backup)
 function addCompleteBackupButton() {
     const exportControls = document.querySelector('.export-controls');
     if (!exportControls || document.getElementById('completeBackupBtn')) return;
@@ -111,7 +130,40 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     }, 1000);
 });
 
-// 📱 EVENT LISTENERS
+// 🔐 SISTEMA DE LOGIN/LOGOUT
+function showDashboard() {
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('dashboard').classList.add('show');
+
+    // ✨ INICIALIZAR NOTIFICAÇÕES
+    if (!dashboardNotifications) {
+        dashboardNotifications = new DashboardWithNotifications();
+    }
+    dashboardNotifications.onAdminLogin();
+
+    loadDashboard();
+}
+
+function logout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        // ✨ PARAR NOTIFICAÇÕES
+        if (dashboardNotifications) {
+            dashboardNotifications.onAdminLogout();
+        }
+
+        AdminAuth.logout();
+        ToastManager.show('Logout realizado com sucesso!', 'success');
+        showLogin();
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginContainer').style.display = 'flex';
+    document.getElementById('dashboard').classList.remove('show');
+    document.getElementById('adminPassword').focus();
+}
+
+// 📱 EVENT LISTENERS - FORMULÁRIO DE LOGIN
 document.getElementById('filterService').addEventListener('change', loadDashboard);
 document.getElementById('filterStatus').addEventListener('change', loadDashboard);
 document.getElementById('filterPriority').addEventListener('change', loadDashboard);
@@ -152,12 +204,17 @@ document.addEventListener('DOMContentLoaded', function () {
         showLogin();
     }
 
-    // Auto-refresh a cada 30 segundos se estiver autenticado
+    // Auto-refresh a cada 1 minuto se estiver autenticado
     setInterval(() => {
         if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
             loadDashboard();
         }
-    }, 30000);
+    }, 60000);
+
+    // Atualização imediata ao carregar
+    if (AdminAuth.isAuthenticated()) {
+        loadDashboard();
+    }
 
     // Mostrar toast de boas-vindas
     setTimeout(() => {
@@ -209,5 +266,47 @@ console.log(`
 
 // Inicializar variáveis globais
 initializeGlobalVariables();
+
+// 🔄 FUNÇÃO DE ATUALIZAÇÃO MANUAL
+async function refreshDashboard() {
+    const refreshBtn = document.querySelector('.btn-refresh');
+    
+    if (!refreshBtn) return;
+    
+    try {
+        // Adicionar classe de loading
+        refreshBtn.classList.add('updating');
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = '⏳ Atualizando...';
+        
+        // Mostrar loading manager
+        LoadingManager.show('Atualizando dados...');
+        
+        // Aguardar um pouco para UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Carregar dashboard
+        await loadDashboard();
+        
+        // Esconder loading
+        LoadingManager.hide();
+        
+        // Mostrar toast de sucesso
+        ToastManager.show('Dados atualizados com sucesso! 🔄', 'success');
+        
+    } catch (error) {
+        console.error('❌ Erro ao atualizar dashboard:', error);
+        LoadingManager.hide();
+        ToastManager.show('Erro ao atualizar dados', 'error');
+    } finally {
+        // Restaurar botão
+        refreshBtn.classList.remove('updating');
+        refreshBtn.disabled = false;
+        refreshBtn.textContent = '🔄 Atualizar';
+    }
+}
+
+// Tornar função global
+window.refreshDashboard = refreshDashboard;
 
 console.log('🚀 Admin Main - Sistema principal carregado');

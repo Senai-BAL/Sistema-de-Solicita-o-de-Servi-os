@@ -1,5 +1,21 @@
-/* 🔧 SENAI Lab Admin - Funções Utilitárias
- * Arquivo: public/assets/js/admin/utils.js
+/* 🔧 SENAI Lab Admin        case 'espaco_maker':
+            detailsHTML = `
+                <div>
+                    <p><strong>📅 Data da Reserva:</strong> ${dados.dr || 'N/A'}</p>
+                    <p><strong>⏰ Horário de Início:</strong> ${dados.hi || 'N/A'}</p>
+                    <p><strong>⏰ Horário de Fim:</strong> ${dados.hf || 'N/A'}</p>
+                    ${dados.cb === 1 ? `<p><strong>💻 Chrome Books:</strong> ${dados.qcb || 0} unidades</p>` : '<p><strong>💻 Chrome Books:</strong> Não solicitado</p>'}
+                    ${dados.cp === 1 ? `<p><strong>🖥️ Computadores:</strong> ${dados.qcp || 0} unidades</p>` : '<p><strong>🖥️ Computadores:</strong> Não solicitado</p>'}
+                    ${dados.desc ? `<p><strong>📋 Descrição da Utilização:</strong><br>${dados.desc}</p>` : ''}
+                </div>
+            `;Utilitárias
+ * Arquivo: publi                case 'arte_digital':
+                case 'projeto':
+                    detailsHTML = `
+                        <div>
+                            <p><strong>📋 Descrição:</strong><br>${dados.desc || 'N/A'}</p>
+                        </div>
+                    `;/js/admin/utils.js
  * Descrição: Funções auxiliares para formatação, validação e helpers gerais
  */
 
@@ -16,10 +32,12 @@ function formatRequestDetails(request) {
         case 'espaco_maker':
             detailsHTML = `
                 <div>
-                    <p><strong>📅 Data da Reserva:</strong> ${dados.data || 'N/A'}</p>
-                    <p><strong>⏰ Período:</strong> ${dados.periodo || 'N/A'}</p>
-                    ${dados.equipamentos ? `<p><strong>🖥️ Equipamentos:</strong> ${Array.isArray(dados.equipamentos) ? dados.equipamentos.join(', ') : dados.equipamentos}</p>` : ''}
-                    ${dados.descricao ? `<p><strong>📋 Descrição da Utilização:</strong><br>${dados.descricao}</p>` : ''}
+                    <p><strong>📅 Data da Reserva:</strong> ${dados.dr || 'N/A'}</p>
+                    <p><strong>⏰ Horário de Início:</strong> ${dados.hi || 'N/A'}</p>
+                    <p><strong>⏰ Horário de Fim:</strong> ${dados.hf || 'N/A'}</p>
+                    ${dados.cb === 1 ? `<p><strong>� Chrome Books:</strong> ${dados.qcb || 0} unidades</p>` : ''}
+                    ${dados.cp === 1 ? `<p><strong>🖥️ Computadores:</strong> ${dados.qcp || 0} unidades</p>` : ''}
+                    ${dados.desc ? `<p><strong>📋 Descrição da Utilização:</strong><br>${dados.desc}</p>` : ''}
                 </div>
             `;
             break;
@@ -29,12 +47,12 @@ function formatRequestDetails(request) {
                 case 'impressao':
                     detailsHTML = `
                         <div>
-                            <p><strong>📄 Tipo de Papel:</strong> ${dados.papel || 'N/A'}</p>
-                            <p><strong>📊 Quantidade:</strong> ${dados.quantidade || 'N/A'} folhas</p>
-                            ${dados.frente_verso ? '<p><strong>📑 Impressão:</strong> Frente e Verso</p>' : '<p><strong>📑 Impressão:</strong> Apenas Frente</p>'}
-                            ${dados.colorido ? '<p><strong>🎨 Cores:</strong> Colorido</p>' : '<p><strong>🎨 Cores:</strong> Preto e Branco</p>'}
-                            ${dados.escaneamento ? '<p><strong>📷 Escaneamento:</strong> Solicitado</p>' : ''}
-                            ${dados.observacoes ? `<p><strong>📝 Observações:</strong><br>${dados.observacoes}</p>` : ''}
+                            <p><strong>📄 Tamanho da Folha:</strong> ${dados.tf || 'N/A'}</p>
+                            <p><strong>📊 Quantidade de Cópias:</strong> ${dados.qc || 'N/A'} ${dados.qc === 1 ? 'folha' : 'folhas'}</p>
+                            <p><strong>📑 Impressão:</strong> ${dados.fv === 1 ? 'Frente e Verso' : 'Apenas Frente'}</p>
+                            <p><strong>🎨 Cores:</strong> ${dados.co === 1 ? 'Colorido' : 'Preto e Branco'}</p>
+                            ${dados.es === 1 ? '<p><strong>📷 Escaneamento:</strong> Solicitado</p>' : ''}
+                            ${dados.obs ? `<p><strong>📝 Observações:</strong><br>${dados.obs}</p>` : ''}
                         </div>
                     `;
                     break;
@@ -42,10 +60,10 @@ function formatRequestDetails(request) {
                 case 'impressao_3d':
                     detailsHTML = `
                         <div>
-                            <p><strong>🧱 Material:</strong> ${dados.material || 'N/A'}</p>
-                            <p><strong>📊 Quantidade:</strong> ${dados.quantidade || 'N/A'} peças</p>
-                            ${dados.descricao_peca ? `<p><strong>📋 Descrição da Peça:</strong><br>${dados.descricao_peca}</p>` : ''}
-                            ${dados.observacoes ? `<p><strong>📝 Observações:</strong><br>${dados.observacoes}</p>` : ''}
+                            <p><strong>🧱 Material:</strong> ${dados.mt || 'N/A'}</p>
+                            <p><strong>📊 Quantidade:</strong> ${dados.qt || 'N/A'} ${dados.qt === 1 ? 'peça' : 'peças'}</p>
+                            <p><strong>📁 Arquivo STL:</strong> ${dados.stl === 1 ? 'Possui arquivo STL' : 'Não possui arquivo STL'}</p>
+                            ${dados.dp ? `<p><strong>📋 Descrição da Peça:</strong><br>${dados.dp}</p>` : ''}
                         </div>
                     `;
                     break;
@@ -53,10 +71,7 @@ function formatRequestDetails(request) {
                 case 'manutencao':
                     detailsHTML = `
                         <div>
-                            <p><strong>🔧 Tipo de Problema:</strong> ${dados.tipo_problema || 'N/A'}</p>
-                            ${dados.descricao_problema ? `<p><strong>📋 Descrição do Problema:</strong><br>${dados.descricao_problema}</p>` : ''}
-                            ${dados.urgencia ? `<p><strong>⚡ Urgência:</strong> ${dados.urgencia}</p>` : ''}
-                            ${dados.observacoes ? `<p><strong>📝 Observações:</strong><br>${dados.observacoes}</p>` : ''}
+                            <p><strong>🔧 Descrição do Problema:</strong><br>${dados.prob || 'N/A'}</p>
                         </div>
                     `;
                     break;
@@ -65,10 +80,7 @@ function formatRequestDetails(request) {
                 case 'projeto':
                     detailsHTML = `
                         <div>
-                            ${dados.tipo_projeto ? `<p><strong>🎨 Tipo de Projeto:</strong> ${dados.tipo_projeto}</p>` : ''}
-                            ${dados.descricao_ideias ? `<p><strong>💡 Descrição das Ideias:</strong><br>${dados.descricao_ideias}</p>` : ''}
-                            ${dados.utilizacao ? `<p><strong>🎯 Utilização:</strong><br>${dados.utilizacao}</p>` : ''}
-                            ${dados.prazo ? `<p><strong>⏰ Prazo:</strong> ${dados.prazo}</p>` : ''}
+                            <p><strong>� Descrição:</strong><br>${dados.desc || 'N/A'}</p>
                             ${dados.observacoes ? `<p><strong>📝 Observações:</strong><br>${dados.observacoes}</p>` : ''}
                         </div>
                     `;
@@ -88,11 +100,10 @@ function formatRequestDetails(request) {
         case 'emprestimo':
             detailsHTML = `
                 <div>
-                    <p><strong>📦 Item para Empréstimo:</strong> ${dados.item_emprestimo || 'N/A'}</p>
-                    ${dados.data_emprestimo ? `<p><strong>📅 Data do Empréstimo:</strong> ${dados.data_emprestimo}</p>` : ''}
-                    ${dados.data_devolucao ? `<p><strong>🔄 Data de Devolução:</strong> ${dados.data_devolucao}</p>` : ''}
-                    ${dados.finalidade ? `<p><strong>🎯 Finalidade:</strong><br>${dados.finalidade}</p>` : ''}
-                    ${dados.observacoes ? `<p><strong>📝 Observações:</strong><br>${dados.observacoes}</p>` : ''}
+                    <p><strong>📦 Item para Empréstimo:</strong> ${dados.ni || 'N/A'}</p>
+                    ${dados.dr ? `<p><strong>📅 Data de Retirada:</strong> ${dados.dr}</p>` : ''}
+                    ${dados.dd ? `<p><strong>🔄 Data de Devolução:</strong> ${dados.dd}</p>` : ''}
+                    ${dados.fin ? `<p><strong>🎯 Finalidade:</strong><br>${dados.fin}</p>` : ''}
                 </div>
             `;
             break;
@@ -107,6 +118,108 @@ function formatRequestDetails(request) {
     }
 
     return detailsHTML;
+}
+
+// 📝 FORMATAÇÃO DE DETALHES DA SOLICITAÇÃO - DADOS ESTRUTURADOS
+function formatRequestDetailsStructured(request) {
+    if (!request || !request.dados) {
+        return [{ label: 'Detalhes', value: 'Não disponíveis' }];
+    }
+
+    const dados = request.dados;
+    let detailsArray = [];
+
+    switch (request.s) {
+        case 'espaco_maker':
+            detailsArray = [
+                { label: 'Data da Reserva', value: dados.dr || 'N/A' },
+                { label: 'Horário de Início', value: dados.hi || 'N/A' },
+                { label: 'Horário de Fim', value: dados.hf || 'N/A' },
+                { label: 'Chrome Books', value: dados.cb === 1 ? `${dados.qcb || 0} unidades` : 'Não solicitado' },
+                { label: 'Computadores', value: dados.cp === 1 ? `${dados.qcp || 0} unidades` : 'Não solicitado' }
+            ];
+            if (dados.desc) {
+                detailsArray.push({ label: 'Descrição da Utilização', value: dados.desc, isLong: true });
+            }
+            break;
+
+        case 'servicos':
+            switch (request.ts) {
+                case 'impressao':
+                    detailsArray = [
+                        { label: 'Tamanho da Folha', value: dados.tf || 'N/A' },
+                        { label: 'Quantidade de Cópias', value: `${dados.qc || 'N/A'} ${dados.qc === 1 ? 'folha' : 'folhas'}` },
+                        { label: 'Tipo de Impressão', value: dados.fv === 1 ? 'Frente e Verso' : 'Apenas Frente' },
+                        { label: 'Cores', value: dados.co === 1 ? 'Colorido' : 'Preto e Branco' },
+                        { label: 'Escaneamento', value: dados.es === 1 ? 'Solicitado' : 'Não solicitado' }
+                    ];
+                    if (dados.obs) {
+                        detailsArray.push({ label: 'Observações', value: dados.obs, isLong: true });
+                    }
+                    break;
+
+                case 'impressao_3d':
+                    detailsArray = [
+                        { label: 'Material', value: dados.mt || 'N/A' },
+                        { label: 'Quantidade', value: `${dados.qt || 'N/A'} ${dados.qt === 1 ? 'peça' : 'peças'}` },
+                        { label: 'Arquivo STL', value: dados.stl === 1 ? 'Possui arquivo STL' : 'Não possui arquivo STL' }
+                    ];
+                    if (dados.dp) {
+                        detailsArray.push({ label: 'Descrição da Peça', value: dados.dp, isLong: true });
+                    }
+                    if (dados.obs) {
+                        detailsArray.push({ label: 'Observações', value: dados.obs, isLong: true });
+                    }
+                    break;
+
+                case 'manutencao':
+                    detailsArray = [
+                        { label: 'Descrição do Problema', value: dados.prob || 'N/A', isLong: true }
+                    ];
+                    break;
+
+                case 'arte_digital':
+                case 'projeto':
+                    detailsArray = [
+                        { label: 'Descrição', value: dados.desc || 'N/A', isLong: true }
+                    ];
+                    if (dados.observacoes) {
+                        detailsArray.push({ label: 'Observações', value: dados.observacoes, isLong: true });
+                    }
+                    break;
+
+                default:
+                    detailsArray = [
+                        { label: 'Tipo de Serviço', value: request.ts || 'N/A' }
+                    ];
+                    if (dados.descricao) {
+                        detailsArray.push({ label: 'Descrição', value: dados.descricao, isLong: true });
+                    }
+                    if (dados.observacoes) {
+                        detailsArray.push({ label: 'Observações', value: dados.observacoes, isLong: true });
+                    }
+            }
+            break;
+
+        case 'emprestimo':
+            detailsArray = [
+                { label: 'Item para Empréstimo', value: dados.ni || 'N/A' },
+                { label: 'Data de Retirada', value: dados.dr || 'N/A' },
+                { label: 'Data de Devolução', value: dados.dd || 'N/A' }
+            ];
+            if (dados.fin) {
+                detailsArray.push({ label: 'Finalidade', value: dados.fin, isLong: true });
+            }
+            break;
+
+        default:
+            detailsArray = [
+                { label: 'Tipo de Serviço', value: request.s || 'N/A' },
+                { label: 'Dados', value: JSON.stringify(dados, null, 2), isLong: true, isCode: true }
+            ];
+    }
+
+    return detailsArray;
 }
 
 // 🏷️ OBTER NOME EXIBÍVEL DO SERVIÇO
