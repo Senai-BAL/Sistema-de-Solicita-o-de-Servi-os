@@ -8,37 +8,37 @@ const ADMIN_USERS = {
   'presidentinho': {
     name: 'Getulio',
     passwordHash: '8f7d8e7c5a3b2d1e9f6a4c7b8e5d2a1f', // Hash de 'Senai@presidentinho'
-    avatar: '🏛️',
-    role: 'admin',
-    department: 'Coordenação'
+    avatar: '💻',
+    role: 'interlocutor',
+    department: 'Desenvolvedor'
   },
   'dr.chaguinha': {
     name: 'Chagas',
     passwordHash: '3b2d1e9f6a4c7b8e5d2a1f8f7d8e7c5a', // Hash de 'Senai@dr.chaguinha'
-    avatar: '👨‍⚕️',
-    role: 'admin',
-    department: 'Técnico'
+    avatar: '🎮',
+    role: 'interlocutor',
+    department: 'Programador de Jogos'
   },
   'rainha.cat': {
     name: 'Catarina',
     passwordHash: '6a4c7b8e5d2a1f8f7d8e7c5a3b2d1e9f', // Hash de 'Senai@rainha.cat'
-    avatar: '👸',
-    role: 'admin',
-    department: 'Gestão'
+    avatar: '🤖',
+    role: 'interlocutor',
+    department: 'Mecatrônica'
   },
   'brunete.designer': {
     name: 'Bruna',
     passwordHash: '5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b8e', // Hash de 'Senai@brunete.designer'
     avatar: '🎨',
-    role: 'admin',
-    department: 'Designer'
+    role: 'interlocutor',
+    department: 'Designer 3D'
   },
   'luy.jedi': {
     name: 'Luy',
     passwordHash: '8e5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b', // Hash de 'Senai@luy.jedi'
-    avatar: '🌟',
-    role: 'admin',
-    department: 'Suporte'
+    avatar: '🖌️',
+    role: 'interlocutor',
+    department: 'Designer 2D'
   }
 };
 

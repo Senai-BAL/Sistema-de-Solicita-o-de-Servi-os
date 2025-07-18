@@ -30,13 +30,15 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - ✅ **Design Responsivo**: Otimizado para mobile e desktop
 - ✅ **Integração Firebase**: Salvamento seguro no Firestore
 
-### 🔐 **Para Administradores (admin.html)**
-- ✅ **Autenticação Segura**: Login por senha com sessão persistente
+### 🔐 **Para Interlocutores do Lab (admin.html)**
+- ✅ **Sistema Multiusuário**: Login individual com credenciais específicas por interlocutor
+- ✅ **Auditoria Completa**: Rastreamento completo de ações por interlocutor
+- ✅ **Modal de Auditoria**: Sistema de logs com timeline de ações
 - ✅ **Dashboard Completo**: Visualização de todas as solicitações em lista otimizada
 - ✅ **Estatísticas em Tempo Real**: Cards com métricas importantes
-- ✅ **Gestão de Status**: Atualização via modal com fluxo inteligente
+- ✅ **Gestão de Status**: Atualização via modal com fluxo inteligente e rastreamento
 - ✅ **Sistema de Prioridades**: Definição automática (baixa) e gestão manual
-- ✅ **Sistema de Comentários**: Adição de comentários administrativos
+- ✅ **Sistema de Comentários**: Adição de comentários administrativos com autor
 - ✅ **Filtros Avançados**: Por serviço, status e período
 - ✅ **Lista Infinita**: Scroll infinito sem limitação de altura
 - ✅ **Atualização Inteligente**: Auto-refresh de 5min + botão manual
@@ -54,8 +56,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.6.0 (Otimizações de Interface e Performance)  
-**Detalhes**: Consulte [`docs/releases/RELEASE-v2.6.0.md`](docs/releases/RELEASE-v2.6.0.md) para informações completas
+**Versão Atual**: v2.7.0 (Sistema de Interlocutores Especializados)  
+**Detalhes**: Consulte [`docs/releases/RELEASE-v2.7.0.md`](docs/releases/RELEASE-v2.7.0.md) para informações completas
 
 ## � Configuração
 

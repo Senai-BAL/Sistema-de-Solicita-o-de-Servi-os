@@ -4,6 +4,32 @@
 
 > 📖 **Changelog Completo**: Para um histórico detalhado com todos os commits, consulte [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md)
 
+## [2.7.0] - 2025-07-18 �‍🏫
+
+### **SISTEMA DE INTERLOCUTORES ESPECIALIZADOS**
+
+#### ⚡ **Principais Melhorias**
+- **Interlocutores Especializados**: Cada usuário com especialização específica no Lab
+- **Funções Técnicas Definidas**: Desenvolvedor, Programador de Jogos, Mecatrônica, Designer 3D e 2D
+- **Avatars Especializados**: Ícones representativos para cada área de atuação
+- **Role Unificado**: Todos são interlocutores no Lab com especialidades próprias
+- **Sistema de Auditoria Mantido**: Rastreamento completo de ações por especialista
+
+#### 🎯 **Impacto**
+- **Especialização**: Cada interlocutor com área de expertise definida
+- **Identificação Clara**: Avatars específicos para cada especialidade
+- **Organização**: Estrutura baseada em competências técnicas
+- **Rastreabilidade**: Auditoria por especialista e área
+
+#### 🤝 **Interlocutores do Lab**
+- **codigozeiro** (Getulio) - Desenvolvedor 💻
+- **gamemaster** (Chagas) - Programador de Jogos 🎮
+- **robotgirl** (Catarina) - Mecatrônica 🤖
+- **artist3d** (Bruna) - Designer 3D 🎨
+- **pixelmaster** (Luy) - Designer 2D �️
+
+---
+
 ## [2.6.0] - 2025-07-18 🔄
 
 ### **OTIMIZAÇÕES DE INTERFACE E PERFORMANCE**
