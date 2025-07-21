@@ -249,25 +249,58 @@ async function submitForm() {
 function validateForm() {
   const servico = document.getElementById('servico').value;
 
-  if (!document.getElementById('colaborador').value.trim()) {
+  // 🛡️ ENHANCED VALIDATION: Nome do colaborador
+  const colaborador = document.getElementById('colaborador').value.trim();
+  if (!colaborador) {
     showStatus('Por favor, informe o nome do colaborador.', 'error');
     return false;
   }
-
-  if (!document.getElementById('email').value.trim()) {
-    showStatus('Por favor, informe o email.', 'error');
+  if (colaborador.length < 2) {
+    showStatus('Nome do colaborador deve ter pelo menos 2 caracteres.', 'error');
+    return false;
+  }
+  if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(colaborador)) {
+    showStatus('Nome do colaborador deve conter apenas letras e espaços.', 'error');
     return false;
   }
 
-  if (!document.getElementById('whatsapp').value.trim()) {
+  // 🛡️ ENHANCED VALIDATION: Email
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showStatus('Por favor, informe o email.', 'error');
+    return false;
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showStatus('Por favor, informe um email válido.', 'error');
+    return false;
+  }
+
+  // 🛡️ ENHANCED VALIDATION: WhatsApp
+  const whatsappInput = document.getElementById('whatsapp').value.trim();
+  if (!whatsappInput) {
     showStatus('Por favor, informe o WhatsApp.', 'error');
     return false;
   }
 
   // Validar formato do WhatsApp
-  const whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, '');
+  const whatsapp = whatsappInput.replace(/\D/g, '');
   if (whatsapp.length !== 11) {
     showStatus('WhatsApp deve ter 11 dígitos: (xx)xxxxx-xxxx', 'error');
+    return false;
+  }
+  
+  // 🛡️ VALIDATION: Verificar se não são todos números iguais
+  if (/^(\d)\1{10}$/.test(whatsapp)) {
+    showStatus('WhatsApp inválido. Digite um número real.', 'error');
+    return false;
+  }
+  
+  // 🛡️ VALIDATION: Verificar DDD válido (código de área brasileiro)
+  const ddd = whatsapp.substring(0, 2);
+  const validDDDs = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '21', '22', '24', '27', '28', '31', '32', '33', '34', '35', '37', '38', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '53', '54', '55', '61', '62', '63', '64', '65', '66', '67', '68', '69', '71', '73', '74', '75', '77', '79', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94', '95', '96', '97', '98', '99'];
+  if (!validDDDs.includes(ddd)) {
+    showStatus('DDD inválido. Digite um código de área brasileiro válido.', 'error');
     return false;
   }
 
