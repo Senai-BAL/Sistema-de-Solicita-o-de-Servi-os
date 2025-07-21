@@ -1,6 +1,6 @@
-/* 🔧 SENAI Lab - Lógica do Formulário
+/* 🔧 SENAI Lab - Lógica do Formulário v2.7.3
  * Arquivo: public/assets/js/form-logic.js
- * Descrição: Coleta de dados, validação e envio do formulário
+ * Descrição: Coleta de dados, validação e envio com UX melhorado
  */
 
 // 📋 COLETA DE DADOS OTIMIZADA
@@ -105,11 +105,19 @@ async function submitForm() {
   const submitBtn = document.getElementById('submitBtn');
   const btnText = document.getElementById('btnText');
   const loadingText = document.getElementById('loadingText');
+  const form = document.getElementById('senaiForm');
 
   try {
-    submitBtn.disabled = true;
-    btnText.style.display = 'none';
-    loadingText.style.display = 'inline';
+    // Estados UX v2.7.3
+    if (window.UIStates) {
+      UIStates.setFormSubmitting(form);
+      UIStates.setButtonLoading(submitBtn, 'Enviando...');
+    } else {
+      // Fallback
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      loadingText.style.display = 'inline';
+    }
 
     if (!navigator.onLine) {
       throw new Error('Sem conexão com a internet.');
@@ -195,6 +203,13 @@ async function submitForm() {
       const docRef = await db.collection(collectionName).add(formData);
       console.log('✅ Solicitação enviada com ID:', docRef.id);
       usageMonitor.addWrite();
+      
+      // Estados de sucesso UX v2.7.3
+      if (window.UIStates) {
+        UIStates.setFormSuccess(form, 'Solicitação enviada com sucesso!');
+        UIStates.setButtonSuccess(submitBtn, '✓ Enviado');
+      }
+      
       showSuccessScreen(docRef.id);
     } catch (firestoreError) {
       console.error('❌ Erro específico do Firestore:', firestoreError);
@@ -208,6 +223,13 @@ async function submitForm() {
           const docRef = await db.collection('solicitacoes').add(formData);
           console.log('✅ Solicitação salva na coleção principal com ID:', docRef.id);
           usageMonitor.addWrite();
+          
+          // Estados de sucesso UX v2.7.3
+          if (window.UIStates) {
+            UIStates.setFormSuccess(form, 'Solicitação enviada com sucesso!');
+            UIStates.setButtonSuccess(submitBtn, '✓ Enviado');
+          }
+          
           showSuccessScreen(docRef.id);
           return;
         } catch (secondError) {
@@ -238,11 +260,17 @@ async function submitForm() {
       errorMessage += `Detalhes: ${error.message}`;
     }
 
-    showStatus(errorMessage, 'error');
-
-    submitBtn.disabled = false;
-    btnText.style.display = 'inline';
-    loadingText.style.display = 'none';
+    // Estados de erro UX v2.7.3
+    if (window.UIStates) {
+      UIStates.setFormError(form, errorMessage);
+      UIStates.setButtonError(submitBtn, '✗ Erro');
+    } else {
+      // Fallback
+      showStatus(errorMessage, 'error');
+      submitBtn.disabled = false;
+      btnText.style.display = 'inline';
+      loadingText.style.display = 'none';
+    }
   }
 }
 

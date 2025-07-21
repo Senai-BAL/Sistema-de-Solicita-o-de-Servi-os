@@ -1,6 +1,6 @@
-/* 🔧 SENAI Lab Admin - Funções do Dashboard
+/* 🔧 SENAI Lab Admin - Funções do Dashboard v2.7.3
  * Arquivo: public/assets/js/admin/dashboard.js
- * Descrição: Funções principais do dashboard, renderização e interações
+ * Descrição: Funções principais do dashboard com UX melhorado
  */
 
 // 🎨 SISTEMA DE INTERFACE
@@ -83,14 +83,22 @@ function getPriorityIcon(priority) {
 }
 
 // 📋 RENDERIZAÇÃO DA LISTA
-/* 🎨 MODELO TABELA RESPONSIVA - Renderização Principal */
+/* 🎨 MODELO TABELA RESPONSIVA - Renderização Principal com UX v2.7.3 */
 async function renderRequestsList(requests) {
     const container = document.getElementById('requestsList');
+
+    // Mostrar skeleton enquanto carrega
+    if (window.SkeletonManager) {
+        SkeletonManager.showRequestsTable(container);
+    }
 
     if (requests.length === 0) {
         container.innerHTML = '<div class="empty-state"><p>Nenhuma solicitação encontrada</p></div>';
         return;
     }
+
+    // Simular delay para demonstrar skeleton (remover em produção)
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     let html = `
         <div class="table-container">
@@ -109,14 +117,16 @@ async function renderRequestsList(requests) {
                 <tbody>
     `;
 
-    requests.forEach(request => {
+    requests.forEach((request, index) => {
         const status = request.admin?.status || 'pendente';
         const priority = request.admin?.prioridade || 'baixa';
         const serviceName = getServiceName(request.s, request.ts);
         const priorityClass = getPriorityClass(priority);
 
         html += `
-            <tr class="table-row ${priorityClass}" onclick="viewDetails('${request.id}')">
+            <tr class="table-row ${priorityClass} micro-hover" 
+                onclick="viewDetails('${request.id}')" 
+                data-micro-animation="slide-up">
                 <!-- Serviço -->
                 <td class="service-cell">
                     <div class="service-info-table">
@@ -183,6 +193,12 @@ async function renderRequestsList(requests) {
     `;
 
     container.innerHTML = html;
+
+    // Animar entrada dos elementos
+    if (window.MicroInteractions) {
+        const rows = container.querySelectorAll('.table-row');
+        MicroInteractions.animateList(rows, 'slide-up', 50);
+    }
 }
 
 // 🎯 KANBAN BOARD
