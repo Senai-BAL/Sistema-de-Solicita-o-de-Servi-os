@@ -279,12 +279,50 @@ document.addEventListener('DOMContentLoaded', function () {
         showLogin();
     }
 
-    // Auto-refresh a cada 1 minuto se estiver autenticado
-    setInterval(() => {
-        if (AdminAuth.isAuthenticated() && document.getElementById('dashboard').classList.contains('show')) {
-            loadDashboard();
+    // 🔄 SMART AUTO-REFRESH: Adapta frequência baseado na atividade
+    let refreshInterval = null;
+    let userActiveTime = Date.now();
+    let refreshFrequency = 5 * 60 * 1000; // 5 minutos padrão
+
+    // 🎯 DETECTAR ATIVIDADE DO USUÁRIO
+    const resetUserActivity = () => {
+        userActiveTime = Date.now();
+        // Usuário ativo: refresh mais frequente (2 minutos)
+        refreshFrequency = 2 * 60 * 1000;
+        scheduleNextRefresh();
+    };
+
+    // 🎧 LISTENERS DE ATIVIDADE
+    ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+        document.addEventListener(event, resetUserActivity, { passive: true });
+    });
+
+    // 📊 FUNÇÃO INTELIGENTE DE REFRESH
+    const smartRefresh = () => {
+        if (!AdminAuth.isAuthenticated() || !document.getElementById('dashboard').classList.contains('show')) {
+            return;
         }
-    }, 60000);
+
+        const timeSinceActive = Date.now() - userActiveTime;
+        
+        // Se usuário inativo por mais de 10 minutos: refresh menos frequente (10 minutos)
+        if (timeSinceActive > 10 * 60 * 1000) {
+            refreshFrequency = 10 * 60 * 1000;
+        }
+
+        console.log(`🔄 Smart refresh executado - Próximo em ${refreshFrequency / 60000} minutos`);
+        loadDashboard();
+        scheduleNextRefresh();
+    };
+
+    // ⏰ AGENDAR PRÓXIMO REFRESH
+    const scheduleNextRefresh = () => {
+        if (refreshInterval) clearTimeout(refreshInterval);
+        refreshInterval = setTimeout(smartRefresh, refreshFrequency);
+    };
+
+    // 🚀 INICIAR SISTEMA DE REFRESH INTELIGENTE
+    scheduleNextRefresh();
 
     // Atualização imediata ao carregar
     if (AdminAuth.isAuthenticated()) {

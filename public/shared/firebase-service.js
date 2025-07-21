@@ -62,66 +62,63 @@ class FirebaseService {
 
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
-    try {
-      console.log(`🔍 Buscando solicitações na coleção: ${this.collectionName}`);
-      const snapshot = await this.db.collection(this.collectionName).orderBy('d', 'desc').get();
-      console.log(`✅ Encontradas ${snapshot.docs.length} solicitações`);
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } catch (error) {
-      console.error('❌ Erro ao buscar solicitações:', error);
-      console.error('❌ Código do erro:', error.code);
-      
-      // Tentar fallback para coleção principal se estivermos em modo test
-      if (error.code === 'permission-denied' && this.collectionName === 'solicitacoes_test') {
-        console.log('🔄 Tentando buscar na coleção principal...');
-        try {
-          const snapshot = await this.db.collection('solicitacoes').orderBy('d', 'desc').get();
-          console.log(`✅ Fallback bem-sucedido: ${snapshot.docs.length} solicitações encontradas`);
-          return snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-        } catch (fallbackError) {
-          console.error('❌ Erro também na coleção principal:', fallbackError);
+    // 🎯 ESTRATÉGIA UNIFICADA: Lista de coleções para tentar em ordem
+    const collectionsToTry = this.collectionName === 'solicitacoes_test' 
+      ? ['solicitacoes_test', 'solicitacoes'] 
+      : ['solicitacoes'];
+
+    let lastError = null;
+
+    for (const collection of collectionsToTry) {
+      try {
+        console.log(`🔍 Tentando coleção: ${collection}`);
+        const snapshot = await this.db.collection(collection).orderBy('d', 'desc').get();
+        console.log(`✅ Sucesso em ${collection}: ${snapshot.docs.length} solicitações`);
+        
+        // � CACHE: Se não é a coleção principal, atualizar referência
+        if (collection !== this.collectionName) {
+          console.log(`🔄 Coleção ${this.collectionName} indisponível, usando ${collection}`);
         }
+
+        return snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      } catch (error) {
+        console.warn(`❌ Falha na coleção ${collection}:`, error.code);
+        lastError = error;
+        continue; // Tentar próxima coleção
       }
-      
-      throw error;
     }
+
+    // 🚨 Todas as tentativas falharam
+    console.error('❌ Erro em todas as coleções tentadas:', lastError);
+    throw new Error(`Falha ao acessar dados: ${lastError.message}`);
   }
 
   async getRequestById(id) {
-    try {
-      console.log(`🔍 Buscando solicitação ID: ${id} na coleção: ${this.collectionName}`);
-      const doc = await this.db.collection(this.collectionName).doc(id).get();
-      if (doc.exists) {
-        return { id: doc.id, ...doc.data() };
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error('❌ Erro ao buscar solicitação por ID:', error);
-      
-      // Tentar fallback para coleção principal se estivermos em modo test
-      if (error.code === 'permission-denied' && this.collectionName === 'solicitacoes_test') {
-        console.log('🔄 Tentando buscar na coleção principal...');
-        try {
-          const doc = await this.db.collection('solicitacoes').doc(id).get();
-          if (doc.exists) {
-            return { id: doc.id, ...doc.data() };
-          } else {
-            return null;
-          }
-        } catch (fallbackError) {
-          console.error('❌ Erro também na coleção principal:', fallbackError);
+    // 🎯 USAR MESMA ESTRATÉGIA DE FALLBACK
+    const collectionsToTry = this.collectionName === 'solicitacoes_test' 
+      ? ['solicitacoes_test', 'solicitacoes'] 
+      : ['solicitacoes'];
+
+    for (const collection of collectionsToTry) {
+      try {
+        console.log(`� Buscando ID ${id} na coleção: ${collection}`);
+        const doc = await this.db.collection(collection).doc(id).get();
+        if (doc.exists) {
+          console.log(`✅ Documento encontrado em ${collection}`);
+          return { id: doc.id, ...doc.data() };
         }
+      } catch (error) {
+        console.warn(`❌ Falha ao buscar em ${collection}:`, error.code);
+        continue;
       }
-      
-      throw error;
     }
+
+    // Não encontrado em nenhuma coleção
+    console.log(`❌ Documento ${id} não encontrado em nenhuma coleção`);
+    return null;
   }
 
   async getRequestsByFilter(filters = {}) {
