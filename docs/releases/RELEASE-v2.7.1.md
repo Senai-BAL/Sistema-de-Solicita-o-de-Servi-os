@@ -1,7 +1,7 @@
 # 🐛 Release v2.7.1 - Bug Fixes Críticos
 **Data de Lançamento**: 21 de julho de 2025  
 **Tipo**: Patch - Correções Críticas  
-**Branch**: main  
+**Branch**: test-environment  
 
 ---
 
