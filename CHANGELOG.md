@@ -305,13 +305,9 @@ Exemplos:
 
 ## [2.2.0] - 2025-07-01
 
-### 🆕 Adicionado
-- Integração com Firebase Firestore
-- Sistema de solicitações completo
 - Formulário adaptativo
 
 ### 🔄 Modificado
-- Estrutura do projeto reorganizada
 - Configurações externalizadas
 
 ## [2.1.0] - 2025-06-25

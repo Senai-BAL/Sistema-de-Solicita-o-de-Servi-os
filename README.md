@@ -9,16 +9,13 @@
 
 Sistema web completo para solicitação de serviços do SENAI Lab, permitindo aos colaboradores solicitar:
 
-- 🏗️ **Espaço Maker**: Reserva de espaços e equipamentos
-- 🖨️ **Serviços**: Impressão, Impressão 3D, Manutenção, Arte Digital
-- 📦 **Empréstimo**: Solicitação de empréstimo de itens
 
 **Inclui dashboard administrativo** para gerenciamento completo das solicitações.
 
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
-- ✅ **Formulário Dinâmico**: Interface adaptativa baseada no tipo de serviço
+ **Versão Atual**: v2.7.4 (Atualização de funcionalidades e correções)
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
