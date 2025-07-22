@@ -1,0 +1,32 @@
+/* Módulo de estilos das seções de serviços */
+.service-section {
+  display: none;
+  margin-top: 30px;
+  padding: 25px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #4285f4;
+}
+
+.service-section.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  font-size: 1.3rem;
+  color: #1e3c72;
+  margin-bottom: 20px;
+  font-weight: 600;
+}

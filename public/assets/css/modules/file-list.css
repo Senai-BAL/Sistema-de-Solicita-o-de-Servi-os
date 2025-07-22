@@ -1,0 +1,161 @@
+/* Módulo de estilos para múltiplos arquivos */
+.file-list {
+  margin-top: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.file-list.empty {
+  display: none;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.file-item:hover {
+  background: #f0f0f0;
+}
+
+.file-icon {
+  font-size: 24px;
+  margin-right: 12px;
+  min-width: 30px;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.file-size {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.file-status {
+  font-size: 0.8rem;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.file-status.waiting {
+  color: #6c757d;
+}
+
+.file-status.uploading {
+  color: #007bff;
+}
+
+.file-status.success {
+  color: #28a745;
+}
+
+.file-status.error {
+  color: #dc3545;
+}
+
+.file-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 10px;
+}
+
+.file-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.file-action-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.file-action-btn.remove {
+  color: #dc3545;
+}
+
+.file-action-btn.preview {
+  color: #007bff;
+}
+
+.file-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.files-summary {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #495057;
+  border-left: 4px solid #007bff;
+}
+
+.files-summary.empty {
+  display: none;
+}
+
+.global-progress {
+  margin-top: 10px;
+  padding: 0;
+  display: none;
+}
+
+.global-progress.active {
+  display: block;
+}
+
+.global-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.global-progress-fill {
+  height: 100%;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.global-progress-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+}

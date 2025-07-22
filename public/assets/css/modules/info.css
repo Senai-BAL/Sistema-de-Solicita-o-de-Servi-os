@@ -1,0 +1,20 @@
+/* Módulo de estilos para informações e dicas */
+.github-info {
+  background: #f6f8fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #586069;
+}
+
+.file-info {
+  background: #e8f4fd;
+  border: 1px solid #b6d7ff;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  color: #0366d6;
+}

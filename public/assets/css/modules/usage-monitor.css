@@ -1,0 +1,67 @@
+/* Módulo de estilos do monitor de uso */
+.usage-monitor {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  font-size: 0.8rem;
+  border: 2px solid #e1e5e9;
+  min-width: 200px;
+  display: none;
+}
+
+.usage-monitor.show {
+  display: block;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.usage-header {
+  font-weight: 600;
+  color: #1e3c72;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.usage-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.75rem;
+}
+
+.toggle-monitor {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.toggle-monitor:hover {
+  transform: scale(1.1);
+}

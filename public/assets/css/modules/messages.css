@@ -1,0 +1,16 @@
+/* Módulo de estilos de mensagens */
+.success-message {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: #27ae60;
+}
+
+.success-message.show {
+  display: block;
+}
+
+.success-message h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}

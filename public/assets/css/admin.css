@@ -5,9 +5,7 @@
  */
 
 /* ===== ESTILOS ESPECÍFICOS DO ADMIN ===== */
-body {
-  background: var(--header-gradient);
-}
+/* ...existing code... */
 
 /* ===== MODAL STYLES HÍBRIDO ===== */
 .modal {
