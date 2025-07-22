@@ -56,8 +56,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.7.4 (CSS Modularização e Organização)  
-**Detalhes**: Consulte [`docs/releases/RELEASE-v2.7.4.md`](docs/releases/RELEASE-v2.7.4.md) para informações completas
+**Versão Atual**: v2.7.5 (CSS Modularização Final e Organização)  
+**Detalhes**: Modularização completa dos estilos CSS, separação de módulos admin/index, limpeza de pastas e atualização dos imports nos HTMLs. Estrutura pronta para manutenção e expansão.
 
 ## � Configuração
 

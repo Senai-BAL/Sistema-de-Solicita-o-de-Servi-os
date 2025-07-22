@@ -3,7 +3,19 @@
 **Principais mudanças e marcos do projeto desde a versão 1.0.0**
 
 > 📖 **Changelog Completo**: Para um histórico detalhado com todos os commits, consulte [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md)
-## [2.7.3] - UX Enhancements & Loading States - 24/12/2024
+
+## [2.7.5] - Modularização CSS & Organização Final - 22/07/2025
+
+### 🗂️ Organização e Modularização
+- **CSS Modularizado**: Todos os estilos do admin e index separados em módulos dedicados
+- **Pastas Organizadas**: `assets/css/admin/` para admin, `assets/css/index/` para index
+- **Limpeza de Pastas**: Remoção de pastas vazias e arquivos obsoletos
+- **Imports Atualizados**: Caminhos corrigidos nos HTMLs para refletir a nova estrutura
+
+### 🧹 Manutenção e Melhoria
+- Estrutura pronta para manutenção e expansão
+- Documentação e changelogs atualizados
+
 
 ### ✨ Nova Funcionalidades
 - **Skeleton Manager**: Sistema completo de skeleton screens

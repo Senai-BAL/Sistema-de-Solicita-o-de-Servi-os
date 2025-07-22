@@ -1,0 +1,109 @@
+/* admin-pdf-modal.css: estilos modularizados para PDF MODAL do painel admin */
+
+.pdf-modal-content {
+  padding: 20px;
+}
+
+.pdf-summary-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.pdf-summary-title {
+  margin-bottom: 10px;
+  color: #1e3c72;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.pdf-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.pdf-summary-grid strong {
+  color: #333;
+}
+
+.pdf-options-section {
+  background: #e3f2fd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.pdf-options-title {
+  margin-bottom: 10px;
+  color: #1976d2;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.pdf-option-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.pdf-option-label:hover {
+  color: #1976d2;
+}
+
+.pdf-option-label:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-option-checkbox {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.pdf-actions {
+  text-align: right;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-pdf-cancel {
+  padding: 10px 20px;
+  background: #ccc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-pdf-cancel:hover {
+  background: #bbb;
+}
+
+.btn-pdf-generate {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-pdf-generate:hover {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.btn-pdf-generate:active {
+  transform: translateY(0);
+}

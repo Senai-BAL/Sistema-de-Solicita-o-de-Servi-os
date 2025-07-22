@@ -1,0 +1,68 @@
+/* Kanban modularizado igual ao admin.css original */
+
+.status-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
+  margin-top: var(--spacing-medium);
+}
+
+.status-column {
+  background: var(--bg-light);
+  border-radius: 12px;
+  padding: var(--spacing-medium);
+  min-height: 400px;
+}
+
+.status-column h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: var(--spacing-small);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+}
+
+.status-pendente h3 {
+  background: #ffeaa7;
+  color: #d63031;
+}
+.status-em_andamento h3 {
+  background: #74b9ff;
+  color: var(--text-white);
+}
+.status-concluido h3 {
+  background: var(--success-color);
+  color: var(--text-white);
+}
+.status-cancelado h3 {
+  background: var(--error-color);
+  color: var(--text-white);
+}
+
+.kanban-card {
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  margin-bottom: var(--spacing-small);
+  box-shadow: var(--shadow-light);
+  cursor: grab;
+  transition: all var(--transition-medium);
+}
+.kanban-card:hover {
+  box-shadow: var(--shadow-medium);
+}
+.kanban-card.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.kanban-drop-zone {
+  min-height: 60px;
+  padding: 8px 0;
+}
+
+@media (max-width: 768px) {
+  .status-columns {
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,7 +4,19 @@ Histórico completo de todas as mudanças do projeto desde a versão 1.0.
 
 ---
 
-## [2.6.0] - 2025-07-16
+
+## [2.7.5] - 2025-07-22
+
+### 🗂️ Modularização e Organização Final do CSS
+- **CSS Modularizado**: Todos os estilos do painel admin e do index extraídos para módulos separados
+- **Separação Completa**: `assets/css/admin/` para módulos do admin, `assets/css/index/` para módulos do index
+- **Limpeza de Pastas**: Remoção de `components/`, `layout/`, `pages/` e arquivos obsoletos
+- **Atualização de Imports**: Caminhos corrigidos nos arquivos HTML para refletir a nova estrutura
+- **Documentação**: Changelogs e README atualizados
+
+### 🧹 Manutenção
+- Estrutura de CSS pronta para manutenção, expansão e colaboração
+
 
 ### 🏗️ **REFATORAÇÃO COMPLETA DA ARQUITETURA**
 

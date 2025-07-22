@@ -1,0 +1,25 @@
+/* ===== STATS IMPROVEMENTS ===== */
+.stat-card {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: var(--shadow-medium);
+  transition: all var(--transition-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary-gradient);
+}

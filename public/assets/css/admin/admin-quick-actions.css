@@ -1,0 +1,36 @@
+/* admin-quick-actions.css: estilos modularizados para QUICK ACTIONS do painel admin */
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.quick-action {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition-medium);
+}
+
+.quick-action.priority {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.quick-action.comment {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.quick-action.details {
+  background: #e2e3e5;
+  color: var(--text-primary);
+}
+
+.quick-action:hover {
+  transform: scale(1.05);
+}
