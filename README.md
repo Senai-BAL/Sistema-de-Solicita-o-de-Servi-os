@@ -409,6 +409,13 @@ firebase deploy
 - Design 100% personalizado para SENAI Lab
 - Integração perfeita com filtros existentes
 
+## 🗂️ Histórico de Versões Incrementais (Temas Admin)
+
+- **2.7.5.0** — Base estável (estrutura pronta, sem tema dinâmico)
+- **2.7.5.1** — Tema Claro funcional (aplicação e persistência no admin)
+- **2.7.5.2** — Tema Escuro funcional (aplicação e persistência no admin)
+- **2.7.5.3** — Tema Personalizado (inputs de cor, aplicação e persistência)
+
 ### 🚀 **Como Usar o Dashboard**
 
 1. **Acesse**: `https://seu-dominio.com/admin.html`

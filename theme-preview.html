@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Preview dos Temas - SENAI Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-header h1 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .preview-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .theme-category {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .category-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .category-header.light h2 {
+            color: #f59e0b;
+        }
+
+        .category-header.dark h2 {
+            color: #6366f1;
+        }
+
+        .theme-preview {
+            margin-bottom: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .theme-preview:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .theme-body {
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        .theme-elements {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .demo-card {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .selection-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .selection-panel h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .selected-themes {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .selected-theme {
+            padding: 15px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #f8f9fa;
+            font-weight: 600;
+            min-width: 200px;
+        }
+
+        .selected-theme.active {
+            border-color: #007bff;
+            background: #e3f2fd;
+            color: #007bff;
+        }
+
+        .apply-button {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .apply-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+
+        .apply-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .themes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .selected-themes {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .selected-theme {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <!-- Cabeçalho -->
+        <div class="preview-header">
+            <h1>🎨 Preview dos Temas</h1>
+            <p>Teste e escolha os temas claro e escuro que serão aplicados no sistema</p>
+        </div>
+
+        <!-- Grid de Temas -->
+        <div class="themes-grid">
+            <!-- Temas Claros -->
+            <div class="theme-category">
+                <div class="category-header light">
+                    <h2>☀️ Temas Claros</h2>
+                    <p>Escolha um tema claro para o modo diurno</p>
+                </div>
+
+                <!-- Light Minimal -->
+                <div class="theme-preview" data-theme="light-minimal" data-type="light">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #2563eb, #3b82f6);">
+                        ☀️ Light Minimal
+                    </div>
+                    <div class="theme-body" style="background: #ffffff; color: #1e293b;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #2563eb; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #10b981; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #2563eb;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #3b82f6;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #1d4ed8;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #10b981;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #f8fafc; color: #64748b;">
+                                <strong>Características:</strong> Limpo, moderno, alta legibilidade. Ideal para uso profissional e produtividade.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Light Warm -->
+                <div class="theme-preview" data-theme="light-warm" data-type="light">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #ea580c, #f97316);">
+                        🌅 Light Warm
+                    </div>
+                    <div class="theme-body" style="background: #fffbeb; color: #92400e;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #fef3c7; border-color: #fde68a; color: #92400e;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #ea580c; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #059669; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #ea580c;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #f97316;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #dc2626;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #059669;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #fef3c7; color: #a16207;">
+                                <strong>Características:</strong> Acolhedor, energético, cores quentes. Ideal para ambientes criativos e colaborativos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Light Professional -->
+                <div class="theme-preview" data-theme="light-professional" data-type="light">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #374151, #4b5563);">
+                        💼 Light Professional
+                    </div>
+                    <div class="theme-body" style="background: #f9fafb; color: #111827;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #ffffff; border-color: #d1d5db; color: #111827;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #374151; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #059669; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #374151;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #4b5563;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #6b7280;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #059669;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #ffffff; color: #6b7280;">
+                                <strong>Características:</strong> Sóbrio, elegante, cores neutras. Ideal para ambientes corporativos e formais.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temas Escuros -->
+            <div class="theme-category">
+                <div class="category-header dark">
+                    <h2>🌙 Temas Escuros</h2>
+                    <p>Escolha um tema escuro para o modo noturno</p>
+                </div>
+
+                <!-- Dark Modern -->
+                <div class="theme-preview" data-theme="dark-modern" data-type="dark">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                        🌙 Dark Modern
+                    </div>
+                    <div class="theme-body" style="background: #0f172a; color: #f1f5f9;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #1e293b; border-color: #334155; color: #f1f5f9;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #3b82f6; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #10b981; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #3b82f6;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #1d4ed8;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #2563eb;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #10b981;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #1e293b; color: #94a3b8;">
+                                <strong>Características:</strong> Moderno, tecnológico, azul vibrante. Ideal para desenvolvedores e uso noturno.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Purple -->
+                <div class="theme-preview" data-theme="dark-purple" data-type="dark">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        🌌 Dark Purple
+                    </div>
+                    <div class="theme-body" style="background: #1e1b4b; color: #f3f4f6;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #312e81; border-color: #4c1d95; color: #f3f4f6;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #8b5cf6; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #10b981; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #8b5cf6;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #7c3aed;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #a855f7;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #10b981;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #312e81; color: #c4b5fd;">
+                                <strong>Características:</strong> Criativo, místico, roxo profundo. Ideal para ambientes criativos e design.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dark Slate -->
+                <div class="theme-preview" data-theme="dark-slate" data-type="dark">
+                    <div class="theme-header" style="background: linear-gradient(135deg, #64748b, #475569);">
+                        🌚 Dark Slate
+                    </div>
+                    <div class="theme-body" style="background: #020617; color: #f8fafc;">
+                        <div class="theme-elements">
+                            <div class="demo-card" style="background: #0f172a; border-color: #1e293b; color: #f8fafc;">
+                                <span>Card de Exemplo</span>
+                                <div class="demo-buttons">
+                                    <button class="demo-btn" style="background: #64748b; color: white;">Primário</button>
+                                    <button class="demo-btn" style="background: #22c55e; color: white;">Sucesso</button>
+                                </div>
+                            </div>
+                            <div class="color-palette">
+                                <div class="color-swatch" style="background: #64748b;" title="Primary"></div>
+                                <div class="color-swatch" style="background: #475569;" title="Secondary"></div>
+                                <div class="color-swatch" style="background: #334155;" title="Accent"></div>
+                                <div class="color-swatch" style="background: #22c55e;" title="Success"></div>
+                            </div>
+                            <div class="theme-info" style="background: #0f172a; color: #cbd5e1;">
+                                <strong>Características:</strong> Neutro, elegante, cinza sofisticado. Ideal para foco e concentração.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de Seleção -->
+        <div class="selection-panel">
+            <h3>🎯 Sua Seleção</h3>
+            <p>Escolha um tema claro e um escuro para aplicar no sistema</p>
+            
+            <div class="selected-themes">
+                <div class="selected-theme" id="selected-light">
+                    <div>☀️ Tema Claro</div>
+                    <div id="light-choice" style="color: #666; font-weight: normal;">Nenhum selecionado</div>
+                </div>
+                <div class="selected-theme" id="selected-dark">
+                    <div>🌙 Tema Escuro</div>
+                    <div id="dark-choice" style="color: #666; font-weight: normal;">Nenhum selecionado</div>
+                </div>
+            </div>
+
+            <button class="apply-button" id="apply-selection" disabled>
+                🚀 Aplicar Temas Selecionados
+            </button>
+
+            <div style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                <p>💡 <strong>Dica:</strong> Clique nos cards dos temas para selecioná-los</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedLight = null;
+        let selectedDark = null;
+
+        // Dados dos temas
+        const themeData = {
+            'light-minimal': { name: 'Light Minimal', icon: '☀️' },
+            'light-warm': { name: 'Light Warm', icon: '🌅' },
+            'light-professional': { name: 'Light Professional', icon: '💼' },
+            'dark-modern': { name: 'Dark Modern', icon: '🌙' },
+            'dark-purple': { name: 'Dark Purple', icon: '🌌' },
+            'dark-slate': { name: 'Dark Slate', icon: '🌚' }
+        };
+
+        // Configurar cliques nos previews
+        document.querySelectorAll('.theme-preview').forEach(preview => {
+            preview.addEventListener('click', () => {
+                const themeName = preview.dataset.theme;
+                const themeType = preview.dataset.type;
+                
+                selectTheme(themeName, themeType);
+            });
+        });
+
+        function selectTheme(themeName, themeType) {
+            // Remover seleção anterior do mesmo tipo
+            document.querySelectorAll(`.theme-preview[data-type="${themeType}"]`).forEach(el => {
+                el.style.border = '';
+                el.style.transform = '';
+            });
+
+            // Aplicar nova seleção
+            const selectedPreview = document.querySelector(`[data-theme="${themeName}"]`);
+            selectedPreview.style.border = '3px solid #007bff';
+            selectedPreview.style.transform = 'scale(1.02)';
+
+            // Atualizar variáveis
+            if (themeType === 'light') {
+                selectedLight = themeName;
+                document.getElementById('light-choice').textContent = themeData[themeName].name;
+                document.getElementById('selected-light').classList.add('active');
+            } else {
+                selectedDark = themeName;
+                document.getElementById('dark-choice').textContent = themeData[themeName].name;
+                document.getElementById('selected-dark').classList.add('active');
+            }
+
+            // Verificar se pode aplicar
+            checkCanApply();
+        }
+
+        function checkCanApply() {
+            const canApply = selectedLight && selectedDark;
+            const applyButton = document.getElementById('apply-selection');
+            
+            applyButton.disabled = !canApply;
+            
+            if (canApply) {
+                applyButton.textContent = '🚀 Aplicar Temas Selecionados';
+            } else {
+                applyButton.textContent = '🚀 Selecione ambos os temas primeiro';
+            }
+        }
+
+        // Aplicar seleção
+        document.getElementById('apply-selection').addEventListener('click', () => {
+            if (selectedLight && selectedDark) {
+                const result = {
+                    light: selectedLight,
+                    dark: selectedDark,
+                    lightData: themeData[selectedLight],
+                    darkData: themeData[selectedDark]
+                };
+
+                // Salvar no localStorage para usar no sistema principal
+                localStorage.setItem('senai-selected-themes', JSON.stringify(result));
+
+                // Mostrar confirmação
+                alert(`✅ Temas aplicados com sucesso!\n\n` +
+                      `🌞 Tema Claro: ${result.lightData.name}\n` +
+                      `🌙 Tema Escuro: ${result.darkData.name}\n\n` +
+                      `Os temas foram salvos e serão aplicados no sistema.`);
+
+                // Opcional: redirecionar para a página principal
+                console.log('Temas selecionados:', result);
+            }
+        });
+
+        // Verificar se já existe uma seleção salva
+        const savedSelection = localStorage.getItem('senai-selected-themes');
+        if (savedSelection) {
+            try {
+                const selection = JSON.parse(savedSelection);
+                selectTheme(selection.light, 'light');
+                selectTheme(selection.dark, 'dark');
+            } catch (error) {
+                console.warn('Erro ao carregar seleção salva:', error);
+            }
+        }
+    </script>
+</body>
+</html>

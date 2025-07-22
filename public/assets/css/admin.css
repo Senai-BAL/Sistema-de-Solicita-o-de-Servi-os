@@ -1,3 +1,21 @@
+/* Botão de tema na navbar admin */
+.btn-theme {
+  background: linear-gradient(90deg, #2563eb 60%, #60a5fa 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 18px;
+  margin-right: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.btn-theme:hover {
+  background: linear-gradient(90deg, #1e40af 60%, #2563eb 100%);
+  box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+}
 /* 🔧 SENAI Lab - Estilos do Dashboard Administrativo
  * Arquivo: public/assets/css/admin.css
  * Descrição: Estilos para o dashboard administrativo v2.0

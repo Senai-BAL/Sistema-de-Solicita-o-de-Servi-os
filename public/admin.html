@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="assets/css/admin/admin-quick-actions.css">
   <link rel="stylesheet" href="assets/css/admin/admin-table-responsive.css">
   <link rel="stylesheet" href="assets/css/admin/admin-audit-modal.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-theme-modal.css">
 </head>
 
 <body>
@@ -80,6 +81,9 @@
             <div class="user-role" id="userRole">Sistema Multiusuário</div>
           </div>
         </div>
+        <button class="btn-theme" onclick="openThemeModal()" title="Personalizar Tema" style="margin-right: 8px;">
+          🎨 Tema
+        </button>
         <button class="btn-audit" onclick="openAuditModal()" title="Ver Auditoria">📊 Logs</button>
         <button class="btn-logout" onclick="logout()">🚪 Sair</button>
       </div>
@@ -486,6 +490,42 @@
   <script src="assets/js/admin/export.js"></script>
   <script src="assets/js/admin/audit.js"></script>
   <script src="assets/js/admin/main.js"></script>
+  <!-- Modal de Tema Personalizável -->
+  <div class="theme-modal hide" id="themeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">🎨 Personalizar Tema</span>
+        <button class="close-btn" onclick="closeThemeModal()">&times;</button>
+      </div>
+      <div class="theme-options">
+        <div class="theme-option" id="themeLightOption" onclick="selectTheme('light')">Tema Claro</div>
+        <div class="theme-option" id="themeDarkOption" onclick="selectTheme('dark')">Tema Escuro</div>
+      </div>
+      <div class="customize-section">
+        <h4 style="margin-bottom:8px; font-size:1.05rem;">Personalize as cores:</h4>
+        <div class="color-input-group">
+          <label for="primaryColor">Primária</label>
+          <input type="color" id="primaryColor" class="color-input">
+        </div>
+        <div class="color-input-group">
+          <label for="successColor">Sucesso</label>
+          <input type="color" id="successColor" class="color-input">
+        </div>
+        <div class="color-input-group">
+          <label for="bgColor">Fundo</label>
+          <input type="color" id="bgColor" class="color-input">
+        </div>
+        <div class="color-input-group">
+          <label for="textColor">Texto</label>
+          <input type="color" id="textColor" class="color-input">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="applyThemeCustom()">Aplicar</button>
+        <button class="btn cancel" onclick="closeThemeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

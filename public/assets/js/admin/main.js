@@ -250,6 +250,16 @@ function handleDragStart(e) {
     e.target.classList.add('dragging');
 }
 
+// Funções para modal de tema (garantir global)
+window.openThemeModal = function() {
+  var modal = document.getElementById('themeModal');
+  if (modal) modal.classList.remove('hide');
+}
+window.closeThemeModal = function() {
+  var modal = document.getElementById('themeModal');
+  if (modal) modal.classList.add('hide');
+}
+
 // ⚡ INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', function () {
     console.log('🔧 SENAI Lab - Dashboard Administrativo v2.6.0 Sistema Multiusuário Iniciado');

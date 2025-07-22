@@ -45,19 +45,7 @@ function updateUsageMonitor() {
   document.getElementById('uploadsCount').textContent = `${usageMonitor.dailyUploads} uploads`;
 }
 
-function toggleUsageMonitor() {
-  const monitor = document.getElementById('usageMonitor');
-  const button = document.querySelector('.toggle-monitor');
 
-  if (monitor.classList.contains('show')) {
-    monitor.classList.remove('show');
-    button.style.display = 'block';
-  } else {
-    monitor.classList.add('show');
-    button.style.display = 'none';
-    updateUsageMonitor();
-  }
-}
 
 // 📢 MOSTRAR STATUS
 function showStatus(message, type = 'info') {
