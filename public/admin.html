@@ -9,6 +9,20 @@
   <!-- Estilos CSS -->
   <link rel="stylesheet" href="assets/css/common.css">
   <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-modal-hibrido.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-request-card.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-stats.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-timeline.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-toast.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-kanban.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-search-filter.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-loading.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-login.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-pdf-modal.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-export-buttons.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-quick-actions.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-table-responsive.css">
+  <link rel="stylesheet" href="assets/css/admin/admin-audit-modal.css">
 </head>
 
 <body>
@@ -29,7 +43,7 @@
     <div class="login-box">
       <div class="login-header">
         <h1>🔧 SENAI Lab</h1>
-        <p>Dashboard Administrativo v2.6.0</p>
+        <p>Dashboard Administrativo v2.7.4</p>
         <small>Sistema Multiusuário</small>
       </div>
       <form id="loginForm">
@@ -56,7 +70,7 @@
     <nav class="navbar">
       <div class="navbar-brand">
         <span>🔧</span>
-        <h1>SENAI Lab - Admin v2.6.0</h1>
+        <h1>SENAI Lab - Admin v2.7.4</h1>
       </div>
       <div class="navbar-user">
         <div class="user-info" id="currentUserInfo">
@@ -70,12 +84,6 @@
         <button class="btn-logout" onclick="logout()">🚪 Sair</button>
       </div>
     </nav>
-
-    <!-- Banner de Ambiente de Teste -->
-    <div class="test-environment-banner" id="testBanner">
-      <span class="test-icon">🧪</span>
-      AMBIENTE DE TESTE ATIVO - Dados: solicitacoes_test | Repositório: senai-lab-test
-    </div>
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
@@ -398,7 +406,7 @@
             📊 Estatísticas
           </button>
         </div>
-        
+
         <!-- Tab Content 1 - Ações -->
         <div id="actions-audit-tab" class="tab-content active">
           <div class="audit-info-banner">
@@ -426,7 +434,7 @@
             <div class="loading-audit">Carregando logs...</div>
           </div>
         </div>
-        
+
         <!-- Tab Content 2 - Acessos -->
         <div id="access-audit-tab" class="tab-content">
           <div class="audit-info-banner">
@@ -436,7 +444,7 @@
             <div class="loading-audit">Carregando logs de acesso...</div>
           </div>
         </div>
-        
+
         <!-- Tab Content 3 - Estatísticas -->
         <div id="stats-audit-tab" class="tab-content">
           <div class="audit-stats-container" id="auditStatsContainer">
@@ -459,7 +467,7 @@
   <script src="shared/github-config.js"></script>
   <script src="shared/firebase-service.js"></script>
 
-  <!-- Módulos Compartilhados v2.7.3 -->
+  <!-- Módulos Compartilhados v2.7.4 -->
   <script src="assets/js/shared/loading-manager.js"></script>
   <script src="assets/js/shared/toast-manager.js"></script>
   <script src="assets/js/shared/skeleton-manager.js"></script>

@@ -1,0 +1,67 @@
+/* Módulo de estilos de upload de arquivos */
+.file-upload {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-upload-label {
+  display: block;
+  padding: 15px 20px;
+  background: #e3f2fd;
+  border: 2px dashed #2196f3;
+  border-radius: 8px;
+  text-align: center;
+  color: #1976d2;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.file-upload:hover .file-upload-label {
+  background: #bbdefb;
+  border-color: #1976d2;
+}
+
+.file-uploaded {
+  background: #e8f5e8 !important;
+  border-color: #4caf50 !important;
+  color: #2e7d32 !important;
+  border-style: solid !important;
+}
+
+.file-uploading {
+  background: #fff3e0 !important;
+  border-color: #ff9800 !important;
+  color: #ef6c00 !important;
+  border-style: solid !important;
+}
+
+.upload-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: #4caf50;
+  border-radius: 0 0 6px 6px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.upload-progress.uploading {
+  background: #ff9800;
+}

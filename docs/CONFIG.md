@@ -1,5 +1,9 @@
 # ⚙️ Configurações do SENAI Lab
 
+**Versão Atual**: v2.7.0 (Sistema de Interlocutores Especializados)  
+**Data de Deploy**: 18 de julho de 2025  
+**Branch Produção**: `main`
+
 ## 🌐 URLs de Acesso
 
 ### Produção

@@ -1,0 +1,9 @@
+/* Módulo de estilos para preview de imagens */
+.image-preview {
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 4px;
+  margin-right: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}

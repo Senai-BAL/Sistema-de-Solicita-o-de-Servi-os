@@ -27,15 +27,20 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - ✅ **Design Responsivo**: Otimizado para mobile e desktop
 - ✅ **Integração Firebase**: Salvamento seguro no Firestore
 
-### 🔐 **Para Administradores (admin.html)**
-- ✅ **Autenticação Segura**: Login por senha com sessão persistente
-- ✅ **Dashboard Completo**: Visualização de todas as solicitações
+### 🔐 **Para Interlocutores do Lab (admin.html)**
+- ✅ **Sistema Multiusuário**: Login individual com credenciais específicas por interlocutor
+- ✅ **Auditoria Completa**: Rastreamento completo de ações por interlocutor
+- ✅ **Modal de Auditoria**: Sistema de logs com timeline de ações
+- ✅ **Dashboard Completo**: Visualização de todas as solicitações em lista otimizada
 - ✅ **Estatísticas em Tempo Real**: Cards com métricas importantes
-- ✅ **Gestão de Status**: Atualização de status das solicitações
-- ✅ **Sistema de Comentários**: Adição de comentários administrativos
+- ✅ **Gestão de Status**: Atualização via modal com fluxo inteligente e rastreamento
+- ✅ **Sistema de Prioridades**: Definição automática (baixa) e gestão manual
+- ✅ **Sistema de Comentários**: Adição de comentários administrativos com autor
 - ✅ **Filtros Avançados**: Por serviço, status e período
-- ✅ **Visualização de Arquivos**: Acesso direto aos arquivos enviados
-- ✅ **Auto-refresh**: Atualização automática a cada 30 segundos
+- ✅ **Lista Infinita**: Scroll infinito sem limitação de altura
+- ✅ **Atualização Inteligente**: Auto-refresh de 5min + botão manual
+- ✅ **Modal Híbrido**: Timeline, ações e comentários centralizados
+- ✅ **Visualização de Arquivos**: Preview e download direto
 - ✅ **Design Responsivo**: Interface otimizada para todos os dispositivos
 
 ## 🚀 Tecnologias
@@ -48,8 +53,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.5.0 (Sistema de Múltiplos Arquivos)  
-**Detalhes**: Consulte [`docs/releases/RELEASE-v2.5.0.md`](docs/releases/RELEASE-v2.5.0.md) para informações completas
+**Versão Atual**: v2.7.5 (CSS Modularização Final e Organização)  
+**Detalhes**: Modularização completa dos estilos CSS, separação de módulos admin/index, limpeza de pastas e atualização dos imports nos HTMLs. Estrutura pronta para manutenção e expansão.
 
 ## � Configuração
 
@@ -119,7 +124,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 - **Configurações**: [`docs/CONFIG.md`](docs/CONFIG.md) - URLs, credenciais e configurações
 - **Releases**: [`docs/releases/`](docs/releases/) - Histórico detalhado de versões
-- **Changelog**: [`CHANGELOG.md`](CHANGELOG.md) - Histórico de mudanças
+- **Changelog Resumido**: [`CHANGELOG.md`](CHANGELOG.md) - Principais marcos e mudanças
+- **Changelog Completo**: [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md) - Histórico completo desde v1.0.0
 
 > 🧪 **Ambiente de Teste**: Documentação específica disponível apenas na branch `test-environment`
 

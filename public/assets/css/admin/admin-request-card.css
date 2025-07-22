@@ -1,0 +1,55 @@
+/* ===== IMPROVED REQUEST CARDS ===== */
+.request-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: var(--spacing-medium);
+  margin-bottom: 15px;
+  background: var(--bg-white);
+  transition: all var(--transition-medium);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.request-card:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.request-card.priority-alta {
+  border-left: 5px solid var(--error-color);
+}
+
+.request-card.priority-media {
+  border-left: 5px solid var(--warning-color);
+}
+
+.request-card.priority-baixa {
+  border-left: 5px solid var(--success-color);
+}
+
+.priority-indicator {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priority-alta {
+  background: #fee;
+  color: var(--error-color);
+}
+
+.priority-media {
+  background: #fff8e7;
+  color: var(--warning-color);
+}
+
+.priority-baixa {
+  background: #eafaf1;
+  color: var(--success-color);
+}

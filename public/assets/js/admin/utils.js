@@ -350,7 +350,7 @@ SENAI LAB - RESUMO EXECUTIVO
 
 Data de Geração: ${now.toLocaleString('pt-BR')}
 Tipo de Backup: Completo com Arquivos GitHub
-Versão do Sistema: 2.5.0
+Versão do Sistema: 2.7.4
 
 ESTATÍSTICAS GERAIS
 -------------------
@@ -386,7 +386,7 @@ OBSERVAÇÕES
 ✅ Custo de operação mantido em R$ 0,00
 
 ---
-Gerado automaticamente pelo Sistema SENAI Lab v2.5.0
+Gerado automaticamente pelo Sistema SENAI Lab v2.7.4
     `.trim();
 }
 

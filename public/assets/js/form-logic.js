@@ -1,4 +1,4 @@
-/* 🔧 SENAI Lab - Lógica do Formulário v2.7.3
+/* 🔧 SENAI Lab - Lógica do Formulário v2.7.4
  * Arquivo: public/assets/js/form-logic.js
  * Descrição: Coleta de dados, validação e envio com UX melhorado
  */
@@ -108,7 +108,7 @@ async function submitForm() {
   const form = document.getElementById('senaiForm');
 
   try {
-    // Estados UX v2.7.3
+    // Estados UX v2.7.4
     if (window.UIStates) {
       UIStates.setFormSubmitting(form);
       UIStates.setButtonLoading(submitBtn, 'Enviando...');
@@ -204,7 +204,7 @@ async function submitForm() {
       console.log('✅ Solicitação enviada com ID:', docRef.id);
       usageMonitor.addWrite();
       
-      // Estados de sucesso UX v2.7.3
+      // Estados de sucesso UX v2.7.4
       if (window.UIStates) {
         UIStates.setFormSuccess(form, 'Solicitação enviada com sucesso!');
         UIStates.setButtonSuccess(submitBtn, '✓ Enviado');
@@ -224,7 +224,7 @@ async function submitForm() {
           console.log('✅ Solicitação salva na coleção principal com ID:', docRef.id);
           usageMonitor.addWrite();
           
-          // Estados de sucesso UX v2.7.3
+          // Estados de sucesso UX v2.7.4
           if (window.UIStates) {
             UIStates.setFormSuccess(form, 'Solicitação enviada com sucesso!');
             UIStates.setButtonSuccess(submitBtn, '✓ Enviado');
@@ -260,7 +260,7 @@ async function submitForm() {
       errorMessage += `Detalhes: ${error.message}`;
     }
 
-    // Estados de erro UX v2.7.3
+    // Estados de erro UX v2.7.4
     if (window.UIStates) {
       UIStates.setFormError(form, errorMessage);
       UIStates.setButtonError(submitBtn, '✗ Erro');

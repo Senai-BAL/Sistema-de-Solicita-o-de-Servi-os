@@ -1,0 +1,93 @@
+/* ===== EXPORT BUTTONS ===== */
+.export-buttons {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-export {
+  background: var(--success-color);
+  color: var(--text-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-medium);
+  font-weight: 500;
+}
+
+.btn-export:hover {
+  background: var(--success-dark);
+  transform: translateY(-1px);
+}
+
+.btn-export.excel {
+  background: var(--success-dark);
+}
+
+.btn-export.pdf {
+  background: linear-gradient(135deg, var(--error-color) 0%, #f44336 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-export.pdf:hover {
+  background: linear-gradient(135deg, var(--error-dark) 0%, #e53935 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+.btn-export.pdf:active {
+  transform: translateY(0);
+}
+
+/* Botão de Atualizar */
+.btn-refresh {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #1976d2 100%);
+  color: var(--text-white);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all var(--transition-medium);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-refresh:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+}
+
+.btn-refresh:active {
+  transform: translateY(0);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Animação de rotação para o ícone quando atualizando */
+.btn-refresh.updating {
+  pointer-events: none;
+}
+
+.btn-refresh.updating::before {
+  content: '⏳';
+  position: absolute;
+  left: 8px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
