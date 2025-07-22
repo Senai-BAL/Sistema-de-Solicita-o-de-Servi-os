@@ -1,6 +1,169 @@
+/* Badge de sucesso/verde */
+.badge-success {
+  display: inline-block;
+  background: var(--success, #22c55e);
+  color: #fff;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.13);
+  letter-spacing: 0.02em;
+}
+/* Sections com tema */
+section, .section {
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(52, 64, 84, 0.07);
+  border: 1.5px solid var(--accent, #e0e0e0);
+  padding: 24px 18px;
+  margin-bottom: 28px;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+.card, .usage-monitor, .file-list, .progress-bar, .selected-theme, .usage-header {
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(52, 64, 84, 0.07);
+  border: 1.5px solid var(--accent, #e0e0e0);
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.selected-theme.active {
+  border-color: var(--primary);
+  background: rgba(0,123,255,0.07);
+  color: var(--primary);
+}
+
+.usage-header {
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--bg);
+  border-bottom: 1px solid var(--accent, #e0e0e0);
+}
+
+.usage-item span {
+  color: var(--text);
+}
+/* Botão de alternância de tema no canto inferior esquerdo */
+.toggle-theme {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #374151, #64748b);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 4px 16px rgba(52, 64, 84, 0.18);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.toggle-theme:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 8px 32px rgba(52, 64, 84, 0.25);
+}
+
+/* Temas Light Professional e Dark Slate */
+/* Light Professional */
+.theme-light-professional {
+  --bg: #f9fafb;                /* Fundo principal */
+  --bg-secondary: #fff;         /* Fundo de cards/áreas centrais */
+  --surface: #f9fafb;           /* Superfície clara */
+  --surface-alt: #fff;          /* Superfície alternativa */
+  --text: #111827;              /* Texto principal */
+  --primary: #374151;           /* Botão/elemento primário */
+  --secondary: #4b5563;         /* Botão/elemento secundário */
+  --accent: #6b7280;            /* Bordas, detalhes */
+  --success: #059669;           /* Sucesso */
+  --highlight: #f59e0b;         /* Destaque */
+  --border: #e0e0e0;            /* Bordas */
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Dark Slate */
+.theme-dark-slate {
+  --bg: #020617;                /* Fundo principal */
+  --bg-secondary: #0f172a;      /* Fundo de cards/áreas centrais */
+  --surface: #0f172a;           /* Superfície escura */
+  --surface-alt: #1e293b;       /* Superfície alternativa */
+  --text: #f8fafc;              /* Texto principal */
+  --primary: #64748b;           /* Botão/elemento primário */
+  --secondary: #475569;         /* Botão/elemento secundário */
+  --accent: #334155;            /* Bordas, detalhes */
+  --success: #22c55e;           /* Sucesso */
+  --highlight: #f59e0b;         /* Destaque (mantido para consistência) */
+  --border: #334155;            /* Bordas */
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
 /* Módulo de estilos de layout */
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+body.index-page {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  transition: background 0.3s, color 0.3s;
+}
+
+.container {
+  background: transparent;
+  color: inherit;
+}
+
+.header {
+  background: var(--bg);
+  color: var(--primary);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  padding: 30px 20px 20px 20px;
+  margin-bottom: 30px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.form-content {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(52, 64, 84, 0.13);
+  padding: 30px 20px;
+  border: 2px solid var(--border);
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.service-section, .success-message {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(52, 64, 84, 0.09);
+  border: 1.5px solid var(--accent);
+  margin-bottom: 28px;
+  padding: 24px 18px;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+.section-title {
+  color: var(--primary);
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  color: var(--secondary);
 }

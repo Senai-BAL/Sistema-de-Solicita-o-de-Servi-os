@@ -418,6 +418,12 @@
   <div class="status-indicator" id="statusIndicator"></div>
 
   <!-- Monitor de Uso -->
+
+  <!-- Botão de alternância de tema -->
+  <button class="toggle-theme" id="toggleThemeBtn" title="Alternar tema claro/escuro">
+    <span id="themeIcon">🌙</span>
+  </button>
+
   <button class="toggle-monitor" onclick="toggleUsageMonitor()" title="Monitor de Uso">
     📊
   </button>
@@ -472,6 +478,49 @@
   <script src="assets/js/form-logic.js"></script>
   <script src="assets/js/navigation.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <script>
+    // Temas padrão
+    const THEMES = {
+      light: {
+        name: 'Light Professional',
+        class: 'theme-light-professional',
+        icon: '💼',
+      },
+      dark: {
+        name: 'Dark Slate',
+        class: 'theme-dark-slate',
+        icon: '🌚',
+      }
+    };
+
+    // Função segura para aplicar tema
+    function applyTheme(theme) {
+      // Só aceita 'light' ou 'dark'
+      const validTheme = theme === 'dark' ? 'dark' : 'light';
+      document.body.classList.remove(THEMES.light.class, THEMES.dark.class);
+      document.body.classList.add(THEMES[validTheme].class);
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.textContent = validTheme === 'light' ? '🌙' : '☀️';
+      localStorage.setItem('senai-theme', validTheme);
+    }
+
+    // Alterna entre claro e escuro
+    function toggleTheme() {
+      const current = localStorage.getItem('senai-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+    }
+
+    // Inicialização do tema
+    document.addEventListener('DOMContentLoaded', function() {
+      let saved = localStorage.getItem('senai-theme');
+      if (saved !== 'light' && saved !== 'dark') saved = 'light';
+      applyTheme(saved);
+      const btn = document.getElementById('toggleThemeBtn');
+      if (btn) btn.addEventListener('click', toggleTheme);
+    });
+  </script>
 </body>
 
 </html>

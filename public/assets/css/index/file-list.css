@@ -3,7 +3,7 @@
   margin-top: 15px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background: #fafafa;
+  background: var(--bg);
   max-height: 300px;
   overflow-y: auto;
 }
@@ -25,7 +25,7 @@
 }
 
 .file-item:hover {
-  background: #f0f0f0;
+  background: rgba(34,197,94,0.07);
 }
 
 .file-icon {
@@ -68,7 +68,7 @@
 }
 
 .file-status.success {
-  color: #28a745;
+  color: var(--success, #22c55e);
 }
 
 .file-status.error {
@@ -116,11 +116,11 @@
 .files-summary {
   margin-top: 10px;
   padding: 10px 15px;
-  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  background: rgba(34,197,94,0.07);
   border-radius: 6px;
   font-size: 0.9rem;
-  color: #495057;
-  border-left: 4px solid #007bff;
+  color: var(--success, #22c55e);
+  border-left: 4px solid var(--success, #22c55e);
 }
 
 .files-summary.empty {
@@ -140,7 +140,7 @@
 .global-progress-bar {
   width: 100%;
   height: 8px;
-  background: #e9ecef;
+  background: var(--accent, #e9ecef);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 5px;
@@ -148,7 +148,7 @@
 
 .global-progress-fill {
   height: 100%;
-  background: linear-gradient(45deg, #007bff, #0056b3);
+  background: linear-gradient(90deg, var(--success, #22c55e), var(--primary, #059669));
   border-radius: 4px;
   transition: width 0.3s ease;
   width: 0%;
