@@ -1,3 +1,56 @@
+// Fecha o modal de tema ao clicar fora do conteúdo
+document.addEventListener('mousedown', function(e) {
+  const modal = document.getElementById('themeModal');
+  if (modal && !modal.classList.contains('hide')) {
+    const content = modal.querySelector('.modal-content');
+    if (content && !content.contains(e.target)) {
+      closeThemeModal();
+    }
+  }
+});
+// ====== TEMA ADMIN (2.7.5.1) ======
+
+const ADMIN_THEMES = {
+  light: {
+    class: 'admin-theme-light',
+    name: 'Tema Claro',
+  },
+  dark: {
+    class: 'admin-theme-dark',
+    name: 'Tema Escuro',
+  }
+};
+
+
+function applyAdminTheme(theme) {
+  // Remove todos os temas possíveis
+  Object.values(ADMIN_THEMES).forEach(t => document.body.classList.remove(t.class));
+  // Adiciona o tema selecionado
+  if (ADMIN_THEMES[theme]) {
+    document.body.classList.add(ADMIN_THEMES[theme].class);
+    localStorage.setItem('admin-theme', theme);
+  }
+}
+
+// Handler do modal
+
+window.selectTheme = function(theme) {
+  if (theme === 'light' || theme === 'dark') {
+    applyAdminTheme(theme);
+    ToastManager && ToastManager.show(
+      theme === 'light' ? 'Tema Claro aplicado!' : 'Tema Escuro aplicado!',
+      'success'
+    );
+    closeThemeModal();
+  }
+}
+
+// Aplica o tema salvo ao carregar
+
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('admin-theme') || 'light';
+  applyAdminTheme(saved);
+});
 /* 🔧 SENAI Lab Admin - Carregador Principal
  * Arquivo: public/assets/js/admin/main.js
  * Descrição: Carregamento principal, event listeners e inicialização do dashboard

@@ -8,10 +8,10 @@
 }
 
 .login-box {
-  background: white;
-  border-radius: 16px;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
   padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
   width: 100%;
   max-width: 400px;
   text-align: center;
@@ -33,7 +33,7 @@
   color: var(--primary-blue);
   font-weight: 600;
   margin-top: 5px;
-  background: rgba(66, 133, 244, 0.1);
+  background: rgba(66, 133, 244, 0.1); /* Mantido, mas pode ser substituído por var(--accent-blue) com opacidade se desejar */
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -107,11 +107,11 @@
 .user-item {
   padding: 8px 12px;
   margin: 4px 0;
-  background: white;
-  border-radius: 6px;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
   font-size: 0.85rem;
   border-left: 3px solid var(--primary-blue);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-light);
 }
 
 .login-info small {
@@ -120,15 +120,15 @@
 }
 
 .btn {
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  color: white;
+  background: linear-gradient(45deg, var(--primary-blue), var(--primary-hover));
+  color: var(--text-white);
   border: none;
   padding: 12px 30px;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-fast);
   width: 100%;
 }
 
@@ -138,7 +138,7 @@
 }
 
 .btn:disabled {
-  background: #ccc;
+  background: var(--border-color);
   cursor: not-allowed;
   transform: none;
 }
@@ -148,8 +148,8 @@
   font-size: 0.9rem;
   margin-top: var(--spacing-small);
   padding: var(--spacing-small);
-  background: #fdf2f2;
-  border-radius: 6px;
-  border: 1px solid #fecaca;
+  background: #fdf2f2; /* Pode criar uma var(--error-bg) se desejar */
+  border-radius: var(--border-radius);
+  border: 1px solid #fecaca; /* Pode criar uma var(--error-border) se desejar */
   display: none;
 }

@@ -1,3 +1,12 @@
+/* Padronização de cor para títulos de modais do admin */
+.modal-title {
+  color: inherit;
+}
+
+.modal-detail-title,
+.audit-stat-title {
+  color: inherit;
+}
 /* admin-audit-modal.css: estilos modularizados para MODAL DE AUDITORIA do painel admin */
 
 .audit-filters {
@@ -6,15 +15,17 @@
   margin-bottom: 20px;
   padding: 15px;
   background: var(--bg-light);
-  border-radius: 8px;
+  border-radius: 12px;
   align-items: center;
   flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.06);
 }
 
 .audit-filters .filter-group {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   min-width: 150px;
 }
 
@@ -22,32 +33,62 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
+  margin-bottom: 0;
+  margin-right: 4px;
+  align-self: center;
 }
 
 .audit-filters select {
   padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  background: white;
+  border: 2px solid var(--primary-blue);
+  border-radius: 10px;
+  font-size: 0.98rem;
+  background: var(--bg-white);
+  color: var(--text-primary);
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+.audit-filters select:focus {
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(66,133,244,0.18);
+}
 }
 
 .btn-refresh-audit {
-  background: var(--primary-blue);
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  color: #fff;
+  border: 2px solid #2563eb;
+  padding: 8px 18px 8px 36px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
-  transition: background 0.3s ease;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  position: relative;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s, color 0.2s;
   height: fit-content;
   align-self: flex-end;
+  overflow: hidden;
+}
+.btn-refresh-audit::before {
+  content: '🔄';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1em;
+  opacity: 0.85;
+}
 }
 
 .btn-refresh-audit:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+  color: #fff;
+  border-color: #1e40af;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .audit-logs-container,
@@ -56,8 +97,9 @@
   max-height: 400px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: white;
+  border-radius: 12px;
+  background: var(--bg-white);
+  box-shadow: 0 2px 8px rgba(37,99,235,0.06);
 }
 
 .loading-audit {
@@ -73,6 +115,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  background: var(--bg-white);
 }
 
 .audit-log-item:last-child {
@@ -183,11 +226,12 @@
 }
 
 .audit-stat-card {
-  background: white;
+  background: var(--bg-white);
   padding: 20px;
   border-radius: 12px;
   border: 1px solid var(--border-light);
   text-align: center;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.06);
 }
 
 .audit-stat-title {

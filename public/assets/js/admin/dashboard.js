@@ -233,6 +233,12 @@ function renderKanbanBoard(requests) {
         requests.forEach(request => {
             const serviceName = getServiceName(request.s, request.ts);
             const priority = request.admin?.prioridade || '';
+            const statusBadgeClass = {
+              pendente: 'pendente',
+              em_andamento: 'em_andamento',
+              concluido: 'concluido',
+              cancelado: 'cancelado'
+            }[status] || '';
 
             const card = document.createElement('div');
             card.className = `kanban-card ${getPriorityClass(priority)}`;
@@ -241,21 +247,22 @@ function renderKanbanBoard(requests) {
             card.dataset.currentStatus = status;
 
             card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
-              <strong style="font-size: 0.9rem; color: #1e3c72;">${serviceName}</strong>
-              ${priority ? `<span class="priority-indicator priority-${priority}" style="font-size: 0.7rem;">${priority.toUpperCase()}</span>` : ''}
-            </div>
-            <p style="font-size: 0.8rem; color: #666; margin-bottom: 8px;">${request.c}</p>
-            <p style="font-size: 0.7rem; color: #888;">${formatDate(request.d)}</p>
-            <div style="margin-top: 10px;">
-              <button onclick="viewDetails('${request.id}')" style="font-size: 0.7rem; padding: 4px 8px; background: #e3f2fd; border: none; border-radius: 3px; cursor: pointer;">
-                👁️ Ver
-              </button>
-              <button onclick="addComment('${request.id}')" style="font-size: 0.7rem; padding: 4px 8px; background: #f3e5f5; border: none; border-radius: 3px; cursor: pointer; margin-left: 5px;">
-                💬 +
-              </button>
-            </div>
-          `;
+              <div class="kanban-header">
+                <span class="kanban-icon">${getServiceIcon(request.s, request.ts)}</span>
+                <span class="kanban-title">${serviceName}</span>
+                ${priority ? `<span class="kanban-badge ${statusBadgeClass}">${priority.toUpperCase()}</span>` : ''}
+              </div>
+              <div class="kanban-details">${request.c}</div>
+              <div class="kanban-details" style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">${formatDate(request.d)}</div>
+              <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <button onclick="viewDetails('${request.id}')" class="btn btn-view" title="Ver detalhes">
+                  👁️ Ver
+                </button>
+                <button onclick="addComment('${request.id}')" class="btn btn-comment" title="Adicionar comentário">
+                  💬 +
+                </button>
+              </div>
+            `;
 
             // Drag and Drop events
             if (typeof handleDragStart === 'function') {

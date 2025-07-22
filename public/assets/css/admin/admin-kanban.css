@@ -8,61 +8,149 @@
 }
 
 .status-column {
-  background: var(--bg-light);
-  border-radius: 12px;
-  padding: var(--spacing-medium);
-  min-height: 400px;
+  background: linear-gradient(135deg, var(--bg-light) 80%, var(--accent-blue) 100%);
+  border-radius: 18px;
+  padding: 28px 18px 18px 18px;
+  min-height: 420px;
+  box-shadow: 0 6px 32px rgba(37,99,235,0.10);
+  position: relative;
 }
 
 .status-column h3 {
   text-align: center;
-  margin-bottom: 15px;
-  padding: var(--spacing-small);
-  border-radius: var(--border-radius);
-  font-weight: 600;
+  margin-bottom: 18px;
+  padding: 12px 0;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
 }
 
 .status-pendente h3 {
-  background: #ffeaa7;
+  background: linear-gradient(90deg, #ffeaa7 70%, #fdcb6e 100%);
   color: #d63031;
 }
 .status-em_andamento h3 {
-  background: #74b9ff;
+  background: linear-gradient(90deg, #74b9ff 70%, #0984e3 100%);
   color: var(--text-white);
 }
 .status-concluido h3 {
-  background: var(--success-color);
+  background: linear-gradient(90deg, var(--success-color) 70%, #00b894 100%);
   color: var(--text-white);
 }
 .status-cancelado h3 {
-  background: var(--error-color);
+  background: linear-gradient(90deg, var(--error-color) 70%, #d63031 100%);
   color: var(--text-white);
 }
 
 .kanban-card {
   background: var(--bg-white);
-  border-radius: var(--border-radius);
-  padding: 15px;
-  margin-bottom: var(--spacing-small);
-  box-shadow: var(--shadow-light);
+  border-radius: 14px;
+  padding: 22px 18px 18px 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.10);
   cursor: grab;
-  transition: all var(--transition-medium);
+  transition: all 0.2s cubic-bezier(.4,0,.2,1);
+  border-left: 6px solid var(--accent-blue);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kanban-card .kanban-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.kanban-card .kanban-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--accent-blue), #1976d2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-white);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.kanban-card .kanban-title {
+  font-weight: 700;
+  color: var(--primary-blue);
+  font-size: 1.08rem;
+  flex: 1;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-shadow: 0 1px 4px rgba(37,99,235,0.10);
+}
+.kanban-card .kanban-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--accent-blue);
+  color: var(--text-white);
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+.kanban-card .kanban-badge.pendente {
+  background: #ffeaa7;
+  color: #d63031;
+}
+.kanban-card .kanban-badge.em_andamento {
+  background: #74b9ff;
+  color: var(--text-white);
+}
+.kanban-card .kanban-badge.concluido {
+  background: var(--success-color);
+  color: var(--text-white);
+}
+.kanban-card .kanban-badge.cancelado {
+  background: var(--error-color);
+  color: var(--text-white);
+}
+.kanban-card .kanban-details {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin-top: 2px;
+  word-break: break-word;
 }
 .kanban-card:hover {
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 8px 32px rgba(37,99,235,0.16);
+  transform: scale(1.02) translateY(-2px);
 }
 .kanban-card.dragging {
   opacity: 0.5;
-  transform: rotate(5deg);
+  transform: rotate(3deg) scale(0.98);
 }
 
 .kanban-drop-zone {
   min-height: 60px;
-  padding: 8px 0;
+  padding: 12px 0;
+  background: rgba(37,99,235,0.04);
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {
   .status-columns {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .status-column {
+    border-radius: 0;
+    box-shadow: none;
+    padding: 12px 4px 8px 4px;
+    min-height: 320px;
+  }
+  .kanban-card {
+    border-radius: 8px;
+    padding: 12px 8px;
+    margin-bottom: 10px;
   }
 }

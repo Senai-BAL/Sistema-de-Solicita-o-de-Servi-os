@@ -25,17 +25,20 @@
 }
 
 .btn-export.excel {
-  background: var(--success-dark);
+  background: var(--success-color);
+  color: var(--text-white);
+  border: none;
 }
 
+
 .btn-export.pdf {
-  background: linear-gradient(135deg, var(--error-color) 0%, #f44336 100%);
+  background: var(--error-color);
   position: relative;
   overflow: hidden;
 }
 
 .btn-export.pdf:hover {
-  background: linear-gradient(135deg, var(--error-dark) 0%, #e53935 100%);
+  background: var(--error-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
 }
@@ -56,6 +59,7 @@
   transition: all var(--transition-medium);
   font-weight: 500;
   position: relative;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s, color 0.2s;
   overflow: hidden;
 }
 

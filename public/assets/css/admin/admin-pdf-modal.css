@@ -1,11 +1,13 @@
+
 /* admin-pdf-modal.css: estilos modularizados para PDF MODAL do painel admin */
 
 .pdf-modal-content {
+  background: var(--bg-light);
   padding: 20px;
 }
 
 .pdf-summary-section {
-  background: #f8f9fa;
+  background: var(--bg-light);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -13,7 +15,7 @@
 
 .pdf-summary-title {
   margin-bottom: 10px;
-  color: #1e3c72;
+  color: var(--primary-blue);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -25,11 +27,11 @@
 }
 
 .pdf-summary-grid strong {
-  color: #333;
+  color: var(--text-primary);
 }
 
 .pdf-options-section {
-  background: #e3f2fd;
+  background: var(--primary-blue);
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -37,7 +39,7 @@
 
 .pdf-options-title {
   margin-bottom: 10px;
-  color: #1976d2;
+  color: var(--text-white);
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -48,11 +50,12 @@
   margin-bottom: 10px;
   font-size: 0.9rem;
   cursor: pointer;
+  color: var(--text-white);
   transition: color 0.3s ease;
 }
 
 .pdf-option-label:hover {
-  color: #1976d2;
+  color: var(--accent-blue);
 }
 
 .pdf-option-label:last-child {
@@ -73,23 +76,23 @@
 
 .btn-pdf-cancel {
   padding: 10px 20px;
-  background: #ccc;
+  background: var(--border-color);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   transition: all 0.3s ease;
 }
 
 .btn-pdf-cancel:hover {
-  background: #bbb;
+  background: var(--accent);
 }
 
 .btn-pdf-generate {
   padding: 10px 20px;
-  background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--error-color) 0%, var(--error-dark) 100%);
+  color: var(--text-white);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -99,7 +102,7 @@
 }
 
 .btn-pdf-generate:hover {
-  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+  background: linear-gradient(135deg, var(--error-dark) 0%, var(--error-color) 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
 }
