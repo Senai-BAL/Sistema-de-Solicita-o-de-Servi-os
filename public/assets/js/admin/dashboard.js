@@ -1,4 +1,4 @@
-/* 🔧 SENAI Lab Admin - Funções do Dashboard v2.7.3
+/* 🔧 SENAI Lab Admin - Funções do Dashboard v2.7.4
  * Arquivo: public/assets/js/admin/dashboard.js
  * Descrição: Funções principais do dashboard com UX melhorado
  */
@@ -83,7 +83,7 @@ function getPriorityIcon(priority) {
 }
 
 // 📋 RENDERIZAÇÃO DA LISTA
-/* 🎨 MODELO TABELA RESPONSIVA - Renderização Principal com UX v2.7.3 */
+/* 🎨 MODELO TABELA RESPONSIVA - Renderização Principal com UX v2.7.4 */
 async function renderRequestsList(requests) {
     const container = document.getElementById('requestsList');
 

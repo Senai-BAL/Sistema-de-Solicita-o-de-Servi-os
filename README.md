@@ -56,8 +56,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.7.0 (Sistema de Interlocutores Especializados)  
-**Detalhes**: Consulte [`docs/releases/RELEASE-v2.7.0.md`](docs/releases/RELEASE-v2.7.0.md) para informações completas
+**Versão Atual**: v2.7.4 (CSS Modularização e Organização)  
+**Detalhes**: Consulte [`docs/releases/RELEASE-v2.7.4.md`](docs/releases/RELEASE-v2.7.4.md) para informações completas
 
 ## � Configuração
 
