@@ -1,174 +1,74 @@
-# 📋 Changelog Resumido - SENAI Lab Sistema de Solicitação de Serviços
 
-**Principais mudanças e marcos do projeto desde a versão 1.0.0**
-
-> 📖 **Changelog Completo**: Para um histórico detalhado com todos os commits, consulte [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md)
-
-## [2.7.5] - Modularização CSS & Organização Final - 22/07/2025
-
-### 🗂️ Organização e Modularização
-- **CSS Modularizado**: Todos os estilos do admin e index separados em módulos dedicados
-- **Pastas Organizadas**: `assets/css/admin/` para admin, `assets/css/index/` para index
-- **Limpeza de Pastas**: Remoção de pastas vazias e arquivos obsoletos
-- **Imports Atualizados**: Caminhos corrigidos nos HTMLs para refletir a nova estrutura
-
-### 🧹 Manutenção e Melhoria
-- Estrutura pronta para manutenção e expansão
-- Documentação e changelogs atualizados
-
-
-### ✨ Nova Funcionalidades
-- **Skeleton Manager**: Sistema completo de skeleton screens
-  - Suporte para dashboard stats, tabelas, cards kanban, formulários e modais
-  - Animações CSS com efeito shimmer
-  - Design responsivo e integração automática
-  
-- **Micro-interactions System**: Feedback visual avançado
-  - Hover effects automáticos para elementos interativos
-  - Animações de entrada (fade-in, slide-up, scale-in)
-  - Efeitos ripple, highlight e confetti
-  - Sistema de progress rings animados
-  
-- **UI States Manager**: Gerenciamento centralizado de estados
-  - Estados para buttons (loading, success, error)
-  - Estados para forms (submitting, success, error)
-  - Estados para cards (loading, highlighted, inactive)
-  - Transições automáticas e overlays de loading
-
-### 🎨 Melhorias de Interface
-- **Loading Experience**: Estados visuais consistentes em toda aplicação
-- **Progressive Enhancement**: Sistemas funcionam com ou sem JavaScript avançado
-- **Animation Staggering**: Animações escalonadas para listas e grids
-- **Smart Observers**: Intersection observers para animações de entrada
-
-### 🔧 Integrações
-- **Admin Dashboard**: Skeleton screens durante carregamento de dados
-- **Form Submission**: Estados visuais durante envio e feedback
-- **Tabela de Requests**: Animações de entrada para linhas
-- **Auto-detection**: Elementos interativos ganham efeitos automaticamente
-
-### 📱 Responsividade
-- Otimizações para dispositivos móveis
-- Animações adaptadas conforme performance do dispositivo
-- Degradação graciosa para navegadores antigos
+# 📋 Changelog - SENAI Lab Sistema de Solicitação de Serviços
 
 ---
 
-## [2.7.2] - Toast System Redesign - 24/12/2024
+## [2.7.6] - 2025-07-23
+**Commit Principal**: `feat: documentação dos principais releases, revisão do padrão de commits e atualização para versão 2.7.6`
 
-### 🍞 **TOAST SYSTEM - REMODELAÇÃO COMPLETA**
+### 📚 Documentação
+- Criação dos arquivos de release para versões principais (v2.4.0, v2.3.0, v2.1.0, v1.0.0)
+- Atualização do índice de releases
+- Revisão e padronização do guia de commits (`padrao-commit.md`)
+- Alinhamento da versão em toda documentação
 
-#### 🎯 **Design Compacto e Eficiente**
-- **Limite Reduzido**: Máximo **2 notificações** simultâneas na tela
-- **Design Responsivo**: Altura flexível **44-120px**, largura fixa **320px**
-- **Layout Horizontal**: Ícone + Mensagem + Tempo + Botão fechar em linha única
-- **Texto Completo**: Quebra de linha automática, **sem truncamento** de mensagens
+### 🛠️ Manutenção
+- Padronização e centralização dos arquivos de documentação
+- Melhoria na rastreabilidade e clareza dos processos de versionamento
 
-#### ⚡ **Performance e Animações**
-- **Animações Rápidas**: Entrada/saída **0.3s**, remoção **250ms**
-- **Slide da Direita**: Animações horizontais suaves com `translateX`
-- **Efeitos Hover**: Escala sutil (1.02x) com sombras dinâmicas
-- **Double RAF**: Garantia de animações suaves com `requestAnimationFrame` duplo
+---
 
-#### 🔄 **Sistema de Fila Otimizado**
-- **Processamento Automático**: Fila com delay mínimo de **50ms**
-- **Anti-spam Reduzido**: **1.5s** entre duplicatas (era 2s)
-- **Posicionamento Dinâmico**: Baseado na altura real dos toasts (não fixa)
-- **Gap Inteligente**: **8px** entre notificações com cálculo automático
+## [2.7.5] - 2025-07-22
+**Commit Principal**: `b8828ae - v2.7.5: Modularização final do CSS, separação admin/index, limpeza de pastas e atualização dos imports. Documentação e changelogs atualizados.`
 
-#### 🎨 **Visual e UX**
-- **Cores Modernas**: Gradientes horizontais (90deg) atualizados
-- **Backdrop Filter**: Blur para melhor legibilidade
-- **Bordas Sutis**: `rgba(255,255,255,0.2)` para definição
-- **Controles Agrupados**: Tempo e botão fechar organizados
+### 🗂️ Modularização e Organização Final do CSS
+- **CSS Modularizado**: Todos os estilos do painel admin e do index extraídos para módulos separados
+- **Separação Completa**: `assets/css/admin/` para módulos do admin, `assets/css/index/` para módulos do index
+- **Limpeza de Pastas**: Remoção de `components/`, `layout/`, `pages/` e arquivos obsoletos
+- **Atualização de Imports**: Caminhos corrigidos nos arquivos HTML para refletir a nova estrutura
+- **Documentação**: Changelogs e README atualizados
 
-#### ⏱️ **Durações Otimizadas**
-- **Info**: 2s (rápido para informações básicas)
-- **Success**: 2.5s (padrão para confirmações)
-- **Warning**: 3s (moderado para avisos)
-- **Error**: 4s (mais tempo para erros críticos)
+#### Hotfixes/Patches
+- **[2.7.5.1]** (`cf926fd`): feat(admin-theme): sobrescreve todas as variáveis do common.css no .admin-theme-light para garantir fidelidade total ao tema claro
+- **[2.7.5.2]** (`f140090`): Repaginada visual completa - Kanban, tabela de serviços, modais e área de comentários modernizados, UX aprimorada, responsividade e contraste garantidos.
+- **[2.7.5.3]** (`0caa5ad`): Atualiza todas as menções de versão para v2.7.5.3 (tema personalizado, documentação, HTML, JS, CSS)
 
-> **🎯 Resultado**: Interface muito mais limpa e eficiente, ocupando **60% menos espaço visual** mantendo todas as funcionalidades avançadas (anti-spam, fila, hover effects).
-
-## [2.7.1] - 2025-07-21
-
-### 🐛 **CORREÇÕES CRÍTICAS E MELHORIAS DE PERFORMANCE**
-
-#### 🔧 **Correções de Bugs Críticos**
-- **Memory Leaks Eliminados**: Implementado `URL.revokeObjectURL()` em upload.js
-- **Error Handling Robusto**: Tratamento específico para erros GitHub API
-- **Validação Aprimorada**: Guards de validação em form-logic.js
-- **Toast Positioning**: Corrigido posicionamento fora da tela
-
-#### 🚀 **Otimizações de Performance**
-- **Smart Refresh System**: Detecção de atividade do usuário em admin/main.js
-  - **2 minutos** quando usuário ativo
-  - **10 minutos** quando usuário inativo
-- **Firebase Reads Reduzidos**: Estratégia unificada de fallback (-60% reads)
-- **Activity Detection**: Mouse, keyboard, scroll e click tracking
-
-#### ✅ **Validações Brasileiras Implementadas**
-- **DDD Validation**: Lista completa de códigos DDD válidos (11-99)
-- **Email Regex**: Padrão robusto para validação de e-mail
-- **Name Patterns**: Validação de nomes com caracteres brasileiros
-- **Phone Anti-spam**: Detecção de números sequenciais/repetitivos
-
-#### 🛡️ **Melhorias de Segurança**
-- **Input Sanitization**: Limpeza de dados de entrada
-- **Error Messages**: Feedback específico sem exposição de dados
-- **Timeout Management**: Controle inteligente de timeouts baseado em atividade
-
-> **📊 Impacto**: Redução de **60% nas leituras Firebase**, eliminação de memory leaks, e UX mais responsiva com refresh inteligente.
-
-## [2.7.0] - 2025-07-21
-
-### 🎯 **SISTEMA DE NOTIFICAÇÕES TOAST AVANÇADO**
-
-#### 🍞 **Toast Manager Completo**
-- **Anti-spam System**: Prevenção de notificações duplicadas
-- **Queue Management**: Fila inteligente com limite de 5 toasts simultâneos
-- **Auto-removal**: Timers automáticos por tipo de notificação
-- **Animations**: Animações suaves de entrada e saída
-
-#### 🎨 **Design Profissional**
-- **4 Tipos**: Success, Error, Warning, Info com cores distintas
-- **Gradientes Modernos**: Backgrounds com gradientes CSS elegantes
-- **Timestamps**: Horário de criação em cada toast
-- **Close Buttons**: Botões de fechar com hover effects
-- **Positioning**: Sistema de empilhamento dinâmico
-
-#### ⚙️ **Funcionalidades Avançadas**
-- **Cleanup Automático**: Cache de mensagens com expiração
-- **Métodos de Conveniência**: `ToastManager.success()`, `.error()`, etc.
-- **Global Availability**: Disponível em `window.ToastManager`
-- **Console Integration**: Logs detalhados para debugging
-
-#### 🔄 **Integração Completa**
-- **Loading Manager**: Sincronização com sistema de loading
-- **Firebase Events**: Notificações automáticas para operações
-- **Form Feedback**: Validação e confirmação visual
-- **Admin Dashboard**: Integração com painel administrativo
-
-> **✨ Resultado**: Sistema de feedback visual profissional que melhora significativamente a UX com notificações elegantes e informativas.
+### 🧹 Manutenção
+- Estrutura de CSS pronta para manutenção, expansão e colaboração
 
 ## [2.6.0] - 2025-07-16
+**Commit Principal**: `57e912d - v2.6.0: Refatoração completa + Produção pronta - Modularização frontend/admin - Banner de teste removido para produção`
 
-## [2.7.0] - 2025-07-18 �‍🏫
+### 🏗️ Refatoração Completa da Arquitetura
 
-### **SISTEMA DE INTERLOCUTORES ESPECIALIZADOS**
+#### 🔧 Modularização Completa do Frontend
+- **Index.html Modularizado**: Quebra do arquivo monolítico (2.118 linhas → ~450 linhas) - **78% de redução**
+- **6 Módulos JavaScript Criados**:
+  - `config.js` - Configurações e validação de dependências
+  - `monitor.js` - Sistema de monitoramento e indicadores  
+  - `upload.js` - Upload GitHub com padrão de nomenclatura
+  - `multi-file-manager.js` - Gerenciamento avançado de múltiplos arquivos
+  - `form-logic.js` - Lógica completa do formulário e validação
+  - `navigation.js` - Navegação e máscaras de interface
+  - `app.js` - Inicialização e orquestração
 
-#### ⚡ **Principais Melhorias**
-- **Interlocutores Especializados**: Cada usuário com especialização específica no Lab
-- **Funções Técnicas Definidas**: Desenvolvedor, Programador de Jogos, Mecatrônica, Designer 3D e 2D
-- **Avatars Especializados**: Ícones representativos para cada área de atuação
-- **Role Unificado**: Todos são interlocutores no Lab com especialidades próprias
-- **Sistema de Auditoria Mantido**: Rastreamento completo de ações por especialista
+#### 🎨 **Organização CSS**
+- **CSS Extraído**: 588 linhas organizadas em `assets/css/index.css`
+- **Seções Organizadas**: Estilos agrupados por responsabilidade
+- **Melhor Manutenibilidade**: Separação clara entre HTML, CSS e JS
 
-#### 🎯 **Impacto**
-- **Especialização**: Cada interlocutor com área de expertise definida
-- **Identificação Clara**: Avatars específicos para cada especialidade
-- **Organização**: Estrutura baseada em competências técnicas
-- **Rastreabilidade**: Auditoria por especialista e área
+#### 🔧 **Modularização Admin Dashboard**
+- **Admin.js Modularizado**: Quebra do arquivo monolítico (2.377 linhas) em **9 módulos especializados**
+- **Módulos Admin Criados**:
+  - `config.js` - Configurações e autenticação
+  - `ui.js` - Classes de interface (AdminAuth, ToastManager, LoadingManager, DashboardManager)
+  - `notifications.js` - Sistema de notificações (NotificationManager, DashboardWithNotifications)
+  - `backup.js` - Gerenciamento de backups (CompleteBackupManager)
+  - `dashboard.js` - Funções principais do dashboard
+  - `filters.js` - Sistema de filtros e busca
+  - `export.js` - Exportação Excel/PDF
+  - `utils.js` - Utilitários e formatação
+  - `main.js` - Inicialização e eventos
 
 ### 📁 **Reorganização Completa do Projeto**
 
@@ -211,7 +111,7 @@
 - **Escalabilidade**: Facilita adição de novas funcionalidades
 - **Debugging**: Logs organizados por módulo
 
-#### � **Firebase Service Aprimorado**
+#### 🔥 **Firebase Service Aprimorado**
 - **Teste de Conectividade**: Automático na inicialização
 - **Tratamento de Erros**: Robusto e informativo
 - **Logs Detalhados**: Para debugging eficiente
@@ -234,295 +134,277 @@
 - **Documentação**: 100% coberta
 - **Testabilidade**: Significativamente melhorada
 
+---
+
 ## [2.5.0] - 2025-07-15
+**Commit Principal**: `8de0d40 - v2.5.0: Sistema de Múltiplos Arquivos e Nomenclatura Padronizada`
 
-### 🆕 Adicionado
-- **Sistema de Múltiplos Arquivos**: Possibilidade de enviar múltiplos arquivos por categoria
-- **Preview de Imagens**: Visualização inline de imagens antes do envio
-- **Interface Visual de Arquivos**: Lista interativa com cards para cada arquivo
-- **Progress Bars Individuais**: Acompanhamento do upload de cada arquivo separadamente
-- **Progress Bar Global**: Progresso geral do upload de todos os arquivos
-- **Validação Aprimorada**: Verificação de tipo, tamanho e formato por categoria
-- **Gerenciamento Visual**: Ações de remover e visualizar arquivos
-- **Resumo Inteligente**: Contador e tamanho total dos arquivos selecionados
+### 🆕 Sistema de Múltiplos Arquivos
+- **Upload Múltiplo**: Envio de vários arquivos por categoria de serviço
+- **Interface Visual**: Cards interativos para cada arquivo selecionado
+- **Preview Instantâneo**: Visualização de imagens antes do upload
+- **Gerenciamento Intuitivo**: Remover e visualizar arquivos facilmente
 
-### 🔄 Modificado
-- **Sistema de Nomenclatura**: Novo padrão `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
-- **Organização de Arquivos**: Pasta única `senai-arquivos/` para todos os tipos
-- **Interface de Upload**: Cards visuais substituindo inputs simples
-- **Feedback de Status**: Status em tempo real para cada arquivo
-- **Validação de Arquivos**: Sistema mais robusto e específico por tipo
+#### Sistema de Nomenclatura Inteligente
+- **Formato Padronizado**: `TIPO_YYYYMMDD_HHMMSS_SOLICITANTE_ARQUIVO.ext`
+- **Pasta Organizacional**: Todos os arquivos em `senai-arquivos/`
+- **Timestamp Detalhado**: Data e hora precisas
+- **Identificação Clara**: Nome do solicitante integrado
 
-### 🏷️ Padrão de Nomenclatura
-```
-Formato: TIPO_YYYYMMDD_HHMMSS_SOLICITANTE_ARQUIVO.ext
+#### Progress Visual Avançado
+- **Progress Individual**: Acompanhamento por arquivo
+- **Progress Global**: Visão geral do processo
+- **Status em Tempo Real**: Aguardando, Enviando, Concluído, Erro
+- **Feedback Visual**: Cores e animações intuitivas
 
-Exemplos:
-- IMPRESSAO_20250715_143000_JOAO_documento.pdf
-- IMPRESSAO_3D_20250715_143000_MARIA_modelo.stl
-- MANUTENCAO_20250715_143000_PEDRO_problema.jpg
-- EMPRESTIMO_20250715_143000_ANA_item.png
-```
+#### Melhorias de Interface
+- **Cards Visuais**: Para cada arquivo selecionado
+- **Ícones Específicos**: Por tipo de arquivo (📄 PDF, 📐 STL, 📷 Foto)
+- **Thumbnails**: Para imagens
+- **Resumo Inteligente**: Contador + tamanho total
+- **Ações Contextuais**: Visualizar, Remover
 
-### 🛠️ Técnico
-- **Classe MultiFileManager**: Nova classe para gerenciar múltiplos arquivos
-- **Progress APIs**: Sistema de callbacks para acompanhamento de progresso
-- **Validação por Categoria**: Diferentes regras para cada tipo de serviço
-- **Memory Management**: Melhor gestão de URLs de preview de imagens
-- **Error Handling**: Tratamento robusto de erros de upload
+#### Documentação e Versionamento
+- **CHANGELOG.md**: Criado para controle de versões
+- **README Atualizado**: Novas funcionalidades documentadas
+- **Documentação Técnica**: Detalhes das melhorias
 
-### 📊 Funcionalidades por Categoria
-- **Impressão**: Múltiplos PDFs, DOCs, imagens
-- **Impressão 3D**: Múltiplos arquivos STL
-- **Manutenção**: Múltiplas fotos do problema
-- **Empréstimo**: Múltiplas fotos do item
+### 🔧 Melhorias Técnicas
+- **Classe MultiFileManager**: Gerenciamento robusto
+- **Validação Avançada**: Específica por categoria
+- **Memory Management**: Gestão eficiente de URLs
+- **Error Handling**: Tratamento robusto de falhas
+
+---
 
 ## [2.4.0] - 2025-07-10
+**Commit Principal**: `9f6102a - feat: Sistema avançado de exportação PDF + backup completo`
 
-### 🆕 Adicionado
-- Sistema de upload para GitHub
-- Compressão automática de imagens
-- Monitor de uso de recursos
-- Cache offline Firebase
-
-### 🔄 Modificado
-- Interface responsiva melhorada
-- Validações em tempo real
-- Máscara automática para WhatsApp
-
-## [2.3.0] - 2025-07-05
-
-### 🆕 Adicionado
-- Dashboard administrativo
-- Sistema de comentários
-- Controle de status de solicitações
-- Estatísticas em tempo real
-
-### 🔄 Modificado
-- Formulário dinâmico baseado no tipo de serviço
-- Melhorias na validação de dados
-
-## [2.2.0] - 2025-07-01
-
-- Formulário adaptativo
-
-### 🔄 Modificado
-- Configurações externalizadas
-
-## [2.1.0] - 2025-06-25
-
-### 🆕 Adicionado
-- Interface inicial do projeto
-- Formulário básico de solicitações
-- Configuração Firebase inicial
-
-## [2.0.0] - 2025-06-20
-
-### 🆕 Adicionado
-- Projeto inicial
-- Estrutura base
-- README inicial
-
----
-
-## [2.6.0] - 2025-07-18 🔄
-
-### **OTIMIZAÇÕES DE INTERFACE E PERFORMANCE**
-
-#### ⚡ **Principais Melhorias**
-- **Sistema de Atualização Inteligente**: Auto-refresh de 5min + botão manual (90% menos requisições)
-- **Lista Otimizada**: Scroll infinito, ações centralizadas no modal
-- **Prioridades Aprimoradas**: Padrão "baixa" automático, sempre visível
-- **Modal Híbrido**: Timeline, ações e comentários centralizados
-
-#### 🎯 **Impacto**
-- **Performance**: 90% redução nas requisições automáticas
-- **UX**: Interface mais limpa e controle manual de atualização
-- **Consistência**: Prioridades padronizadas em todo sistema
-- **Escalabilidade**: Lista infinita sem limitações visuais
-
----
-
-## [2.5.0] - 2025-07-16 🏗️
-
-### **REFATORAÇÃO COMPLETA DA ARQUITETURA**
-
-#### ⚡ **Principais Melhorias**
-- **Modularização Completa**: Frontend quebrado em 6 módulos + Admin em 9 módulos
-- **Redução de Código**: 78% de redução no arquivo principal (2.118 → 450 linhas)
-- **Documentação Profissional**: READMEs em todas as pastas + sistema de navegação
-- **Ambiente de Teste**: Isolamento completo com branch e configurações dedicadas
-
-#### 🎯 **Impacto**
-- **Manutenibilidade**: Código organizado por responsabilidade
-- **Escalabilidade**: Facilita adição de novas funcionalidades  
-- **Debugging**: Logs organizados por módulo
-- **Colaboração**: Desenvolvimento em equipe facilitado
-
----
-
-## [2.4.0] - 2025-07-15 📁
-
-### **SISTEMA DE MÚLTIPLOS ARQUIVOS**
-
-#### ⚡ **Principais Melhorias**
-- **Upload Múltiplo**: Vários arquivos por categoria de serviço
-- **Interface Visual**: Cards interativos para cada arquivo
-- **Preview de Imagens**: Visualização antes do envio
-- **Nomenclatura Inteligente**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
-
-#### 🎯 **Impacto**
-- **Experiência do Usuário**: Interface moderna e intuitiva
-- **Organização**: Arquivos padronizados no GitHub
-- **Produtividade**: Múltiplos arquivos em uma única solicitação
-- **Controle**: Progress individual e global
-
----
-
-## [2.3.0] - 2025-07-10 📋
-
-### **SISTEMA DE MÚLTIPLOS ARQUIVOS**
-
-#### ⚡ **Principais Melhorias**
-- **Upload Múltiplo**: Vários arquivos por categoria de serviço
-- **Interface Visual**: Cards interativos para cada arquivo
-- **Preview de Imagens**: Visualização antes do envio
-- **Nomenclatura Inteligente**: `TIPO_DATA_SOLICITANTE_ARQUIVO.ext`
-
-#### 🎯 **Impacto**
-- **Experiência do Usuário**: Interface moderna e intuitiva
-- **Organização**: Arquivos padronizados no GitHub
-- **Produtividade**: Múltiplos arquivos em uma única solicitação
-- **Controle**: Progress individual e global
-
----
-
-## [2.4.0] - 2025-07-10 📋
-
-### **SISTEMA DE EXPORTAÇÃO PDF AVANÇADO**
-
-#### ⚡ **Principais Melhorias**
+### 📋 Sistema de Exportação PDF Avançado
 - **Relatórios Profissionais**: Layout moderno com cabeçalho personalizado
 - **Configurações Avançadas**: Modal com opções personalizáveis
-- **Backup Completo**: Sistema automático de backup + limpeza
 - **Cores Inteligentes**: Status coloridos para identificação
+- **Estatísticas Visuais**: Resumo executivo com métricas
+- **Responsividade**: Funciona em mobile e desktop
 
-#### 🎯 **Impacto**
-- **Gestão**: Relatórios mensais e análise de produtividade
-- **Auditoria**: Histórico completo e documentação
-- **Segurança**: Backup automático dos dados
-- **Apresentações**: Relatórios executivos
+#### Opções de Configuração
+- **Conteúdo Personalizado**: Estatísticas + Detalhes
+- **Cores por Status**: Verde, Azul, Amarelo, Vermelho
+- **Informações Incluídas**: Data, filtros, colaborador, detalhes
+- **Paginação Automática**: Quebra de página inteligente
 
----
+#### Detalhes Técnicos
+- **Biblioteca**: jsPDF 2.5.1
+- **Renderização**: Frontend (sem servidor)
+- **Performance**: < 2 segundos para 100 registros
+- **Compatibilidade**: Todos os navegadores modernos
 
-## [2.3.0] - 2025-07-09 🔐
-
-### **DASHBOARD ADMINISTRATIVO COMPLETO**
-
-#### ⚡ **Principais Melhorias**
-- **Painel Administrativo**: Gestão completa de solicitações
-- **Autenticação Segura**: Login por senha com sessão persistente
-- **Notificações Desktop**: Alertas em tempo real
-- **Estatísticas Avançadas**: Métricas e filtros
-
-#### 🎯 **Impacto**
-- **Controle**: Gestão centralizada de todas as solicitações
-- **Produtividade**: Auto-refresh e notificações automáticas
-- **Segurança**: Acesso controlado por senha
-- **Análise**: Estatísticas para tomada de decisão
+#### Casos de Uso
+- **Gestão**: Relatórios mensais, análise de produtividade
+- **Auditoria**: Histórico completo, documentação
+- **Apresentações**: Relatórios executivos, métricas
 
 ---
 
-## [2.2.0] - 2025-07-09 🔗
+## [2.3.0] - 2025-07-09
+**Commit Principal**: `ddb43ac - feat: Dashboard Admin v2.0 com Sistema Completo de Backup + Notificações`
 
-### **INTEGRAÇÃO GITHUB PARA ARQUIVOS**
+### 🖥️ Dashboard Admin V2.0 com Backup Completo
+- **Interface Moderna**: Design responsivo aprimorado
+- **Estatísticas Detalhadas**: Cards com métricas em tempo real
+- **Filtros Avançados**: Por serviço, status, período, prioridade
+- **Gestão de Status**: Fluxo completo de solicitações
+- **Sistema de Comentários**: Observações administrativas
 
-#### ⚡ **Principais Melhorias**
-- **Upload Automático**: Arquivos enviados para GitHub
-- **Configuração Externa**: Credenciais seguras externalizadas
-- **Compressão Automática**: Imagens otimizadas
-- **URLs Permanentes**: Links públicos para todos os arquivos
+#### Sistema de Backup Completo
+- **Backup Automático**: Dados Firestore + arquivos GitHub
+- **Limpeza Inteligente**: Remoção de dados antigos
+- **Restauração**: Funcionalidade de recuperação
+- **Validação**: Integridade dos dados
 
-#### 🎯 **Impacto**
-- **Economia**: Solução 100% gratuita para armazenamento
-- **Organização**: Arquivos centralizados no GitHub
-- **Performance**: Imagens comprimidas automaticamente
-- **Acessibilidade**: URLs permanentes para compartilhamento
+#### Sistema de Notificações
+- **Notificações Desktop**: Tempo real para novas solicitações
+- **Permissões**: Solicitação automática de permissões
+- **Integração**: Seamless com dashboard
+- **Configurável**: Ativar/desativar por usuário
+
+#### Melhorias de Interface
+- **Auto-refresh**: Atualização automática (30s)
+- **Loading States**: Feedback visual durante operações
+- **Toast Messages**: Notificações in-app
+- **Responsive Design**: Otimizado para todos os dispositivos
+
+### 🔧 Melhorias Técnicas
+- **Arquitetura Modular**: Código organizado em módulos
+- **Error Handling**: Tratamento robusto de erros
+- **Performance**: Otimizações de carregamento
+- **Segurança**: Validações aprimoradas
 
 ---
 
-## [1.0.0] - 2025-07-09 🎉
+## [2.2.0] - 2025-07-09
+**Commit Principal**: `f9753eb - Implementar Sistema de Notificações em Tempo Real no Dashboard Admin`
 
-### **LANÇAMENTO INICIAL**
+### 🔔 Sistema de Notificações em Tempo Real
+- **Tempo Real**: Alertas instantâneos para novas solicitações
+- **Permissões**: Solicitação automática de permissões do navegador
+- **Integração**: Perfeita com dashboard administrativo
+- **Configurável**: Ativar/desativar conforme necessário
 
-#### ⚡ **Funcionalidades Principais**
-- **Formulário Dinâmico**: 3 tipos de serviços (Espaço Maker, Serviços, Empréstimo)
+#### Características
+- **Não Invasivo**: Notificações discretas
+- **Informativo**: Dados relevantes da solicitação
+- **Clicável**: Navegação direta para detalhes
+- **Persistente**: Funciona mesmo com tab inativa
+
+#### Implementação Técnica
+- **API Nativa**: Notification API do navegador
+- **Fallback**: Graceful degradation para navegadores não suportados
+- **Throttling**: Controle de frequência de notificações
+- **Memory Management**: Limpeza automática de listeners
+
+---
+
+## [2.1.1] - 2025-07-09
+**Commit Principal**: `b32dd5a - Correção das regras do Firestore para permitir leitura no dashboard admin`
+
+### 🛡️ Correção de Regras Firestore
+
+#### Ajustes de Segurança
+- **Regras Firestore**: Permitir leitura para dashboard admin
+- **Permissões**: Configuração adequada para operações CRUD
+- **Validação**: Teste de conectividade Firebase
+- **Documentação**: Instruções de configuração atualizadas
+
+#### Funcionalidades Corrigidas
+- **Leitura de Dados**: Dashboard pode acessar solicitações
+- **Atualização de Status**: Modificação de solicitações permitida
+- **Comentários**: Adição de observações administrativas
+- **Filtros**: Consultas complexas funcionando
+
+---
+
+## [2.1.0] - 2025-07-09
+**Commit Principal**: `5c4a44c - feat: adicionar dashboard administrativo e reorganizar estrutura`
+
+### 🖥️ Dashboard Administrativo Completo
+
+#### Funcionalidades do Dashboard
+- **Autenticação**: Sistema de login por senha com sessão persistente
+- **Visualização**: Estatísticas em tempo real das solicitações
+- **Gestão**: Atualização de status (pendente → andamento → concluído)
+- **Comentários**: Sistema de observações administrativas
+- **Filtros**: Busca avançada por serviço, status, período
+- **Arquivos**: Visualização direta dos arquivos enviados
+
+#### Interface Administrativa
+- **Design Responsivo**: Funciona em desktop, tablet e mobile
+- **Auto-refresh**: Atualização automática a cada 30 segundos
+- **Feedback Visual**: Indicadores de status em tempo real
+- **Navegação Intuitiva**: Interface amigável para administradores
+
+#### Reorganização Estrutural
+- **Pasta Shared**: Configurações centralizadas
+- **Estrutura Limpa**: Organização melhorada de arquivos
+- **Documentação**: README atualizado com instruções completas
+- **Segurança**: Avisos e boas práticas documentadas
+
+#### Melhorias Técnicas
+- **Sessão Persistente**: 24 horas de duração
+- **Validação**: Múltiplas camadas de segurança
+- **Error Handling**: Tratamento robusto de erros
+- **Performance**: Otimizações de carregamento
+
+---
+
+## [1.2.0] - 2025-07-09
+**Commit Principal**: `ae882bf - feat: implementar sistema de configuração externa para GitHub`
+
+### 🛠️ Sistema de Configuração GitHub
+
+#### Upload para GitHub
+- **Configuração Externa**: `github-config.example.js` como template
+- **Segurança**: Credenciais GitHub externalizadas
+- **Validação**: Verificação de segurança para credenciais
+- **Integração**: Upload automático de arquivos para repositório
+
+#### Melhorias de Segurança
+- **Gitignore**: Proteção para `github-config.js`
+- **Credenciais**: Separação clara entre exemplo e produção
+- **Validação**: Checks de segurança antes do upload
+- **Documentação**: Instruções detalhadas de configuração
+
+#### Documentação e Licença
+- **README**: Instruções completas de configuração GitHub
+- **Licença MIT**: Adicionada ao projeto
+- **Limpeza**: Remoção de arquivos de teste desnecessários
+- **Estrutura**: Simplificação para foco no sistema principal
+
+#### Melhorias Técnicas
+- **Modularização**: Separação de configurações
+- **Flexibilidade**: Sistema configurável para diferentes ambientes
+- **Robustez**: Tratamento de erros aprimorado
+- **Performance**: Otimizações de upload
+
+---
+
+## [1.1.0] - 2025-07-09
+**Commit Principal**: `dfa1b3e - Update README.md`
+
+### 📄 Atualização de Documentação
+
+#### Melhorias na Documentação
+- **README**: Informações mais detalhadas sobre o sistema
+- **Instruções**: Guias de instalação e configuração
+- **Funcionalidades**: Descrição completa das features
+- **Exemplos**: Casos de uso e screenshots
+
+#### Conteúdo Adicionado
+- **Tecnologias**: Stack tecnológico detalhado
+- **Instalação**: Passo-a-passo para setup
+- **Configuração**: Instruções para Firebase
+- **Uso**: Guia para usuários finais
+
+---
+
+## [1.0.0] - 2025-07-09
+
+### 🎉 **LANÇAMENTO INICIAL**
+
+**Commit Principal**: `0ef2633 - Initial commit: SENAI Lab - Sistema de Solicitação de Serviços`
+
+#### 🚀 **Funcionalidades Principais**
+- **Formulário Dinâmico**: Interface adaptativa para 3 tipos de serviços
+  - 🏗️ **Espaço Maker**: Reserva de espaços e equipamentos
+  - 🖨️ **Serviços**: Impressão, Impressão 3D, Manutenção, Arte Digital
+  - 📦 **Empréstimo**: Solicitação de itens com controle de datas
+
+#### 🎨 **Interface e Experiência**
 - **Validações em Tempo Real**: Verificação automática de dados
-- **Design Responsivo**: Interface mobile-first
-- **Integração Firebase**: Armazenamento em Firestore
+- **Máscara WhatsApp**: Formatação automática (xx)xxxxx-xxxx
+- **Design Responsivo**: Otimizado para mobile e desktop
+- **Feedback Visual**: Indicadores de progresso e status
 
-#### 🎯 **Impacto**
-- **Digitalização**: Substituição de processos manuais
-- **Eficiência**: Solicitações organizadas e rastreáveis
-- **Acessibilidade**: Disponível 24/7 para todos os colaboradores
-- **Modernização**: Interface moderna e intuitiva
+#### 🔧 **Funcionalidades Técnicas**
+- **Integração Firebase**: Firestore para armazenamento
+- **Cache Offline**: Funcionamento sem internet
+- **Monitor de Uso**: Controle de recursos Firebase
+- **PWA Ready**: Preparado para Progressive Web App
 
----
+#### 🛡️ **Segurança**
+- **Credenciais Externalizadas**: Firebase config em arquivo separado
+- **Validações Client-Side**: Múltiplas camadas de verificação
+- **Links Externos**: Arquivos hospedados externamente
+- **Firestore Rules**: Regras de segurança configuradas
 
-## 📊 **Resumo Evolutivo**
+#### 🏗️ **Arquitetura Inicial**
+- **HTML5, CSS3, JavaScript Vanilla**: Stack tecnológico
+- **Firebase Hosting**: Hospedagem integrada
+- **Estrutura Limpa**: Organização inicial do projeto
+- **Documentação**: README básico com informações essenciais
 
-### **Crescimento do Projeto**
-```
-v1.0.0 → v2.6.0 (7 dias de desenvolvimento)
-├─ 📱 MVP Funcional (v1.0.0)
-├─ 🔗 Integração GitHub (v2.2.0)
-├─ 🔐 Dashboard Admin (v2.3.0)
-├─ 📋 Exportação PDF (v2.4.0)
-├─ 📁 Múltiplos Arquivos (v2.5.0)
-└─ 🏗️ Arquitetura Modular (v2.6.0)
-```
-
-### **Métricas de Impacto**
-- **Funcionalidades**: 3 → 15+ funcionalidades
-- **Arquivos**: 8 → 50+ arquivos organizados
-- **Modularização**: Monolito → 15 módulos
-- **Documentação**: 162 → 2.000+ linhas
-- **Testes**: 0 → Ambiente completo
-
-### **Principais Benefícios**
-- ✅ **100% Gratuito**: Dentro dos limites do free tier
-- ✅ **Produção**: Sistema totalmente funcional
-- ✅ **Modular**: Arquitetura profissional
-- ✅ **Documentado**: Guias completos
-- ✅ **Testável**: Ambiente isolado
+- **Validações**: 10+ validações automáticas
 
 ---
 
-## 📝 **Versionamento**
-
-Este projeto segue o [Semantic Versioning](https://semver.org/lang/pt-BR/):
-
-- **MAJOR** (X.0.0): Mudanças incompatíveis
-- **MINOR** (0.X.0): Novas funcionalidades compatíveis  
-- **PATCH** (0.0.X): Correções compatíveis
-
-### **Principais Marcos**
-- **v1.0.0**: � Lançamento inicial
-- **v2.0.0**: 🔗 Integração GitHub
-- **v2.5.0**: 📁 Sistema de múltiplos arquivos
-- **v2.6.0**: 🏗️ Arquitetura modular
-
----
-
-**Desenvolvido por**: Getulio Vagner Santos e Chagas Junior  
-**Período**: 09-16 de julho de 2025  
-**Tecnologias**: HTML5, CSS3, JavaScript Vanilla, Firebase, GitHub API
-
----
-
-## 📝 **Sobre este Changelog**
-
-### **Formato**
-- **Resumido**: Principais marcos e impacto das mudanças
-- **Completo**: [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md) - Todos os commits detalhados
-- **Seguimos**: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) + [Semantic Versioning](https://semver.org/lang/pt-BR/)
+**Desenvolvido por**: Getulio Vagner e Chagas Junior  
