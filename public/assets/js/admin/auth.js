@@ -44,6 +44,14 @@ const ADMIN_USERS = {
 
 // 🔐 CLASSE DE AUTENTICAÇÃO ADMINISTRATIVA
 class AdminAuth {
+  // Valida a senha do usuário atualmente logado
+  static async validatePassword(password) {
+    if (!this.currentUser || !this.currentUser.username) return false;
+    const username = this.currentUser.username;
+    // Senha esperada: Senai@username
+    const expectedPassword = `Senai@${username}`;
+    return password === expectedPassword;
+  }
   static currentUser = null;
   static sessionKey = 'senai_admin_session';
   static loginAttempts = {};

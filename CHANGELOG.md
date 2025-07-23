@@ -1,5 +1,28 @@
-
 # 📋 Changelog - SENAI Lab Sistema de Solicitação de Serviços
+
+---
+
+## [2.8.0] - 2025-07-23
+**Commit Principal**: `feat: exclusão definitiva de solicitações canceladas, modal de confirmação dupla, integração Firestore/GitHub, CSS modularizado, auditoria e documentação.`
+
+### 🚀 Novas funcionalidades
+- Exclusão definitiva de solicitações canceladas (Firestore + GitHub)
+- Modal de confirmação dupla para exclusão, com validação de senha
+- Auditoria de exclusão registrada
+
+### 🎨 Melhorias
+- CSS modularizado e adaptado ao tema claro/escuro
+- Padronização de variáveis CSS e integração visual
+- Atualização dos scripts e documentação
+
+### 🛡️ Orientações
+- Exclusão só disponível para solicitações canceladas
+- Fluxo seguro: digitar "DELETAR" + senha admin
+- Auditoria completa no localStorage
+- Testado no ambiente de teste
+
+### 📚 Documentação
+- Atualização dos arquivos de documentação
 
 ---
 
@@ -407,4 +430,4 @@
 
 ---
 
-**Desenvolvido por**: Getulio Vagner e Chagas Junior  
+**Desenvolvido por**: Getulio Vagner e Chagas Junior

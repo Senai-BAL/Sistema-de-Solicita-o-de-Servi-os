@@ -935,6 +935,9 @@ function populateActions(request) {
             <button class="btn-action secondary" onclick="updateStatus('${request.id}', 'pendente')" title="Reativar solicitação">
                 🔄 Reativar
             </button>
+            <button class="btn-action danger" onclick="openDeleteConfirmation('${request.id}')" title="Deletar solicitação definitivamente">
+                🗑️ Deletar
+            </button>
             <div style="margin-top: 8px; padding: 8px; background: #ffebee; border-radius: 6px; font-size: 12px; color: #c62828;">
                 ❌ Solicitação cancelada
             </div>
@@ -1069,6 +1072,87 @@ function getPriorityText(priority) {
     }
 }
 
+// 🗑️ MODAL DE CONFIRMAÇÃO DUPLA PARA DELETAR SOLICITAÇÃO
+function openDeleteConfirmation(requestId) {
+    // Cria modal customizado
+    const modal = document.createElement('div');
+    modal.className = 'modal show';
+    modal.id = 'deleteRequestModal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🗑️ Deletar Solicitação</h3>
+                <button class="close-btn" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-modal-alert">
+                    <span class="delete-modal-icon">⚠️</span>
+                    <span class="delete-modal-text">Esta ação é <b>irreversível</b>!</span>
+                </div>
+                <div class="delete-modal-instructions">
+                    <p>Para confirmar, digite <b>DELETAR</b> e sua senha de administrador:</p>
+                </div>
+                <input type="text" id="deleteConfirmText" placeholder="Digite DELETAR" class="delete-modal-input" />
+                <input type="password" id="deleteAdminPassword" placeholder="Senha de administrador" class="delete-modal-input" />
+                <button class="btn-action danger delete-modal-btn" onclick="confirmDeleteRequest('${requestId}')">Confirmar Exclusão</button>
+                <div id="deleteErrorMsg" class="delete-modal-error"></div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteRequestModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Função de confirmação dupla e exclusão
+async function confirmDeleteRequest(requestId) {
+    const confirmText = document.getElementById('deleteConfirmText').value.trim();
+    const adminPassword = document.getElementById('deleteAdminPassword').value;
+    const errorMsg = document.getElementById('deleteErrorMsg');
+    errorMsg.textContent = '';
+
+    if (confirmText !== 'DELETAR') {
+        errorMsg.textContent = 'Digite DELETAR para confirmar.';
+        return;
+    }
+    if (!adminPassword) {
+        errorMsg.textContent = 'Digite sua senha de administrador.';
+        return;
+    }
+
+    // Validação da senha admin (simples, pode ser aprimorada)
+    const isValid = await AdminAuth.validatePassword(adminPassword);
+    if (!isValid) {
+        errorMsg.textContent = 'Senha de administrador incorreta.';
+        return;
+    }
+
+    // Executar exclusão segura (Firestore + GitHub)
+    try {
+        LoadingManager.show('Excluindo solicitação...');
+        await DashboardManager.deleteRequest(requestId);
+        closeDeleteModal();
+        closeModal('detailsModal');
+        await loadDashboard();
+        ToastManager.show('Solicitação excluída com sucesso!', 'success');
+        // Registrar auditoria
+        AdminAuth.logUserAction('deleteRequest', {
+            description: 'Solicitação deletada via confirmação dupla',
+            requestId: requestId
+        });
+    } catch (error) {
+        errorMsg.textContent = 'Erro ao excluir solicitação. Tente novamente.';
+        LoadingManager.hide();
+    }
+    LoadingManager.hide();
+}
 // ⚡ FUNÇÃO PARA POPULAR OS COMENTÁRIOS
 function populateComments(request) {
     const comments = document.getElementById('modalComments');

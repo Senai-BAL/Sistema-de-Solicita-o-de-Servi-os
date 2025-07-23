@@ -5,6 +5,28 @@
 
 // 📊 SISTEMA DE DADOS AVANÇADO
 class DashboardManager {
+    // Exclusão definitiva de solicitação (Firestore + GitHub)
+    static async deleteRequest(requestId) {
+        try {
+            LoadingManager.show('Excluindo solicitação...');
+            // Excluir do Firestore
+            const firestoreResult = await firebaseService.deleteRequest(requestId);
+            // Excluir arquivos vinculados do GitHub (se houver)
+            let githubResult = true;
+            if (window.GithubService && typeof window.GithubService.deleteRequestFiles === 'function') {
+                githubResult = await window.GithubService.deleteRequestFiles(requestId);
+            }
+            LoadingManager.hide();
+            if (firestoreResult && githubResult) {
+                return true;
+            } else {
+                throw new Error('Falha ao excluir do Firestore ou GitHub');
+            }
+        } catch (error) {
+            LoadingManager.hide();
+            throw error;
+        }
+    }
     static async loadStats() {
         try {
             // 🔐 Registrar ação do usuário

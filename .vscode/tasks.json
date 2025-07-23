@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Commit versão 2.8.0",
+			"command": "git add . && git commit -m \"feat: versão 2.8.0 - exclusão definitiva, modal de confirmação dupla, integração Firestore/GitHub, auditoria, documentação e CSS modularizado\"",
+			"group": "build",
+			"isBackground": false
+		}
+	]
+}

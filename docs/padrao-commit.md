@@ -1,15 +1,14 @@
+# SENAI Lab WebApp - Padrão de Commits
 
-# 📑 Padrão de Commits SENAI Lab WebApp
-
-**Versão Atual do Projeto:** 2.7.7 (23/07/2025)
+**Versão Atual do Projeto:** 2.8.0 (23/07/2025)
 
 ---
 
-## 🚦 Guia de Estrutura para Commits
+## 🛠️ Guia de Estrutura para Commits
 
 Adote sempre um padrão claro e objetivo para facilitar rastreabilidade, automação e histórico do projeto.
 
-### 🔖 Estrutura Recomendada
+### 🔗 Estrutura Recomendada
 
 ```
 <tipo>: <descrição breve>
@@ -19,12 +18,13 @@ Adote sempre um padrão claro e objetivo para facilitar rastreabilidade, automa�
 ```
 
 #### Exemplos:
-- feat: exportação PDF avançada
+- feat: exclusão definitiva de solicitações canceladas
 - fix: correção na validação do formulário
 - docs: atualização do README
 - refactor: otimização do dashboard admin
 - chore: atualização de dependências
 - test: ajuste nos testes automatizados
+- chore: padronização dos comentários e organização dos CSS do admin
 
 ### 🏷️ Tipos de Commit
 - **feat**: Nova funcionalidade

@@ -1,0 +1,164 @@
+/* SENAI Lab Admin - Modal de Exclusão de Solicitação Definitiva */
+.modal.show#deleteRequestModal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--modal-overlay-bg, rgba(44,44,44,0.45));
+  z-index: 9999;
+}
+
+#deleteRequestModal .modal-content {
+  background: var(--modal-bg, #fff);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px var(--modal-shadow, rgba(0,0,0,0.18));
+  padding: 0;
+  min-width: 320px;
+  max-width: 400px;
+  animation: modalFadeIn 0.25s;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#deleteRequestModal .modal-header {
+  padding: 18px 20px 8px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#deleteRequestModal .modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--danger-color, #c62828);
+  letter-spacing: 0.5px;
+}
+
+#deleteRequestModal .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--modal-close-color, #888);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+#deleteRequestModal .close-btn:hover {
+  color: var(--danger-color, #c62828);
+}
+
+#deleteRequestModal .modal-body {
+  padding: 24px 16px;
+}
+
+/* Alerta visual do modal */
+#deleteRequestModal .delete-modal-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--danger-bg, #ffebee);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-left: 4px solid var(--danger-color, #c62828);
+}
+#deleteRequestModal .delete-modal-icon {
+  font-size: 1.5rem;
+  color: var(--danger-color, #c62828);
+}
+#deleteRequestModal .delete-modal-text {
+  font-size: 1rem;
+  color: var(--danger-color, #c62828);
+  font-weight: 600;
+}
+
+/* Instruções e inputs */
+#deleteRequestModal .delete-modal-instructions {
+  margin-bottom: 10px;
+  color: var(--modal-text-color, #444);
+  font-size: 0.98rem;
+}
+#deleteRequestModal .delete-modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--input-border, #ddd);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--input-bg, #fafafa);
+  transition: border-color 0.2s;
+}
+#deleteRequestModal .delete-modal-input:focus {
+  border-color: var(--danger-color, #c62828);
+  outline: none;
+}
+
+/* Botão de ação */
+#deleteRequestModal .delete-modal-btn {
+  background: var(--danger-color, #c62828);
+  color: var(--btn-text, #fff);
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px var(--danger-shadow, rgba(198,40,40,0.08));
+  margin-bottom: 8px;
+}
+#deleteRequestModal .delete-modal-btn:hover {
+  background: var(--danger-hover, #b71c1c);
+}
+
+/* Mensagem de erro */
+#deleteRequestModal .delete-modal-error {
+  color: var(--danger-color, #c62828);
+  font-size: 13px;
+  min-height: 18px;
+  text-align: center;
+  margin-top: 4px;
+}
+#deleteRequestModal input[type="text"],
+  #deleteRequestModal input[type="password"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--input-border, #ddd);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--input-bg, #fafafa);
+  transition: border-color 0.2s;
+}
+#deleteRequestModal input:focus {
+  border-color: var(--danger-color, #c62828);
+  outline: none;
+}
+
+#deleteRequestModal .btn-action.danger {
+  background: var(--danger-color, #c62828);
+  color: var(--btn-text, #fff);
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px var(--danger-shadow, rgba(198,40,40,0.08));
+}
+#deleteRequestModal .btn-action.danger:hover {
+  background: var(--danger-hover, #b71c1c);
+}
+
+#deleteRequestModal #deleteErrorMsg {
+  color: var(--danger-color, #c62828);
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 18px;
+  text-align: center;
+}
