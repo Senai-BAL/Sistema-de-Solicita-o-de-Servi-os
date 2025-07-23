@@ -1,4 +1,4 @@
-/* ===== TEMA CLARO ADMIN (2.7.5.1) ===== */
+/* ===== TEMA CLARO ADMIN (2.7.5.3) ===== */
 .admin-theme-light {
   --bg: rgb(249, 250, 251);                /* Fundo principal */
   --bg-secondary: rgb(255, 255, 255);      /* Fundo de cards/áreas centrais */
@@ -36,7 +36,7 @@
   /* fim do tema claro */
 }
 
-/* ===== TEMA ESCURO ADMIN (2.7.5.2) ===== */
+/* ===== TEMA ESCURO ADMIN (2.7.5.3) ===== */
 .admin-theme-dark {
   --bg: rgb(2, 6, 23);                  /* Fundo principal */
   --bg-secondary: rgb(51, 65, 85);      /* Fundo de cards/áreas centrais */

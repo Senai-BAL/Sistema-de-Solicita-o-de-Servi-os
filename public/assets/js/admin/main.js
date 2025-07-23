@@ -8,7 +8,7 @@ document.addEventListener('mousedown', function(e) {
     }
   }
 });
-// ====== TEMA ADMIN (2.7.5.1) ======
+// ====== TEMA ADMIN (2.7.5.3) ======
 
 const ADMIN_THEMES = {
   light: {
@@ -315,7 +315,7 @@ window.closeThemeModal = function() {
 
 // ⚡ INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('🔧 SENAI Lab - Dashboard Administrativo v2.6.0 Sistema Multiusuário Iniciado');
+    console.log('🔧 SENAI Lab - Dashboard Administrativo v2.7.5.3 Sistema Multiusuário Iniciado');
 
     // ✨ Inicializar managers primeiro
     initializeManagers();
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Mostrar toast de boas-vindas
     setTimeout(() => {
         if (AdminAuth.isAuthenticated()) {
-            ToastManager.show('Dashboard v2.0 com Backup Completo carregado! 🚀', 'success');
+            ToastManager.show('Dashboard v2.7.5.3 com Tema Personalizado carregado! 🚀', 'success');
         }
     }, 1000);
 });

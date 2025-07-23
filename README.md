@@ -53,7 +53,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.7.5 (CSS Modularização Final e Organização)  
+ **Versão Atual**: v2.7.5.3 (Tema Personalizado, CSS Modularização Final e Organização)  
 **Detalhes**: Modularização completa dos estilos CSS, separação de módulos admin/index, limpeza de pastas e atualização dos imports nos HTMLs. Estrutura pronta para manutenção e expansão.
 
 ## � Configuração
@@ -414,7 +414,7 @@ firebase deploy
 - **2.7.5.0** — Base estável (estrutura pronta, sem tema dinâmico)
 - **2.7.5.1** — Tema Claro funcional (aplicação e persistência no admin)
 - **2.7.5.2** — Tema Escuro funcional (aplicação e persistência no admin)
-- **2.7.5.3** — Tema Personalizado (inputs de cor, aplicação e persistência)
+**2.7.5.3** — Tema Personalizado (inputs de cor, aplicação e persistência)
 
 ### 🚀 **Como Usar o Dashboard**
 

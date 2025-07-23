@@ -5,7 +5,7 @@ Histórico completo de todas as mudanças do projeto desde a versão 1.0.
 ---
 
 
-## [2.7.5] - 2025-07-22
+## [2.7.5.3] - 2025-07-22
 
 ### 🗂️ Modularização e Organização Final do CSS
 - **CSS Modularizado**: Todos os estilos do painel admin e do index extraídos para módulos separados
