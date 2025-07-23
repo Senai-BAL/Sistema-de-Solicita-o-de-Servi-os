@@ -1,0 +1,205 @@
+/* === Helpers de visibilidade === */
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+/* === Helpers específicos para kanban === */
+#kanbanView.show {
+  display: block;
+}
+
+#listView.hide {
+  display: none;
+}
+
+/* === Detalhes de modal (gerado via JS) === */
+.modal-detail-info {
+  background: var(--bg-light);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.modal-detail-title {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.modal-detail-content {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.modal-detail-extra {
+  margin-top: 10px;
+}
+
+.modal-header-info h3 {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.modal-header-info p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.modal-header-info p.secondary {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* === Estado vazio === */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--text-muted);
+  background: var(--bg-light);
+  border-radius: var(--border-radius);
+  margin: var(--spacing-medium) 0;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* === Estilos de modal de comentários === */
+.comment-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.comment-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.comment-actions {
+  margin-top: 15px;
+  text-align: right;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: #ccc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #bbb;
+}
+
+.btn-submit-comment {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-submit-comment:hover {
+  background: #5a6fd8;
+  transform: translateY(-1px);
+}
+
+/* === Correção para aba de comentários === */
+#comments-tab {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#comments-tab .comments-tab {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+#comments-tab .comments-section {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 200px;
+  max-height: calc(100% - 140px);
+}
+
+#comments-tab .add-comment-section {
+  flex: 0 0 auto;
+  margin-top: 10px;
+  max-height: 110px;
+  overflow: visible;
+}
+
+#comments-tab .comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+#comments-tab .comment-input-container {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+#comments-tab .comment-form button {
+  align-self: flex-start;
+  flex-shrink: 0;
+  min-height: 80px;
+  height: 80px;
+  min-width: 100px;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* === Responsividade para mobile === */
+@media (max-width: 768px) {
+  #comments-tab .add-comment-section {
+    position: relative;
+    bottom: auto;
+    margin-top: 15px;
+  }
+
+  #comments-tab .comment-input-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #comments-tab .comment-form button {
+    width: 100%;
+    align-self: stretch;
+    height: 45px;
+    min-height: 45px;
+  }
+}

@@ -1,0 +1,36 @@
+/* Tema escuro do admin */
+.admin-theme-dark {
+  --bg: rgb(2, 6, 23);                  /* Fundo principal */
+  --bg-secondary: rgb(51, 65, 85);      /* Fundo de cards/áreas centrais */
+  --surface: rgb(71, 85, 105);          /* Superfície escura */
+  --surface-alt: rgb(100, 116, 139);    /* Superfície alternativa */
+  --text: rgb(226, 232, 240);           /* Texto principal (cinza claro) */
+  --primary: rgb(226, 232, 240);        /* Botão/elemento primário (cinza claro) */
+  --secondary: rgb(100, 116, 139);      /* Botão/elemento secundário */
+  --accent: rgb(51, 65, 85);            /* Bordas, detalhes */
+  --success: rgb(34, 197, 94);          /* Sucesso (verde) */
+  --highlight: #f59e0b;                 /* Destaque (mantido) */
+  --border: #334155;                    /* Bordas */
+  /* Variáveis do common.css sobrescritas para o tema admin escuro */
+  --bg-light: rgb(2, 6, 23);
+  --bg-white: rgb(51, 65, 85);
+  --primary-blue: rgb(100, 116, 139);
+  --primary-hover: rgb(71, 85, 105);
+  --accent-blue: rgb(51, 65, 85);
+  --success-color: rgb(34, 197, 94);
+  --success-dark: rgb(22, 163, 74);
+  --error-color: #e74c3c;
+  --error-dark: #c0392b;
+  --text-primary: rgb(226, 232, 240);
+  --text-secondary: rgb(100, 116, 139);
+  --text-muted: #94a3b8;
+  --text-white: #fff;
+  --border-color: #334155;
+  --shadow-light: 0 2px 4px rgba(0,0,0,0.32);
+  --spacing-medium: 20px;
+  --spacing-large: 40px;
+  --border-radius: 12px;
+  --transition-fast: 0.2s;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}

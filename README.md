@@ -1,3 +1,27 @@
+# 📑 Sumário
+- [Descrição](#descrição)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Última Atualização](#última-atualização)
+- [Configuração](#configuração)
+- [Modelo de Custos](#modelo-de-custos)
+- [Upload de Arquivos](#upload-de-arquivos)
+- [Documentação e Configurações](#documentação-e-configurações)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Instalação e Uso](#instalação-e-uso)
+- [Funcionalidades por Serviço](#funcionalidades-por-serviço)
+- [Dashboard Administrativo](#dashboard-administrativo)
+- [Exportação PDF](#exportação-pdf-avançada-nova-funcionalidade)
+- [Histórico de Versões](#histórico-de-versões-incrementais-temas-admin)
+- [Segurança](#segurança)
+- [Responsividade](#responsividade)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
+- [Autores](#autores)
+- [Suporte](#suporte)
+- [Status do Projeto](#status-do-projeto)
+- [Testes PDF](#como-testar-a-funcionalidade-pdf)
+
 # 🔧 SENAI Lab - Sistema de Solicitação de Serviços
 
 ![SENAI Lab](https://img.shields.io/badge/SENAI-Lab-blue?style=for-the-badge)
@@ -15,7 +39,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
- **Versão Atual**: v2.7.4 (Atualização de funcionalidades e correções)
+ **Versão Atual**: v2.7.5.3 (Tema Personalizado, CSS Modularização Final e Organização)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
@@ -56,7 +80,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
  **Versão Atual**: v2.7.5.3 (Tema Personalizado, CSS Modularização Final e Organização)  
 **Detalhes**: Modularização completa dos estilos CSS, separação de módulos admin/index, limpeza de pastas e atualização dos imports nos HTMLs. Estrutura pronta para manutenção e expansão.
 
-## � Configuração
+## ⚙️ Configuração
 
 ### 1. Configuração Firebase
 
@@ -124,8 +148,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 - **Configurações**: [`docs/CONFIG.md`](docs/CONFIG.md) - URLs, credenciais e configurações
 - **Releases**: [`docs/releases/`](docs/releases/) - Histórico detalhado de versões
-- **Changelog Resumido**: [`CHANGELOG.md`](CHANGELOG.md) - Principais marcos e mudanças
-- **Changelog Completo**: [`CHANGELOG-COMPLETO.md`](CHANGELOG-COMPLETO.md) - Histórico completo desde v1.0.0
+- **Changelog**: [`CHANGELOG.md`](CHANGELOG.md) - Histórico completo de mudanças e versões
 
 > 🧪 **Ambiente de Teste**: Documentação específica disponível apenas na branch `test-environment`
 
