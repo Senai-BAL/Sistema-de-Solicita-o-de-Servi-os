@@ -1,4 +1,23 @@
 # 📋 Changelog - SENAI Lab Sistema de Solicitação de Serviços
+
+---
+
+## [2.9.1] - 2025-07-29
+**Commit Patch**: `fix: auditoria multiusuário, logs Firestore, estatísticas reais, robustez e documentação.`
+
+### 🛠️ Correções e Melhorias
+- Auditoria multiusuário: logs de acesso e ações agora centralizados no Firestore
+- Estatísticas reais: painel de auditoria exibe dados de todos os usuários, com cálculo robusto
+- Logs de acesso e ações limitados a 50 registros por usuário, com exclusão automática do mais antigo
+- Modal de auditoria aprimorado: abas de ações, acessos e estatísticas integradas ao Firestore
+- Código de auditoria e autenticação refatorado para maior robustez e clareza
+- Tratamento de campos alternativos e valores indefinidos nos logs
+- Interface do modal de auditoria ajustada para exibir dados reais e evitar erros
+- Remoção de dependências e referências obsoletas
+- Regras do Firestore revisadas para garantir acesso seguro e compatível com autenticação local
+- Limite de registros por usuário para evitar sobrecarga
+- CHANGELOG, README e releases atualizados para refletir as mudanças
+
 ---
 
 ## [2.9.0] - 2025-07-29

@@ -34,6 +34,11 @@ service cloud.firestore {
       allow read: if true;
       allow update, delete: if true;
     }
+
+    // Logs de acesso administrativos
+    match /admin_access_logs/{document} {
+      allow read, write: if true;
+    }
     
     // Logs administrativos de teste
     match /admin_logs_test/{document} {

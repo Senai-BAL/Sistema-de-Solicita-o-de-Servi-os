@@ -186,8 +186,7 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o Firebase Storage
-              nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
+              <strong>📁 Upload automático:</strong> Arquivos enviados diretamente para o Firebase Storage. Nomenclatura: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
           </div>
 
@@ -246,7 +245,7 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>🏗️ Upload STL:</strong> Arquivos 3D serão armazenados automaticamente no Firebase Storage.
+              <strong>🏗️ Upload STL:</strong> Arquivos 3D enviados diretamente para o Firebase Storage.
             </div>
           </div>
 
@@ -295,9 +294,8 @@
               </div>
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
-            <div class="github-info">
-              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura:
-              MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático.
+            <div class="storage-info">
+              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura: MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
             </div>
           </div>
         </div>
@@ -333,8 +331,8 @@
               </div>
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
-            <div class="github-info">
-              <strong>🖼️ Referências visuais:</strong> Envie imagens, designs ou documentos que possam servir de referência para o projeto.
+            <div class="storage-info">
+              <strong>🖼️ Referências visuais:</strong> Envie imagens, designs ou documentos que possam servir de referência para o projeto. Upload automático para Firebase Storage.
             </div>
           </div>
 
@@ -381,9 +379,8 @@
               </div>
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
-            <div class="github-info">
-              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura:
-              EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático.
+            <div class="storage-info">
+              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura: EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
             </div>
           </div>
 
@@ -413,9 +410,6 @@
       </button>
     </div>
   </div>
-
-  <!-- Status Indicator -->
-  <div class="status-indicator" id="statusIndicator"></div>
 
   <!-- Botão de alternância de tema -->
   <button class="toggle-theme" id="toggleThemeBtn" title="Alternar tema claro/escuro">
@@ -464,8 +458,6 @@
 
   <!-- Configurações -->
   <script src="shared/firebase-config.js"></script>
-  <script src="shared/netlify-config.js"></script>
-  <script src="shared/github-config.js"></script>
 
   <!-- Módulos JavaScript v2.7.5.3 -->
   <script src="assets/js/shared/skeleton-manager.js"></script>

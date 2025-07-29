@@ -67,24 +67,31 @@ class AuditManager {
   }
 
   // 🔑 CARREGAR LOGS DE ACESSO
-  static loadAccessLogs() {
+  static async loadAccessLogs() {
     const container = document.getElementById('accessLogsContainer');
-    const logs = AdminAuth.getAccessLogs();
-    
-    if (logs.length === 0) {
-      container.innerHTML = `
-        <div class="loading-audit">
-          🔐 Nenhum acesso registrado ainda
-        </div>
-      `;
-      return;
+    container.innerHTML = `<div class="loading-audit">Carregando logs de acesso...</div>`;
+    try {
+      const db = firebase.firestore();
+      const accessRef = db.collection('admin_access_logs');
+      // Buscar os 50 logs de acesso mais recentes de todos os usuários
+      const snapshot = await accessRef.orderBy('timestamp', 'desc').limit(50).get();
+      const logs = snapshot.docs.map(doc => doc.data());
+      if (logs.length === 0) {
+        container.innerHTML = `
+          <div class="loading-audit">
+            🔐 Nenhum acesso registrado ainda
+          </div>
+        `;
+        return;
+      }
+      // Ordenar por timestamp decrescente e limitar a 20
+      const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
+      const logsHtml = sortedLogs.map(log => this.createAccessLogItem(log)).join('');
+      container.innerHTML = logsHtml;
+    } catch (error) {
+      container.innerHTML = `<div class="loading-audit">Erro ao carregar logs de acesso</div>`;
+      console.error('Erro ao buscar logs de acesso do Firestore:', error);
     }
-
-    // Ordenar por timestamp decrescente e limitar a 20
-    const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
-
-    const logsHtml = sortedLogs.map(log => this.createAccessLogItem(log)).join('');
-    container.innerHTML = logsHtml;
   }
 
   // 📊 CARREGAR ESTATÍSTICAS DE AUDITORIA (Firestore)
@@ -94,14 +101,14 @@ class AuditManager {
     try {
       const db = firebase.firestore();
       const logsRef = db.collection('admin_logs');
-      // Buscar os 100 logs mais recentes para estatísticas
+      // Buscar os 100 logs de ações mais recentes
       const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(100).get();
       const actionLogs = snapshot.docs.map(doc => doc.data());
-      // Buscar logs de acesso (se estiverem em outra coleção, adapte aqui)
-      // Exemplo: const accessSnapshot = await db.collection('admin_access_logs').orderBy('timestamp', 'desc').limit(100).get();
-      // const accessLogs = accessSnapshot.docs.map(doc => doc.data());
-      // Por enquanto, mantemos local:
-      const accessLogs = AdminAuth.getAccessLogs();
+
+      // Buscar os 100 logs de acesso mais recentes do Firestore
+      const accessSnapshot = await db.collection('admin_access_logs').orderBy('timestamp', 'desc').limit(100).get();
+      const accessLogs = accessSnapshot.docs.map(doc => doc.data());
+
       const stats = this.calculateAuditStats(actionLogs, accessLogs);
       const statsHtml = `
         <div class="audit-stats-grid">
@@ -246,17 +253,19 @@ class AuditManager {
     const now = Date.now();
     const oneDayAgo = now - (24 * 60 * 60 * 1000);
 
-    // Contar ações por usuário
+    // Contar ações por usuário (tratando campos alternativos)
     const userActions = {};
     actionLogs.forEach(log => {
-      userActions[log.username] = (userActions[log.username] || 0) + 1;
+      const username = log.username || log.admin || log.user || 'sistema';
+      userActions[username] = (userActions[username] || 0) + 1;
     });
 
     // Encontrar usuário mais ativo
     let mostActiveUser = { name: 'Nenhum', count: 0, avatar: '👤' };
     Object.entries(userActions).forEach(([username, count]) => {
+      let user = AdminAuth.getUserList().find(u => u.username === username);
+      if (!user) user = AdminAuth.getUserList().find(u => u.name === username);
       if (count > mostActiveUser.count) {
-        const user = AdminAuth.getUserList().find(u => u.username === username);
         mostActiveUser = {
           name: user ? user.name : username,
           count: count,
@@ -265,10 +274,11 @@ class AuditManager {
       }
     });
 
-    // Contar ações por tipo
+    // Contar ações por tipo (tratando campos alternativos)
     const actionTypes = {};
     actionLogs.forEach(log => {
-      actionTypes[log.action] = (actionTypes[log.action] || 0) + 1;
+      const action = log.action || log.acao || 'desconhecida';
+      actionTypes[action] = (actionTypes[action] || 0) + 1;
     });
 
     // Encontrar ação mais comum
@@ -279,8 +289,8 @@ class AuditManager {
       }
     });
 
-    // Usuários únicos
-    const uniqueUsers = new Set(accessLogs.map(log => log.username)).size;
+    // Usuários únicos (tratando campos alternativos)
+    const uniqueUsers = new Set(accessLogs.map(log => log.username || log.admin || log.user || 'sistema')).size;
 
     // Ações hoje
     const actionsToday = actionLogs.filter(log => log.timestamp > oneDayAgo).length;

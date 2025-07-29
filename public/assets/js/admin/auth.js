@@ -108,10 +108,10 @@ class AdminAuth {
       // Salvar sessão
       this.saveSession();
       this.clearFailedAttempts(username);
-      
+
       // Log de acesso
       this.logAccess('login', username);
-      
+
       console.log(`✅ Login realizado: ${user.name} (${username})`);
       return true;
 
@@ -127,7 +127,7 @@ class AdminAuth {
       this.logAccess('logout', this.currentUser.username);
       console.log(`👋 Logout realizado: ${this.currentUser.name}`);
     }
-    
+
     this.currentUser = null;
     this.clearSession();
   }
@@ -167,14 +167,14 @@ class AdminAuth {
     // Salvar no localStorage para auditoria
     const logs = this.getActionLogs();
     logs.push(logEntry);
-    
+
     // Manter apenas os últimos 50 logs
     if (logs.length > 50) {
       logs.splice(0, logs.length - 50);
     }
-    
+
     localStorage.setItem('senai_admin_logs', JSON.stringify(logs));
-    
+
     console.log(`📋 Ação registrada: ${action} por ${this.currentUser.name}`);
   }
 
@@ -191,9 +191,9 @@ class AdminAuth {
   static isLockedOut(username) {
     const attempts = this.loginAttempts[username];
     if (!attempts) return false;
-    
-    return attempts.count >= this.maxAttempts && 
-           (Date.now() - attempts.lastAttempt) < this.lockoutTime;
+
+    return attempts.count >= this.maxAttempts &&
+      (Date.now() - attempts.lastAttempt) < this.lockoutTime;
   }
 
   // ❌ REGISTRAR TENTATIVA FALHADA
@@ -201,7 +201,7 @@ class AdminAuth {
     if (!this.loginAttempts[username]) {
       this.loginAttempts[username] = { count: 0, lastAttempt: 0 };
     }
-    
+
     this.loginAttempts[username].count++;
     this.loginAttempts[username].lastAttempt = Date.now();
   }
@@ -229,11 +229,11 @@ class AdminAuth {
       const sessionData = localStorage.getItem(this.sessionKey);
       if (sessionData) {
         const userData = JSON.parse(sessionData);
-        
+
         // Verificar se a sessão não expirou (24 horas)
         const sessionAge = Date.now() - userData.loginTime;
         const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-        
+
         if (sessionAge < maxAge) {
           this.currentUser = userData;
           console.log(`🔄 Sessão restaurada: ${userData.name}`);
@@ -262,13 +262,31 @@ class AdminAuth {
 
     const accessLogs = this.getAccessLogs();
     accessLogs.push(accessLog);
-    
+
     // Manter apenas os últimos 50 logs de acesso
     if (accessLogs.length > 50) {
       accessLogs.splice(0, accessLogs.length - 50);
     }
-    
+
     localStorage.setItem('senai_access_logs', JSON.stringify(accessLogs));
+
+    // Salvar no Firestore
+    if (window.firebase && window.firebase.firestore) {
+      const db = firebase.firestore();
+      const accessRef = db.collection('admin_access_logs');
+      accessRef.orderBy('timestamp', 'desc').get().then(snapshot => {
+        const docs = snapshot.docs;
+        // Se já houver 50, remover o mais antigo
+        if (docs.length >= 50) {
+          const oldest = docs[docs.length - 1];
+          if (oldest && oldest.ref) oldest.ref.delete();
+        }
+        // Adicionar novo log
+        accessRef.add(accessLog);
+      }).catch(err => {
+        console.error('Erro ao registrar log de acesso no Firestore:', err);
+      });
+    }
   }
 
   // 📊 OBTER LOGS DE ACESSO
