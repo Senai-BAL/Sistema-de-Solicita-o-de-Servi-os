@@ -16,7 +16,7 @@ function collectFormData() {
     st: 'p',
     d: Date.now(),
     dados: {},
-    fonte: 'github'
+    fonte: 'firebase'
   };
 
   // Dados específicos por serviço
@@ -134,7 +134,7 @@ async function submitForm() {
     console.log(`🏷️ Padrão: ${serviceInfo.tipo}_DATA_${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}_ARQUIVO`);
     console.log(`👤 Solicitante processado: ${serviceInfo.solicitante} → ${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}`);
 
-    // Upload de arquivos para GitHub com novo padrão
+    // Upload de arquivos para Firebase Storage
     const arquivos = [];
     const maxRetries = 3;
 
@@ -220,7 +220,7 @@ async function submitForm() {
         
         // Tentar na coleção principal
         try {
-          const docRef = await db.collection('solicitacoes').add(formData);
+          const docRef = await db.collection(ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode]).add(formData);
           console.log('✅ Solicitação salva na coleção principal com ID:', docRef.id);
           usageMonitor.addWrite();
           
@@ -250,7 +250,7 @@ async function submitForm() {
     
     if (error.code === 'permission-denied') {
       errorMessage = '🔒 Erro de permissão no Firebase. Verifique as regras do Firestore.';
-    } else if (error.message.includes('GitHub')) {
+    } else if (error.message.includes('Storage')) {
       errorMessage += 'Problema no upload de arquivos.';
     } else if (error.message.includes('quota')) {
       errorMessage += 'Limite diário atingido.';

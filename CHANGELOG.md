@@ -1,4 +1,21 @@
 # 📋 Changelog - SENAI Lab Sistema de Solicitação de Serviços
+---
+
+## [2.9.0] - 2025-07-29
+**Commit Principal**: `feat: upload 100% Firebase Storage, ambiente de teste garantido, remoção do GitHub, documentação atualizada.`
+
+### 🚀 Novas funcionalidades
+- Upload de arquivos agora 100% via Firebase Storage (GitHub removido)
+- Ambiente de teste garantido: nunca salva dados de teste na produção
+- Fallback seguro: só salva na produção se o modo for 'production'
+
+### 🎨 Melhorias
+- Removidas todas as dependências, instruções e menções ao GitHub
+- Mensagens e instruções refletem uso do Firebase Storage
+- Interface e feedbacks ajustados para novo fluxo de upload
+
+### 📚 Documentação
+- README, changelog e releases atualizados
 
 ---
 

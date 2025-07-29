@@ -63,9 +63,7 @@ class FirebaseService {
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
     // 🎯 ESTRATÉGIA UNIFICADA: Lista de coleções para tentar em ordem
-    const collectionsToTry = this.collectionName === 'solicitacoes_test' 
-      ? ['solicitacoes_test', 'solicitacoes'] 
-      : ['solicitacoes'];
+    const collectionsToTry = [this.collectionName];
 
     let lastError = null;
 

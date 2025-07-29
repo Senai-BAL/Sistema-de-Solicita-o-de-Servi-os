@@ -1,3 +1,61 @@
+/* ===== VARIÁVEIS DE CORES ===== */
+:root {
+  /* Cores Primárias - Baseadas no padrão do index.css */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --header-gradient: linear-gradient(45deg, #1e3c72, #2a5298);
+  --warning-gradient: linear-gradient(45deg, #ff9800, #f57c00);
+  
+  /* Cores Sólidas */
+  --primary-blue: #1e3c72;
+  --secondary-blue: #2a5298;
+  --accent-blue: #4285f4;
+  --light-blue: #1976d2;
+  --info-blue: #007bff;
+  
+  /* Cores de Estado */
+  --success-color: #28a745;
+  --success-dark: #2e7d32;
+  --success-border: #4caf50;
+  --warning-color: #ff9800;
+  --warning-dark: #ef6c00;
+  --error-color: #dc3545;
+  --error-dark: #e74c3c;
+  
+  /* Cores de Texto */
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-muted: #6c757d;
+  --text-white: #fff;
+  
+  /* Cores de Fundo */
+  --bg-white: #fff;
+  --bg-light: #f8f9fa;
+  --bg-dark: rgba(0, 0, 0, 0.5);
+  
+  /* Sombras */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.3);
+  
+  /* Bordas */
+  --border-radius: 8px;
+  --border-radius-large: 16px;
+  --border-color: #ddd;
+  --border-focus: #4285f4;
+  
+  /* Transições */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Tamanhos */
+  --container-max-width: 800px;
+  --modal-max-width: 600px;
+  --spacing-small: 10px;
+  --spacing-medium: 20px;
+  --spacing-large: 30px;
+}
 /* ===== FORMULÁRIOS COMPARTILHADOS ===== */
 .form-group {
   margin-bottom: 20px;
@@ -113,64 +171,6 @@
  * Descrição: Estilos e variáveis compartilhadas entre todas as interfaces
  */
 
-/* ===== VARIÁVEIS DE CORES ===== */
-:root {
-  /* Cores Primárias - Baseadas no padrão do index.css */
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --header-gradient: linear-gradient(45deg, #1e3c72, #2a5298);
-  --warning-gradient: linear-gradient(45deg, #ff9800, #f57c00);
-  
-  /* Cores Sólidas */
-  --primary-blue: #1e3c72;
-  --secondary-blue: #2a5298;
-  --accent-blue: #4285f4;
-  --light-blue: #1976d2;
-  --info-blue: #007bff;
-  
-  /* Cores de Estado */
-  --success-color: #28a745;
-  --success-dark: #2e7d32;
-  --success-border: #4caf50;
-  --warning-color: #ff9800;
-  --warning-dark: #ef6c00;
-  --error-color: #dc3545;
-  --error-dark: #e74c3c;
-  
-  /* Cores de Texto */
-  --text-primary: #333;
-  --text-secondary: #666;
-  --text-muted: #6c757d;
-  --text-white: #fff;
-  
-  /* Cores de Fundo */
-  --bg-white: #fff;
-  --bg-light: #f8f9fa;
-  --bg-dark: rgba(0, 0, 0, 0.5);
-  
-  /* Sombras */
-  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.15);
-  --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.1);
-  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.3);
-  
-  /* Bordas */
-  --border-radius: 8px;
-  --border-radius-large: 16px;
-  --border-color: #ddd;
-  --border-focus: #4285f4;
-  
-  /* Transições */
-  --transition-fast: 0.2s ease;
-  --transition-medium: 0.3s ease;
-  --transition-slow: 0.5s ease;
-  
-  /* Tamanhos */
-  --container-max-width: 800px;
-  --modal-max-width: 600px;
-  --spacing-small: 10px;
-  --spacing-medium: 20px;
-  --spacing-large: 30px;
-}
 
 /* ===== RESET E BASE ===== */
 * {

@@ -185,8 +185,8 @@
               </div>
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
-            <div class="github-info">
-              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o GitHub com
+            <div class="storage-info">
+              <strong>📁 Upload automático:</strong> Arquivos serão enviados automaticamente para o Firebase Storage
               nomenclatura padronizada: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
           </div>
@@ -245,8 +245,8 @@
               </div>
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
-            <div class="github-info">
-              <strong>🏗️ Upload STL:</strong> Arquivos 3D serão armazenados automaticamente no GitHub.
+            <div class="storage-info">
+              <strong>🏗️ Upload STL:</strong> Arquivos 3D serão armazenados automaticamente no Firebase Storage.
             </div>
           </div>
 
@@ -436,13 +436,13 @@
     </div>
 
     <div class="usage-item">
-      <span>GitHub uploads:</span>
+      <span>Firebase Storage uploads:</span>
       <span id="uploadsCount">0 uploads</span>
     </div>
 
     <div class="usage-item">
       <span>Storage:</span>
-      <span style="color: #4caf50;">✅ GitHub (1GB)</span>
+      <span style="color: #4caf50;">✅ Firebase Storage</span>
     </div>
 
     <div class="usage-item">
@@ -451,7 +451,7 @@
     </div>
 
     <div style="font-size: 0.7rem; color: #666; margin-top: 8px; text-align: center;">
-      Firebase + GitHub - 100% gratuito 💾
+      Firebase Storage - 100% gratuito 💾
     </div>
   </div>
 
@@ -459,8 +459,12 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
+  <!-- Firebase Storage SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
   <!-- Configurações -->
   <script src="shared/firebase-config.js"></script>
+  <script src="shared/netlify-config.js"></script>
   <script src="shared/github-config.js"></script>
 
   <!-- Módulos JavaScript v2.7.5.3 -->

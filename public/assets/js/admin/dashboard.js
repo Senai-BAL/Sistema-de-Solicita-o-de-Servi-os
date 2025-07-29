@@ -512,7 +512,7 @@ function previewFile(fileUrl, fileName, fileType) {
                                 <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
                             </div>
                         </div>
-                        <iframe src="${fileUrl}" frameborder="0"></iframe>
+                        <iframe src="${fileUrl}" frameborder="0" sandbox="allow-scripts allow-same-origin"></iframe>
                     </body>
                 </html>
             `);

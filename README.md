@@ -1,26 +1,26 @@
 # 📑 Sumário
-- [Descrição](#descrição)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias](#tecnologias)
-- [Última Atualização](#última-atualização)
-- [Configuração](#configuração)
-- [Modelo de Custos](#modelo-de-custos)
-- [Upload de Arquivos](#upload-de-arquivos)
-- [Documentação e Configurações](#documentação-e-configurações)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Instalação e Uso](#instalação-e-uso)
-- [Funcionalidades por Serviço](#funcionalidades-por-serviço)
-- [Dashboard Administrativo](#dashboard-administrativo)
-- [Exportação PDF](#exportação-pdf-avançada-nova-funcionalidade)
-- [Histórico de Versões](#histórico-de-versões-incrementais-temas-admin)
-- [Segurança](#segurança)
-- [Responsividade](#responsividade)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
-- [Autores](#autores)
-- [Suporte](#suporte)
-- [Status do Projeto](#status-do-projeto)
-- [Testes PDF](#como-testar-a-funcionalidade-pdf)
+- [Descrição](#-descrição)
+- [Funcionalidades](#-funcionalidades)
+- [Tecnologias](#-tecnologias)
+- [Última Atualização](#-última-atualização)
+- [Configuração](#️-configuração)
+- [Modelo de Custos](#-modelo-de-custos)
+- [Upload de Arquivos](#-upload-de-arquivos)
+- [Documentação e Configurações](#-documentação-e-configurações)
+- [Estrutura do Projeto](#️-estrutura-do-projeto)
+- [Instalação e Uso](#️-instalação-e-uso)
+- [Funcionalidades por Serviço](#-funcionalidades-por-serviço)
+- [Dashboard Administrativo](#-dashboard-administrativo)
+- [Exportação PDF Avançada](#-exportação-pdf-avançada---nova-funcionalidade)
+- [Histórico de Versões](#️-histórico-de-versões)
+- [Segurança](#️-segurança)
+- [Responsividade](#-responsividade)
+- [Contribuição](#-contribuição)
+- [Licença](#-licença)
+- [Autores](#-autores)
+- [Suporte](#-suporte)
+- [Status do Projeto](#-status-do-projeto)
+- [Como Testar a Funcionalidade PDF](#-como-testar-a-funcionalidade-pdf)
 
 # 🔧 SENAI Lab - Sistema de Solicitação de Serviços
 
@@ -28,6 +28,10 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Version](https://img.shields.io/badge/Version-2.9.0-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Teste-success?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+![Last Update](https://img.shields.io/badge/Última_Atualização-Julho_2025-informational?style=for-the-badge)
 
 ## 📋 Descrição
 
@@ -39,7 +43,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
- **Versão Atual**: v2.7.5.3 (Tema Personalizado, CSS Modularização Final e Organização)  
+**Versão Atual**: v2.9.0 (Upload 100% Firebase Storage, ambiente de teste garantido, GitHub removido, documentação atualizada)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
@@ -72,13 +76,21 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - **Frontend**: HTML5, CSS3, JavaScript Vanilla
 - **Backend**: Firebase Firestore
 - **Hosting**: Firebase Hosting
-- **Arquivos**: Upload automático para GitHub
+- **Arquivos**: Upload automático para Firebase Storage
 - **Organização**: Sistema de nomenclatura padronizada
 
 ## 🆕 Última Atualização
 
- **Versão Atual**: v2.7.5.3 (Tema Personalizado, CSS Modularização Final e Organização)  
-**Detalhes**: Modularização completa dos estilos CSS, separação de módulos admin/index, limpeza de pastas e atualização dos imports nos HTMLs. Estrutura pronta para manutenção e expansão.
+**Versão Atual**: v2.9.0  
+**Data**: 29 de julho de 2025  
+**Principais Melhorias**:
+- 🔥 Upload de arquivos agora 100% via Firebase Storage (GitHub removido)
+- 🧪 Ambiente de teste garantido: nunca salva dados de teste na produção
+- 🛡️ Fallback seguro: só salva na produção se o modo for 'production'
+- � Documentação, README e changelog atualizados
+- 🚫 Removidas todas as dependências, instruções e menções ao GitHub
+- � Mensagens e instruções refletem uso do Firebase Storage
+- �️ Interface e feedbacks ajustados para novo fluxo de upload
 
 ## ⚙️ Configuração
 
@@ -95,25 +107,12 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
    - Vá em "Configurações do Projeto" → "Seus aplicativos" → "Configuração"
    - Copie as credenciais e substitua em `public/shared/firebase-config.js`
 
-### 2. Configuração GitHub (para upload de arquivos)
-
-1. **Copie o arquivo de exemplo**:
-   ```bash
-   cp public/shared/github-config.example.js public/shared/github-config.js
-   ```
-
-2. **Configure suas credenciais**:
-   - Acesse [GitHub Settings → Tokens](https://github.com/settings/tokens)
-   - Clique em "Generate new token (classic)"
-   - Marque as permissões: `repo` (Full control of private repositories)
-   - Copie o token gerado
-   - Substitua as credenciais em `public/shared/github-config.js`
+   // ...apenas Firebase, não é mais necessário configurar GitHub
 
 ## 💰 Modelo de Custos
 
 **100% Gratuito** dentro dos limites:
-- 📊 **Firebase**: 20.000 writes/dia, 10GB hosting, 360MB/dia bandwidth
-- 🐙 **GitHub**: 1GB storage, 5k API requests/hora
+- 📊 **Firebase**: 20.000 writes/dia, 10GB hosting, 360MB/dia bandwidth, 1GB storage
 
 ## 📁 Upload de Arquivos
 
@@ -127,7 +126,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - ✅ **Gerenciamento Visual**: Lista interativa com ações (remover, preview)
 
 ### 🔧 **Recursos Técnicos**
-- ✅ **Upload para GitHub**: Arquivos enviados automaticamente para repositório
+- ✅ **Upload para Firebase Storage**: Arquivos enviados automaticamente para o storage do projeto
 - ✅ **Compressão automática**: Imagens comprimidas antes do upload
 - ✅ **URLs públicas**: Links permanentes para todos os arquivos
 - ✅ **Limite**: 100MB por arquivo
@@ -157,15 +156,27 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ```
 senai-lab-webapp/
 ├── public/                             # 🌐 Aplicação Web
-│   ├── README.md                       # Documentação da aplicação
 │   ├── index.html                      # Interface principal (colaboradores)
 │   ├── admin.html                      # Dashboard administrativo
+│   ├── assets/                         # Recursos da aplicação
+│   │   ├── css/                        # Estilos CSS modularizados
+│   │   │   ├── admin/                  # Estilos do painel administrativo
+│   │   │   │   ├── actions.css        # Estilos de ações
+│   │   │   │   ├── dashboard.css      # Layout do dashboard
+│   │   │   │   └── ...               # Outros módulos CSS admin
+│   │   │   ├── index/                 # Estilos da página principal
+│   │   │   │   ├── buttons.css       # Estilos de botões
+│   │   │   │   ├── form.css         # Estilos de formulários
+│   │   │   │   └── ...              # Outros módulos CSS index
+│   │   │   ├── admin.css             # CSS principal admin
+│   │   │   ├── common.css            # Estilos compartilhados
+│   │   │   └── index.css             # CSS principal index
+│   │   └── js/                        # Scripts JavaScript
 │   └── shared/                         # Configurações compartilhadas
-│       ├── README.md                   # Documentação das configurações
 │       ├── firebase-config.example.js  # Exemplo configuração Firebase
 │       ├── firebase-config.js          # Suas credenciais Firebase (não commitado)
 │       ├── firebase-service.js         # Serviços Firebase centralizados
-│       ├── github-config.example.js   # Exemplo configuração GitHub
+│       ├── github-config.example.js    # Exemplo configuração GitHub
 │       └── github-config.js            # Suas credenciais GitHub (não commitado)
 ├── docs/                               # 📚 Documentação
 │   ├── CONFIG.md                       # Configurações centrais
@@ -336,7 +347,7 @@ firebase deploy
 - **Auto-refresh**: Atualização automática a cada 30 segundos
 - **Indicadores de Status**: Feedback visual em tempo real
 
-### 📋 **Exportação PDF Avançada** ✨ **NOVA FUNCIONALIDADE!**
+## 📋 **Exportação PDF Avançada - Nova Funcionalidade**
 
 #### 🎯 **Características do Sistema PDF**
 - **📊 Relatórios Profissionais**: Layout moderno com cabeçalho personalizado
@@ -432,7 +443,7 @@ firebase deploy
 - Design 100% personalizado para SENAI Lab
 - Integração perfeita com filtros existentes
 
-## 🗂️ Histórico de Versões Incrementais (Temas Admin)
+## 🗂️ **Histórico de Versões**
 
 - **2.7.5.0** — Base estável (estrutura pronta, sem tema dinâmico)
 - **2.7.5.1** — Tema Claro funcional (aplicação e persistência no admin)

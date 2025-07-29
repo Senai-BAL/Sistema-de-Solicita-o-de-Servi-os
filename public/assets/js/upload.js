@@ -1,6 +1,6 @@
 /* 🔧 SENAI Lab - Sistema de Upload
  * Arquivo: public/assets/js/upload.js
- * Descrição: Funcionalidades de upload para GitHub e compressão de imagens
+ * Descrição: Funcionalidades de upload para Firebase Storage e compressão de imagens
  */
 
 // 🖼️ COMPRESSÃO DE IMAGENS
@@ -82,126 +82,79 @@ function fileToBase64(file) {
   });
 }
 
-// 🐙 UPLOAD PARA GITHUB COM NOVO PADRÃO DE NOMENCLATURA
-async function uploadToGitHub(file, serviceInfo, progressCallback) {
-  try {
-    // 🛡️ VALIDATION: Verificar parâmetros obrigatórios
-    if (!file) throw new Error('Arquivo não fornecido');
-    if (!serviceInfo || !serviceInfo.tipo || !serviceInfo.solicitante) {
-      throw new Error('Informações de serviço incompletas');
-    }
-    if (!GITHUB_CONFIG || !GITHUB_CONFIG.token) {
-      throw new Error('Configuração do GitHub não encontrada');
-    }
-
-    // Comprimir imagem se necessário
-    const fileToUpload = await compressImage(file);
-    
-    if (progressCallback) progressCallback(30);
-
-    // Gerar novo padrão: TIPO_DATA_SOLICITANTE_NOMEDOARQUIVO
-    const now = new Date();
-    const dateStr = now.toISOString().slice(0, 10).replace(/-/g, ''); // YYYYMMDD
-    const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, ''); // HHMMSS
-    const timestamp = `${dateStr}_${timeStr}`;
-    
-    // Limpar nome do solicitante (remover caracteres especiais)
-    const cleanSolicitante = serviceInfo.solicitante
-      .replace(/[^a-zA-Z0-9]/g, '')
-      .slice(0, 20)
-      .toUpperCase();
-    
-    // Limpar nome do arquivo original
-    const originalName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9._-]/g, '');
-    const extension = file.name.split('.').pop();
-    
-    // Novo padrão: TIPO_DATA_SOLICITANTE_NOMEDOARQUIVO
-    const fileName = `${serviceInfo.tipo}_${timestamp}_${cleanSolicitante}_${originalName}.${extension}`;
-    
-    // PASTA ÚNICA PARA TODOS OS ARQUIVOS
-    const filePath = `senai-arquivos/${fileName}`;
-
-    if (progressCallback) progressCallback(50);
-
-    // Converter para base64
-    const base64Content = await fileToBase64(fileToUpload);
-    
-    if (progressCallback) progressCallback(70);
-
-    // API GitHub
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${filePath}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${GITHUB_CONFIG.token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: `Upload: ${fileName}`,
-        content: base64Content
-      })
-    });
-
-    if (!response.ok) {
-      let errorMessage = `GitHub API Error (${response.status}): `;
-      try {
-        const error = await response.json();
-        errorMessage += error.message || 'Erro desconhecido';
-        
-        // 🔍 SPECIFIC ERROR HANDLING
-        if (response.status === 401) {
-          errorMessage = 'Token do GitHub inválido ou expirado';
-        } else if (response.status === 403) {
-          errorMessage = 'Limite de API do GitHub atingido ou sem permissão';
-        } else if (response.status === 404) {
-          errorMessage = 'Repositório não encontrado ou sem acesso';
-        } else if (response.status >= 500) {
-          errorMessage = 'Erro no servidor do GitHub. Tente novamente.';
-        }
-      } catch (parseError) {
-        errorMessage += `Erro ${response.status} - ${response.statusText}`;
-      }
-      throw new Error(errorMessage);
-    }
-
-    const result = await response.json();
-    
-    if (progressCallback) progressCallback(100);
-
-    // URL pública do arquivo
-    const publicUrl = `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${filePath}`;
-
-    // Registrar upload
-    usageMonitor.addUpload();
-
-    return {
-      name: file.name,
-      url: publicUrl,
-      size: fileToUpload.size,
-      originalSize: file.size,
-      type: fileToUpload.type,
-      compressed: file.type.startsWith('image/'),
-      path: filePath
-    };
-
-  } catch (error) {
-    console.error('❌ Erro no upload para GitHub:', error);
-    throw error;
+// 🌐 UPLOAD PARA FIREBASE STORAGE
+async function uploadToFirebaseStorage(file, serviceInfo, progressCallback) {
+  // Validação básica
+  if (!file) throw new Error('Arquivo não fornecido');
+  if (!serviceInfo || !serviceInfo.tipo || !serviceInfo.solicitante) {
+    throw new Error('Informações de serviço incompletas');
   }
+  if (!window.firebaseConfig) throw new Error('Configuração do Firebase não encontrada');
+
+  // Comprimir imagem se necessário
+  const fileToUpload = await compressImage(file);
+  if (progressCallback) progressCallback(20);
+
+  // Gerar nome padronizado
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+  const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '');
+  const timestamp = `${dateStr}_${timeStr}`;
+  const cleanSolicitante = serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase();
+  const originalName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9._-]/g, '');
+  const extension = file.name.split('.').pop();
+  const fileName = `${serviceInfo.tipo}_${timestamp}_${cleanSolicitante}_${originalName}.${extension}`;
+
+  // Caminho no Storage
+  const storagePath = `uploads/${fileName}`;
+
+  // Inicializar Firebase Storage
+  const storage = firebase.storage();
+  const ref = storage.ref(storagePath);
+
+  // Upload
+  const uploadTask = ref.put(fileToUpload);
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        if (progressCallback) {
+          const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          progressCallback(percent);
+        }
+      },
+      (error) => {
+        reject(error);
+      },
+      async () => {
+        // Finalizado, obter URL pública
+        const url = await ref.getDownloadURL();
+        if (typeof usageMonitor !== 'undefined') usageMonitor.addUpload();
+        resolve({
+          name: file.name,
+          url,
+          size: fileToUpload.size,
+          originalSize: file.size,
+          type: fileToUpload.type,
+          compressed: file.type.startsWith('image/'),
+          path: storagePath
+        });
+      }
+    );
+  });
 }
 
 // 🔄 RETRY PARA UPLOADS COM NOVO PADRÃO
-async function retryUpload(file, serviceInfo, maxRetries) {
+// 🔄 RETRY PARA UPLOADS NO FIREBASE STORAGE
+async function retryUpload(file, serviceInfo, maxRetries, progressCallback) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await uploadToGitHub(file, serviceInfo);
+      return await uploadToFirebaseStorage(file, serviceInfo, progressCallback);
     } catch (error) {
       console.warn(`❌ Tentativa ${attempt}/${maxRetries} falhou:`, error.message);
-
-      if (attempt === maxRetries) {
-        throw error;
-      }
-
+      if (attempt === maxRetries) throw error;
       await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
     }
   }
 }
+

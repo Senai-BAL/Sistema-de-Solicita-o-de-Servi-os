@@ -9,11 +9,6 @@ if (!window.firebaseConfig) {
   throw new Error('Firebase configuration not found');
 }
 
-// 🐙 VERIFICAR SE A CONFIGURAÇÃO GITHUB FOI CARREGADA
-if (!window.githubConfig) {
-  alert('⚠️ Erro: Arquivo github-config.js não encontrado!\n\nPor favor:\n1. Copie shared/github-config.example.js para shared/github-config.js\n2. Substitua pelas suas credenciais GitHub');
-  throw new Error('GitHub configuration not found');
-}
 
 // Inicializar Firebase com a configuração externa
 firebase.initializeApp(window.firebaseConfig);
@@ -22,7 +17,7 @@ const db = firebase.firestore();
 // 🧪 CONFIGURAÇÃO DE AMBIENTE
 const ENVIRONMENT_CONFIG = {
   // Altere para 'production' ou 'test' conforme necessário
-  mode: 'production', // 'production' ou 'test'
+  mode: 'test', // 'production' ou 'test'
   collections: {
     production: 'solicitacoes',
     test: 'solicitacoes_test'

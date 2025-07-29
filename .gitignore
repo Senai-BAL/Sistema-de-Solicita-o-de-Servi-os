@@ -18,6 +18,7 @@ pglite-debug.log
 .firebase/
 
 # Firebase config - CREDENCIAIS SENSÍVEIS
+public/shared/netlify-config.js
 public/shared/firebase-config.js
 
 # GitHub config - CREDENCIAIS SENSÍVEIS
