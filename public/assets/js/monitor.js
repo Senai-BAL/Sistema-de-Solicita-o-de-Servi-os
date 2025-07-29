@@ -46,18 +46,6 @@ function updateUsageMonitor() {
 }
 
 
-
-// 📢 MOSTRAR STATUS
-function showStatus(message, type = 'info') {
-  const indicator = document.getElementById('statusIndicator');
-  indicator.textContent = message;
-  indicator.className = `status-indicator ${type} show`;
-
-  setTimeout(() => {
-    indicator.classList.remove('show');
-  }, 4000);
-}
-
 // 🎉 TELA DE SUCESSO
 function showSuccessScreen(docId) {
   document.getElementById('formContent').style.display = 'none';

@@ -28,7 +28,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Version](https://img.shields.io/badge/Version-2.9.0-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.1-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Teste-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 ![Last Update](https://img.shields.io/badge/Última_Atualização-Julho_2025-informational?style=for-the-badge)
@@ -43,7 +43,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
-**Versão Atual**: v2.9.0 (Upload 100% Firebase Storage, ambiente de teste garantido, GitHub removido, documentação atualizada)  
+**Versão Atual**: v2.9.1 (Auditoria multiusuário, logs Firestore, estatísticas reais, robustez, documentação atualizada)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
@@ -81,16 +81,17 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.9.0  
+**Versão Atual**: v2.9.1  
 **Data**: 29 de julho de 2025  
 **Principais Melhorias**:
-- 🔥 Upload de arquivos agora 100% via Firebase Storage (GitHub removido)
-- 🧪 Ambiente de teste garantido: nunca salva dados de teste na produção
-- 🛡️ Fallback seguro: só salva na produção se o modo for 'production'
-- � Documentação, README e changelog atualizados
-- 🚫 Removidas todas as dependências, instruções e menções ao GitHub
-- � Mensagens e instruções refletem uso do Firebase Storage
-- �️ Interface e feedbacks ajustados para novo fluxo de upload
+- Auditoria multiusuário: logs de acesso e ações centralizados no Firestore
+- Estatísticas reais e robustas no painel de auditoria
+- Limite de 50 registros por usuário nos logs
+- Modal de auditoria aprimorado (ações, acessos, estatísticas)
+- Código de auditoria e autenticação refatorado
+- Tratamento de campos alternativos e valores indefinidos
+- Regras do Firestore revisadas
+- Remoção de dependências e referências obsoletas
 
 ## ⚙️ Configuração
 
