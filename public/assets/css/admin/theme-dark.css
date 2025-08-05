@@ -1,3 +1,4 @@
+
 /* Tema escuro do admin */
 .admin-theme-dark {
   --bg: rgb(2, 6, 23);                  /* Fundo principal */
@@ -33,4 +34,13 @@
   --transition-fast: 0.2s;
   background: var(--bg) !important;
   color: var(--text) !important;
+}
+input[type="date"], input[type="time"] {
+  color-scheme: dark;
+  color: #fff;
+  /* Ícone branco customizado para calendário */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white"><rect x="3" y="7" width="18" height="14" rx="2"/><rect x="7" y="3" width="2" height="4"/><rect x="15" y="3" width="2" height="4"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px 20px;
 }

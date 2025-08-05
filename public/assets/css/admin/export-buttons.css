@@ -47,6 +47,23 @@
   transform: translateY(0);
 }
 
+/* Botão de Limpeza */
+.btn-export.cleanup {
+  background: var(--warning-color, #ff9800);
+  color: var(--text-white);
+  border: none;
+}
+
+.btn-export.cleanup:hover {
+  background: var(--warning-dark, #f57c00);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.btn-export.cleanup:active {
+  transform: translateY(0);
+}
+
 /* Botão de Atualizar */
 .btn-refresh {
   background: linear-gradient(135deg, var(--accent-blue) 0%, #1976d2 100%);

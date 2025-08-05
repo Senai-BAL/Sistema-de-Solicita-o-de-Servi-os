@@ -51,7 +51,7 @@ function getStatusBadge(status) {
 
 function getServiceIcon(service, subService) {
     const icons = {
-        'espaco_maker': '🔧',
+        'espaco_maker': '⚙️', // Mudança de 🔧 para ⚙️
         'servicos': {
             'impressao': '🖨️',
             'impressao_3d': '🏗️',
@@ -206,6 +206,7 @@ function renderKanbanBoard(requests) {
     const statusColumns = {
         'pendente': document.getElementById('kanban-pendente'),
         'em_andamento': document.getElementById('kanban-em_andamento'),
+        'aprovado': document.getElementById('kanban-aprovado'),
         'concluido': document.getElementById('kanban-concluido'),
         'cancelado': document.getElementById('kanban-cancelado')
     };
@@ -236,6 +237,7 @@ function renderKanbanBoard(requests) {
             const statusBadgeClass = {
               pendente: 'pendente',
               em_andamento: 'em_andamento',
+              aprovado: 'aprovado',
               concluido: 'concluido',
               cancelado: 'cancelado'
             }[status] || '';
@@ -322,131 +324,141 @@ async function handleDrop(e, newStatus) {
 }
 
 // 📋 MODAL HÍBRIDO - FUNÇÕES DE VISUALIZAÇÃO
-function viewDetails(requestId) {
-    const request = currentRequests.find(r => r.id === requestId);
-    if (!request) {
-        console.error('Solicitação não encontrada:', requestId);
-        ToastManager.show('Solicitação não encontrada!', 'error');
-        return;
-    }
-
-    // Armazenar o ID da solicitação atual para uso global
-    currentRequestId = requestId;
-
-    // Preencher cabeçalho do modal
-    document.getElementById('modalSubtitle').textContent = `Solicitação #${requestId.substr(0, 8)}`;
-    document.getElementById('modalDate').textContent = formatDate(request.d);
-
-    // Atualizar informações do usuário atual no modal
-    document.getElementById('modalUserAvatar').textContent = AdminAuth.getCurrentUserAvatar();
-    document.getElementById('modalUserName').textContent = AdminAuth.getCurrentUserName();
-
-    // Registrar ação de visualização
-    AdminAuth.logUserAction('viewDetails', {
-        description: `Visualização de detalhes da solicitação`,
-        requestId: requestId,
-        service: getServiceName(request.s, request.ts)
-    });
-
-    // Preencher informações básicas
-    const infoGrid = document.getElementById('modalInfoGrid');
-    infoGrid.innerHTML = `
-        <div class="info-item">
-            <div class="info-label">Colaborador</div>
-            <div class="info-value">${request.c}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Email</div>
-            <div class="info-value">${request.e}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">WhatsApp</div>
-            <div class="info-value">${request.w || 'Não informado'}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Data da Solicitação</div>
-            <div class="info-value">${formatDate(request.d)}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Status</div>
-            <div class="info-value">${getStatusBadge(request.admin?.status || 'pendente')}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Tipo de Serviço</div>
-            <div class="info-value">${getServiceName(request.s, request.ts)}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Prioridade</div>
-            <div class="info-value">
-                <span class="priority-indicator priority-${request.admin?.prioridade || 'baixa'}">
-                    ${getPriorityIcon(request.admin?.prioridade || 'baixa')} ${(request.admin?.prioridade || 'baixa').toUpperCase()}
-                </span>
-            </div>
-        </div>
-        ${request.admin?.ultimaAtualizacao ? `
-            <div class="info-item">
-                <div class="info-label">Última Atualização</div>
-                <div class="info-value">${formatDate(request.admin.ultimaAtualizacao)}</div>
-            </div>
-        ` : ''}
-    `;
-
-    // Preencher Detalhes da Solicitação
-    const requestDetails = formatRequestDetailsStructured(request);
-    const requestGrid = document.getElementById('modalRequestGrid');
-    requestGrid.innerHTML = requestDetails.map(detail => {
-        if (detail.isLong) {
-            return `
-                <div class="info-item full-width">
-                    <div class="info-label">${detail.label}</div>
-                    <div class="info-value${detail.isCode ? ' code-block' : ''}">${detail.value}</div>
-                </div>
-            `;
-        } else {
-            return `
-                <div class="info-item">
-                    <div class="info-label">${detail.label}</div>
-                    <div class="info-value">${detail.value}</div>
-                </div>
-            `;
+async function viewDetails(requestId) {
+    try {
+        // Buscar dados atualizados do Firestore
+        const request = await firebaseService.getRequestById(requestId);
+        if (!request) {
+            console.error('Solicitação não encontrada:', requestId);
+            ToastManager.show('Solicitação não encontrada!', 'error');
+            return;
         }
-    }).join('');
 
-    // Preencher Arquivos
-    const fileList = document.getElementById('modalFileList');
-    if (request.arq && request.arq.length > 0) {
-        fileList.innerHTML = request.arq.map(arquivo => `
-            <div class="file-item">
-            <div class="file-icon">${getFileIcon(arquivo.n)}</div>
-            <div class="file-info">
-                <div class="file-name">${arquivo.n}</div>
-                <div class="file-meta">${(arquivo.s / 1024).toFixed(1)} KB • ${arquivo.t}</div>
+        // Armazenar o ID da solicitação atual para uso global
+        currentRequestId = requestId;
+
+        // Preencher cabeçalho do modal
+        document.getElementById('modalSubtitle').textContent = `Solicitação #${requestId.substr(0, 8)}`;
+        document.getElementById('modalDate').textContent = formatDate(request.d);
+
+        // Atualizar informações do usuário atual no modal
+        document.getElementById('modalUserAvatar').textContent = AdminAuth.getCurrentUserAvatar();
+        document.getElementById('modalUserName').textContent = AdminAuth.getCurrentUserName();
+
+        // Registrar ação de visualização
+        AdminAuth.logUserAction('viewDetails', {
+            description: `Visualização de detalhes da solicitação`,
+            requestId: requestId,
+            service: getServiceName(request.s, request.ts)
+        });
+
+        // Preencher informações básicas
+        const infoGrid = document.getElementById('modalInfoGrid');
+        infoGrid.innerHTML = `
+            <div class="info-item">
+                <div class="info-label">Colaborador</div>
+                <div class="info-value">${request.c}</div>
             </div>
-            <div class="file-actions">
-                <button onclick="previewFile('${arquivo.u}', '${arquivo.n}', '${arquivo.t}')" class="btn-outline btn-sm">
-                👁️ Visualizar
-                </button>
-                <button class="btn-secondary btn-sm" onclick="downloadArquivo('${arquivo.u}', '${arquivo.n}')">
-                📥 Download
-                </button>
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">${request.e}</div>
             </div>
+            <div class="info-item">
+                <div class="info-label">WhatsApp</div>
+                <div class="info-value">${request.w || 'Não informado'}</div>
             </div>
-        `).join('');
-    } else {
-        fileList.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">Nenhum arquivo anexado</div>';
+            <div class="info-item">
+                <div class="info-label">Data da Solicitação</div>
+                <div class="info-value">${formatDate(request.d)}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Status</div>
+                <div class="info-value">${getStatusBadge(request.admin?.status || 'pendente')}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Tipo de Serviço</div>
+                <div class="info-value">${getServiceName(request.s, request.ts)}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Prioridade</div>
+                <div class="info-value">
+                    <span class="priority-indicator priority-${request.admin?.prioridade || 'baixa'}">
+                        ${getPriorityIcon(request.admin?.prioridade || 'baixa')} ${(request.admin?.prioridade || 'baixa').toUpperCase()}
+                    </span>
+                </div>
+            </div>
+            ${request.admin?.ultimaAtualizacao ? `
+                <div class="info-item">
+                    <div class="info-label">Última Atualização</div>
+                    <div class="info-value">${formatDate(request.admin.ultimaAtualizacao)}</div>
+                </div>
+            ` : ''}
+        `;
+
+        // Preencher Detalhes da Solicitação
+        const requestDetails = formatRequestDetailsStructured(request);
+        const requestGrid = document.getElementById('modalRequestGrid');
+        requestGrid.innerHTML = requestDetails.map(detail => {
+            if (detail.isLong) {
+                return `
+                    <div class="info-item full-width">
+                        <div class="info-label">${detail.label}</div>
+                        <div class="info-value${detail.isCode ? ' code-block' : ''}">${detail.value}</div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="info-item">
+                        <div class="info-label">${detail.label}</div>
+                        <div class="info-value">${detail.value}</div>
+                    </div>
+                `;
+            }
+        }).join('');
+
+        // Preencher Arquivos
+        const fileList = document.getElementById('modalFileList');
+        if (request.arq && request.arq.length > 0) {
+            fileList.innerHTML = request.arq.map(arquivo => `
+                <div class="file-item">
+                <div class="file-icon">${getFileIcon(arquivo.n)}</div>
+                <div class="file-info">
+                    <div class="file-name">${arquivo.n}</div>
+                    <div class="file-meta">${(arquivo.s / 1024).toFixed(1)} KB • ${arquivo.t}</div>
+                </div>
+                <div class="file-actions">
+                    <button onclick="previewFile('${arquivo.u}', '${arquivo.n}', '${arquivo.t}')" class="btn-outline btn-sm">
+                    👁️ Visualizar
+                    </button>
+                    <button class="btn-secondary btn-sm" onclick="downloadArquivo('${arquivo.u}', '${arquivo.n}')">
+                    📥 Download
+                    </button>
+                </div>
+                </div>
+            `).join('');
+        } else {
+            fileList.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">Nenhum arquivo anexado</div>';
+        }
+
+        // Preencher Timeline (com logs do Firestore)
+        const timeline = document.getElementById('modalTimeline');
+        if (timeline) timeline.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Carregando histórico...</div>';
+        const logs = await firebaseService.getAdminLogs(requestId, 50);
+        // Passar os logs para a timeline
+        populateTimeline(request, logs);
+
+        // Preencher Ações
+        populateActions(request);
+
+        // Preencher Comentários
+        populateComments(request);
+
+        // Mostrar modal
+        openModal('detailsModal');
+    } catch (error) {
+        console.error('Erro ao buscar detalhes da solicitação:', error);
+        ToastManager.show('Erro ao buscar detalhes da solicitação!', 'error');
     }
-
-    // Preencher Timeline
-    populateTimeline(request);
-
-    // Preencher Ações
-    populateActions(request);
-
-    // Preencher Comentários
-    populateComments(request);
-
-    // Mostrar modal
-    openModal('detailsModal');
 }
 
 // 📁 FUNÇÃO PARA ÍCONES DE ARQUIVO
@@ -639,26 +651,81 @@ function previewFile(fileUrl, fileName, fileType) {
 }
 
 // ⏱️ FUNÇÃO PARA POPULAR A TIMELINE COM NOVA ESTRUTURA DE STATUS
-function populateTimeline(request) {
+function populateTimeline(request, logs = []) {
     const timeline = document.getElementById('modalTimeline');
     if (!timeline) return;
-    
-    const requestId = request.id; // Extrair o ID da solicitação
+
+    const requestId = request.id;
     const currentStatus = request.admin?.status || 'pendente';
     const createdDate = request.d || Date.now();
     const adminData = request.admin || {};
-    
-    // Buscar datas reais dos logs administrativos com nova estrutura
     const statusHistory = getStatusHistory(request);
-    
-    // Definir os estados da timeline baseado no fluxo: Pendente → Aprovado → Iniciar → Concluir → Reabrir
+
+    // Combinar logs do Firestore com logs internos da solicitação
+    const allLogs = [...logs];
+    if (adminData.logs && Array.isArray(adminData.logs)) {
+        allLogs.push(...adminData.logs);
+    }
+
+    // Função para buscar usuário do log do Firestore ou logs internos
+    function getUserForStatusChange(status) {
+        // Buscar primeiro nos logs do Firestore
+        const firestoreLog = allLogs.find(log =>
+            (log.acao === 'status_update' || log.action === 'status_update') &&
+            (log.detalhes?.new_status === status || log.details?.new_status === status)
+        );
+        
+        if (firestoreLog) {
+            // Buscar o nome do responsável em diferentes campos possíveis
+            const user = firestoreLog.detalhes?.admin || 
+                        firestoreLog.details?.admin || 
+                        firestoreLog.detalhes?.responsavel ||
+                        firestoreLog.details?.responsavel ||
+                        firestoreLog.admin || 
+                        null;
+            return user;
+        }
+
+        // Se não encontrar nos logs do Firestore, buscar nos logs internos por timestamp
+        const statusTimestamp = getStatusTimestamp(status, statusHistory);
+        if (statusTimestamp) {
+            const internalLog = allLogs.find(log =>
+                Math.abs((log.timestamp || 0) - statusTimestamp) < 5000 && // 5 segundos de tolerância
+                (log.action === 'status_update' || log.acao === 'status_update')
+            );
+            
+            if (internalLog) {
+                return internalLog.details?.admin || internalLog.detalhes?.admin || null;
+            }
+        }
+
+        // Fallback: buscar responsável atual nos dados administrativos APENAS se for o status atual E se o status realmente foi alcançado
+        if (status === currentStatus && adminData.responsavel && getStatusTimestamp(status, statusHistory)) {
+            return adminData.responsavel;
+        }
+        
+        return null;
+    }
+
+    // Função auxiliar para obter timestamp de um status
+    function getStatusTimestamp(status, history) {
+        switch(status) {
+            case 'aprovado': return history.approved;
+            case 'em_andamento': return history.processing;
+            case 'concluido': return history.completed;
+            case 'cancelado': return history.cancelled;
+            case 'reaberto': return history.reopened;
+            default: return null;
+        }
+    }
+
     const timelineStates = [
         {
             key: 'created',
             title: 'Solicitação Criada',
             icon: '📋',
             timestamp: statusHistory.created || createdDate,
-            completed: true, // Sempre completo
+            completed: true,
             description: 'Solicitação enviada pelo colaborador',
             user: `📤 ${request.c}`
         },
@@ -669,16 +736,16 @@ function populateTimeline(request) {
             timestamp: statusHistory.approved || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
             completed: ['aprovado', 'em_andamento', 'concluido', 'reaberto', 'cancelado'].includes(currentStatus),
             description: currentStatus === 'cancelado' ? 'Solicitação cancelada' : 'Aprovada para execução',
-            user: AuditManager.getUserForStatusChange(requestId, currentStatus === 'cancelado' ? 'cancelado' : 'aprovado')?.name
+            user: getUserForStatusChange(currentStatus === 'cancelado' ? 'cancelado' : 'aprovado')
         },
         {
             key: 'started',
             title: currentStatus === 'cancelado' ? 'Processo Interrompido' : 'Execução Iniciada',
-            icon: currentStatus === 'cancelado' ? '⚠️' : '🔧',
+            icon: currentStatus === 'cancelado' ? '⚠️' : '⚙️', // Mudança aqui: de 🔧 para ⚙️
             timestamp: statusHistory.processing || statusHistory.started || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
             completed: ['em_andamento', 'concluido', 'reaberto'].includes(currentStatus) || (currentStatus === 'cancelado' && statusHistory.processing),
             description: currentStatus === 'cancelado' ? 'Execução foi interrompida' : 'Serviço em andamento',
-            user: AuditManager.getUserForStatusChange(requestId, currentStatus === 'cancelado' ? 'cancelado' : 'em_andamento')?.name
+            user: getUserForStatusChange(currentStatus === 'cancelado' ? 'cancelado' : 'em_andamento')
         },
         {
             key: 'completed',
@@ -687,11 +754,10 @@ function populateTimeline(request) {
             timestamp: statusHistory.completed || statusHistory.reopened || (currentStatus === 'concluido' ? adminData.data_atualizacao : null),
             completed: currentStatus === 'concluido' || currentStatus === 'reaberto',
             description: currentStatus === 'reaberto' ? 'Reaberto para nova execução' : 'Serviço finalizado com sucesso',
-            user: AuditManager.getUserForStatusChange(requestId, currentStatus)?.name
+            user: getUserForStatusChange(currentStatus === 'reaberto' ? 'reaberto' : 'concluido')
         }
     ];
-    
-    // Ajustar estados para reaberto
+
     if (currentStatus === 'reaberto') {
         timelineStates.push({
             key: 'reexecution',
@@ -702,27 +768,24 @@ function populateTimeline(request) {
             description: 'Aguardando início da nova execução'
         });
     }
-    
-    // Filtrar estados baseado no status atual
+
     let visibleStates = timelineStates;
     if (currentStatus === 'cancelado') {
-        // Para cancelados, mostrar até onde chegou
         const cancelIndex = timelineStates.findIndex(state => state.timestamp === statusHistory.cancelled);
         if (cancelIndex > 0) {
             visibleStates = timelineStates.slice(0, cancelIndex + 1);
         } else {
-            visibleStates = timelineStates.slice(0, 2); // Criada + Cancelada
+            visibleStates = timelineStates.slice(0, 2);
         }
     }
-    
-    // Gerar HTML da timeline estilo Correios com dados reais
+
     timeline.innerHTML = `
         <div class="timeline-correios">
             ${visibleStates.map((state, index) => {
                 const isActive = state.completed;
                 const isLast = index === visibleStates.length - 1;
                 const showTimestamp = state.timestamp && isActive;
-                
+                const showUser = isActive && state.user; // Só mostrar usuário se a etapa estiver ativa
                 return `
                     <div class="timeline-step ${isActive ? 'active' : 'inactive'}">
                         <div class="timeline-step-marker">
@@ -733,7 +796,7 @@ function populateTimeline(request) {
                             <div class="timeline-step-title">${state.title}</div>
                             <div class="timeline-step-description" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${state.description}</div>
                             ${showTimestamp ? `<div class="timeline-step-time">${formatDateTime(state.timestamp)}</div>` : ''}
-                            ${state.user ? `<div class="timeline-step-user" style="font-size: 0.75rem; color: var(--primary-blue); margin-top: 4px; font-weight: 500;">👤 ${state.user}</div>` : ''}
+                            ${showUser ? `<div class="timeline-step-user" style="font-size: 0.75rem; color: var(--primary-blue); margin-top: 4px; font-weight: 500;">👤 ${state.user}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -872,7 +935,7 @@ function getStatusText(status) {
         case 'em_andamento': return '🔄 Em Andamento';
         case 'concluido': return '✅ Concluído';
         case 'cancelado': return '❌ Cancelado';
-        default: return '⏳ Pendente';
+        default: return '⏰ Pendente';
     }
 }
 
@@ -1004,7 +1067,7 @@ function populateActions(request) {
 function getStatusInfo(status) {
     const statusMap = {
         'pendente': {
-            icon: '⏳',
+            icon: '⏰',
             title: 'Aguardando Aprovação',
             description: 'Solicitação precisa ser analisada e aprovada',
             bgColor: '#fff8e1',
@@ -1134,20 +1197,21 @@ async function confirmDeleteRequest(requestId) {
         return;
     }
 
-    // Executar exclusão segura (Firestore + GitHub)
+    // Executar exclusão segura (Firestore + Storage)
     try {
-        LoadingManager.show('Excluindo solicitação...');
-        await DashboardManager.deleteRequest(requestId);
+        LoadingManager.show('Excluindo solicitação e arquivos...');
+        const result = await DashboardManager.deleteRequest(requestId);
         closeDeleteModal();
         closeModal('detailsModal');
         await loadDashboard();
-        ToastManager.show('Solicitação excluída com sucesso!', 'success');
+        
         // Registrar auditoria
         AdminAuth.logUserAction('deleteRequest', {
             description: 'Solicitação deletada via confirmação dupla',
             requestId: requestId
         });
     } catch (error) {
+        console.error('❌ Erro na exclusão:', error);
         errorMsg.textContent = 'Erro ao excluir solicitação. Tente novamente.';
         LoadingManager.hide();
     }

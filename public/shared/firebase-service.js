@@ -269,7 +269,7 @@ class FirebaseService {
           old_status: oldStatus,
           new_status: status,
           comment: adminData.comment || null,
-          admin: adminData.responsavel || 'Administrador'
+          admin: adminData.responsavel || adminData.admin || 'Administrador'
         }
       });
 
@@ -279,9 +279,8 @@ class FirebaseService {
       await this.logAdminAction(requestId, 'status_update', {
         old_status: oldStatus,
         new_status: status,
-        comment: adminData.comment,
-        admin: adminData.responsavel || 'Administrador',
-        timestamp: currentTimestamp
+        comment: adminData.comment || null,
+        admin: adminData.responsavel || adminData.admin || 'Administrador'
       });
 
       console.log('✅ Status atualizado:', requestId, `${oldStatus} → ${status}`);
@@ -341,15 +340,52 @@ class FirebaseService {
   // 🗑️ DELETAR SOLICITAÇÃO
   async deleteRequest(requestId) {
     try {
+      // 1. Buscar dados da solicitação antes de deletar para pegar arquivos
+      const requestDoc = await this.db.collection(this.collectionName).doc(requestId).get();
+      
+      if (!requestDoc.exists) {
+        throw new Error('Solicitação não encontrada');
+      }
+      
+      const requestData = requestDoc.data();
+      
+      // 2. Deletar arquivos do Firebase Storage se houver
+      let deletedFilesCount = 0;
+      if (requestData.arq && requestData.arq.length > 0) {
+        console.log(`🗑️ Deletando ${requestData.arq.length} arquivos do Storage...`);
+        
+        for (const arquivo of requestData.arq) {
+          try {
+            if (arquivo.p) { // p = path no storage
+              const storage = window.storage || firebase.storage();
+              const fileRef = storage.ref(arquivo.p);
+              await fileRef.delete();
+              deletedFilesCount++;
+              console.log(`✅ Arquivo deletado: ${arquivo.n}`);
+            }
+          } catch (fileError) {
+            console.warn(`⚠️ Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+            // Continuar mesmo se um arquivo falhar
+          }
+        }
+      }
+      
+      // 3. Deletar documento do Firestore
       await this.db.collection(this.collectionName).doc(requestId).delete();
       
-      // Log da ação
+      // 4. Log da ação com detalhes dos arquivos
       await this.logAdminAction(requestId, 'request_deleted', {
-        admin: 'Sistema'
+        admin: 'Sistema',
+        filesDeleted: deletedFilesCount,
+        totalFiles: requestData.arq ? requestData.arq.length : 0
       });
 
-      console.log('✅ Solicitação deletada:', requestId);
-      return true;
+      console.log(`✅ Solicitação deletada: ${requestId} (${deletedFilesCount} arquivos removidos)`);
+      return {
+        success: true,
+        filesDeleted: deletedFilesCount,
+        totalFiles: requestData.arq ? requestData.arq.length : 0
+      };
     } catch (error) {
       console.error('❌ Erro ao deletar solicitação:', error);
       throw error;
@@ -360,22 +396,58 @@ class FirebaseService {
   async deleteMultipleRequests(requestIds) {
     try {
       const batch = this.db.batch();
+      let totalFilesDeleted = 0;
+      let totalFiles = 0;
       
-      requestIds.forEach(requestId => {
-        const docRef = this.db.collection(this.collectionName).doc(requestId);
-        batch.delete(docRef);
-      });
+      // 1. Buscar todas as solicitações e coletar arquivos para deletar
+      const requests = await Promise.all(
+        requestIds.map(id => this.db.collection(this.collectionName).doc(id).get())
+      );
+      
+      // 2. Deletar arquivos do Storage
+      for (const requestDoc of requests) {
+        if (requestDoc.exists) {
+          const requestData = requestDoc.data();
+          if (requestData.arq && requestData.arq.length > 0) {
+            totalFiles += requestData.arq.length;
+            
+            for (const arquivo of requestData.arq) {
+              try {
+                if (arquivo.p) {
+                  const storage = window.storage || firebase.storage();
+                  const fileRef = storage.ref(arquivo.p);
+                  await fileRef.delete();
+                  totalFilesDeleted++;
+                }
+              } catch (fileError) {
+                console.warn(`⚠️ Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+              }
+            }
+          }
+          
+          // Adicionar ao batch para deletar do Firestore
+          batch.delete(requestDoc.ref);
+        }
+      }
 
+      // 3. Executar batch delete no Firestore
       await batch.commit();
       
-      // Log da ação
+      // 4. Log da ação
       await this.logAdminAction('BATCH', 'multiple_requests_deleted', {
         count: requestIds.length,
+        filesDeleted: totalFilesDeleted,
+        totalFiles: totalFiles,
         admin: 'Sistema'
       });
 
-      console.log(`✅ ${requestIds.length} solicitações deletadas em batch`);
-      return true;
+      console.log(`✅ ${requestIds.length} solicitações deletadas em batch (${totalFilesDeleted}/${totalFiles} arquivos removidos)`);
+      return {
+        success: true,
+        requestsDeleted: requestIds.length,
+        filesDeleted: totalFilesDeleted,
+        totalFiles: totalFiles
+      };
     } catch (error) {
       console.error('❌ Erro ao deletar solicitações em batch:', error);
       throw error;
@@ -403,21 +475,84 @@ class FirebaseService {
       let query = this.db.collection('admin_logs');
       
       if (requestId) {
-        query = query.where('solicitacao_id', '==', requestId);
+        // Para requestId específico, não usar orderBy para evitar índice composto
+        query = query.where('solicitacao_id', '==', requestId).limit(limit);
+      } else {
+        // Para todos os logs, usar apenas orderBy por timestamp
+        query = query.orderBy('timestamp', 'desc').limit(limit);
       }
       
-      const snapshot = await query
-        .orderBy('timestamp', 'desc')
-        .limit(limit)
-        .get();
-        
-      return snapshot.docs.map(doc => ({
+      const snapshot = await query.get();
+      
+      let results = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      
+      // Se buscou por requestId específico, ordenar localmente
+      if (requestId) {
+        results = results.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+      }
+      
+      return results;
     } catch (error) {
       console.error('❌ Erro ao buscar logs:', error);
       return [];
+    }
+  }
+
+  // 🧹 LIMPEZA DE ARQUIVOS ÓRFÃOS (OPCIONAL)
+  async cleanupOrphanedFiles() {
+    try {
+      console.log('🔍 Iniciando limpeza de arquivos órfãos...');
+      
+      // 1. Buscar todas as solicitações
+      const requests = await this.getAllRequests();
+      
+      // 2. Coletar todos os paths de arquivos válidos
+      const validPaths = new Set();
+      requests.forEach(request => {
+        if (request.arq && request.arq.length > 0) {
+          request.arq.forEach(arquivo => {
+            if (arquivo.p) validPaths.add(arquivo.p);
+          });
+        }
+      });
+      
+      // 3. Listar arquivos no Storage
+      const storage = window.storage || firebase.storage();
+      const listRef = storage.ref('uploads/');
+      
+      try {
+        const listResult = await listRef.listAll();
+        let orphanedCount = 0;
+        
+        // 4. Deletar arquivos órfãos
+        for (const fileRef of listResult.items) {
+          const fullPath = fileRef.fullPath;
+          
+          if (!validPaths.has(fullPath)) {
+            try {
+              await fileRef.delete();
+              orphanedCount++;
+              console.log(`🗑️ Arquivo órfão deletado: ${fullPath}`);
+            } catch (deleteError) {
+              console.warn(`⚠️ Falha ao deletar arquivo órfão ${fullPath}:`, deleteError.message);
+            }
+          }
+        }
+        
+        console.log(`✅ Limpeza concluída: ${orphanedCount} arquivos órfãos removidos`);
+        return { orphanedFilesDeleted: orphanedCount };
+        
+      } catch (listError) {
+        console.warn('⚠️ Não foi possível listar arquivos do Storage:', listError.message);
+        return { orphanedFilesDeleted: 0, error: 'Lista não disponível' };
+      }
+      
+    } catch (error) {
+      console.error('❌ Erro na limpeza de arquivos órfãos:', error);
+      throw error;
     }
   }
 

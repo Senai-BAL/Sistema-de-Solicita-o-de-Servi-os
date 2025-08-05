@@ -1,6 +1,6 @@
 # SENAI Lab WebApp - Padrão de Commits
 
-**Versão Atual do Projeto:** 2.9.1 (29/07/2025)
+**Versão Atual do Projeto:** 2.9.3 (05/08/2025)
 
 ---
 
@@ -11,7 +11,7 @@ Adote sempre um padrão claro e objetivo para facilitar rastreabilidade, automa�
 ### 🔗 Estrutura Recomendada
 
 ```
-<tipo>: <descrição breve>
+<tipo>: <versão> <descrição breve>
 
 [opcional] #issue
 [opcional] descrição detalhada

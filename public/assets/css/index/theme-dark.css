@@ -1,0 +1,23 @@
+/* Tema escuro para página index - ícone branco nos inputs de data/hora */
+.theme-dark input[type="date"],
+.theme-dark input[type="time"] {
+  color-scheme: dark;
+  color: #fff;
+  position: relative;
+  /* Oculta ícone nativo do Chrome/Edge */
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0;
+  }
+}
+.theme-dark .custom-date-icon, .theme-dark .custom-time-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 2;
+}
+
