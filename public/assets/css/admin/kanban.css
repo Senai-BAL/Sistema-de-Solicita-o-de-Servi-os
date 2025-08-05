@@ -1,19 +1,43 @@
+/* Botões compactos nos cards do Kanban */
+.kanban-card .btn,
+.kanban-card .btn-view,
+.kanban-card .btn-comment {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  min-width: unset;
+  height: 28px;
+  line-height: 1.1;
+  margin: 0 2px;
+}
 /* === Kanban admin === */
 
-.status-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-medium);
-  margin-top: var(--spacing-medium);
+.kanban-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 .status-column {
+  flex: 1 1 25%;
+  max-width: 25%;
+  min-width: 200px;
   background: linear-gradient(135deg, var(--bg-light) 80%, var(--accent-blue) 100%);
-  border-radius: 18px;
-  padding: 28px 18px 18px 18px;
-  min-height: 420px;
-  box-shadow: 0 6px 32px rgba(37,99,235,0.10);
+  border-radius: 14px;
+  padding: 16px 10px 10px 10px;
+  min-height: 380px;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.10);
   position: relative;
+}
+
+.kanban-cancelado-row {
+  width: 100%;
+  margin-top: 24px;
+}
+.status-column.cancelado {
+  max-width: 100%;
+  flex: 1 1 100%;
 }
 
 .status-column h3 {
@@ -45,59 +69,64 @@
 }
 
 .kanban-card {
-  background: var(--bg-white);
-  border-radius: 14px;
-  padding: 22px 18px 18px 18px;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 8px 8px 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(37,99,235,0.06);
   cursor: grab;
-  transition: all 0.2s cubic-bezier(.4,0,.2,1);
-  border-left: 6px solid var(--accent-blue);
+  transition: box-shadow 0.2s, transform 0.2s;
+  border-left: 5px solid var(--accent-blue);
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  align-items: stretch;
 }
 .kanban-card .kanban-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f5f5f5;
 }
 .kanban-card .kanban-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   background: linear-gradient(135deg, var(--accent-blue), #1976d2);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-white);
-  font-size: 18px;
+  color: #fff;
+  font-size: 16px;
   flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(37,99,235,0.08);
 }
 .kanban-card .kanban-title {
-  font-weight: 700;
-  color: var(--primary-blue);
-  font-size: 1.08rem;
+  font-weight: 600;
+  color: #222;
+  font-size: 1rem;
   flex: 1;
   min-width: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  text-shadow: 0 1px 4px rgba(37,99,235,0.10);
+  text-shadow: 0 1px 2px rgba(37,99,235,0.06);
 }
 .kanban-card .kanban-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 2px 8px;
+  border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   background: var(--accent-blue);
-  color: var(--text-white);
-  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(37,99,235,0.08);
+  letter-spacing: 0.3px;
 }
 .kanban-card .kanban-badge.pendente {
   background: #ffeaa7;
@@ -116,18 +145,19 @@
   color: var(--text-white);
 }
 .kanban-card .kanban-details {
-  color: var(--text-secondary);
+  color: #555;
   font-size: 0.92rem;
   margin-top: 2px;
   word-break: break-word;
+  padding-left: 2px;
 }
 .kanban-card:hover {
-  box-shadow: 0 8px 32px rgba(37,99,235,0.16);
-  transform: scale(1.02) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+  transform: scale(1.01) translateY(-1px);
 }
 .kanban-card.dragging {
   opacity: 0.5;
-  transform: rotate(3deg) scale(0.98);
+  transform: rotate(1deg) scale(0.96);
 }
 
 .kanban-drop-zone {

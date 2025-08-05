@@ -145,6 +145,7 @@
             <button class="btn-refresh" onclick="refreshDashboard()" title="Atualizar dados">🔄 Atualizar</button>
             <button class="btn-export excel" onclick="exportToExcel()">📊 Excel</button>
             <button class="btn-export pdf" onclick="openModal('pdfConfigModal')">📄 Relatório PDF</button>
+            <button class="btn-export cleanup" onclick="cleanupOrphanedFiles()" title="Remover arquivos órfãos do Storage">🧹 Limpeza</button>
           </div>
         </div>
 
@@ -216,7 +217,7 @@
 
         <!-- Kanban Board (Modo Kanban) -->
         <div id="kanbanView" style="display: none;">
-          <div class="status-columns">
+          <div class="kanban-row">
             <div class="status-column status-pendente">
               <h3>⏳ Pendente</h3>
               <div id="kanban-pendente" class="kanban-drop-zone"></div>
@@ -225,11 +226,17 @@
               <h3>🔄 Em Andamento</h3>
               <div id="kanban-em_andamento" class="kanban-drop-zone"></div>
             </div>
+            <div class="status-column status-aprovado">
+              <h3>🟦 Aprovado</h3>
+              <div id="kanban-aprovado" class="kanban-drop-zone"></div>
+            </div>
             <div class="status-column status-concluido">
               <h3>✅ Concluído</h3>
               <div id="kanban-concluido" class="kanban-drop-zone"></div>
             </div>
-            <div class="status-column status-cancelado">
+          </div>
+          <div class="kanban-cancelado-row">
+            <div class="status-column status-cancelado cancelado">
               <h3>❌ Cancelado</h3>
               <div id="kanban-cancelado" class="kanban-drop-zone"></div>
             </div>
@@ -469,6 +476,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
   <!-- jsPDF para exportação PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

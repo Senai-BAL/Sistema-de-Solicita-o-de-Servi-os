@@ -5,25 +5,35 @@
 
 // 📊 SISTEMA DE DADOS AVANÇADO
 class DashboardManager {
-    // Exclusão definitiva de solicitação (Firestore + GitHub)
+    // Exclusão definitiva de solicitação (Firestore + Storage)
     static async deleteRequest(requestId) {
         try {
-            LoadingManager.show('Excluindo solicitação...');
-            // Excluir do Firestore
-            const firestoreResult = await firebaseService.deleteRequest(requestId);
-            // Excluir arquivos vinculados do GitHub (se houver)
-            let githubResult = true;
-            if (window.GithubService && typeof window.GithubService.deleteRequestFiles === 'function') {
-                githubResult = await window.GithubService.deleteRequestFiles(requestId);
-            }
+            LoadingManager.show('Excluindo solicitação e arquivos...');
+            
+            // Excluir do Firestore (agora inclui exclusão do Storage)
+            const result = await firebaseService.deleteRequest(requestId);
+            
             LoadingManager.hide();
-            if (firestoreResult && githubResult) {
+            
+            if (result.success) {
+                // Mostrar feedback detalhado sobre arquivos deletados
+                if (result.totalFiles > 0) {
+                    const message = result.filesDeleted === result.totalFiles 
+                        ? `✅ Solicitação e todos os ${result.totalFiles} arquivos excluídos!`
+                        : `⚠️ Solicitação excluída, mas apenas ${result.filesDeleted}/${result.totalFiles} arquivos foram removidos.`;
+                    
+                    ToastManager.show(message, result.filesDeleted === result.totalFiles ? 'success' : 'warning');
+                } else {
+                    ToastManager.show('✅ Solicitação excluída (sem arquivos anexados).', 'success');
+                }
+                
                 return true;
             } else {
-                throw new Error('Falha ao excluir do Firestore ou GitHub');
+                throw new Error('Falha na exclusão');
             }
         } catch (error) {
             LoadingManager.hide();
+            console.error('❌ Erro na exclusão:', error);
             throw error;
         }
     }

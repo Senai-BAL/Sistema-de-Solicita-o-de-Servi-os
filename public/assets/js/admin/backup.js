@@ -255,6 +255,41 @@ class CompleteBackupManager {
         return backupPackage;
     }
 
+    // 🧹 LIMPEZA DE ARQUIVOS ÓRFÃOS
+    async cleanupOrphanedFiles() {
+        try {
+            LoadingManager.show('🔍 Analisando arquivos órfãos...');
+            
+            const result = await this.firebaseService.cleanupOrphanedFiles();
+            
+            LoadingManager.hide();
+            
+            if (result.orphanedFilesDeleted > 0) {
+                ToastManager.show(
+                    `🧹 Limpeza concluída: ${result.orphanedFilesDeleted} arquivos órfãos removidos!`, 
+                    'success'
+                );
+            } else {
+                ToastManager.show('✅ Nenhum arquivo órfão encontrado!', 'info');
+            }
+            
+            // Log da ação
+            AdminAuth.logUserAction('cleanupFiles', {
+                description: `Limpeza de arquivos órfãos`,
+                orphanedFilesDeleted: result.orphanedFilesDeleted,
+                error: result.error || null
+            });
+            
+            return result;
+            
+        } catch (error) {
+            LoadingManager.hide();
+            console.error('❌ Erro na limpeza:', error);
+            ToastManager.show('❌ Erro na limpeza de arquivos órfãos', 'error');
+            throw error;
+        }
+    }
+
     // 💾 BAIXAR ARQUIVOS DE BACKUP
     async downloadBackupFiles(backupPackage) {
         const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');

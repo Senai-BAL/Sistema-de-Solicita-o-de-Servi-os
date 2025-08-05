@@ -486,4 +486,30 @@ async function refreshDashboard() {
 // Tornar função global
 window.refreshDashboard = refreshDashboard;
 
+// 🧹 LIMPEZA DE ARQUIVOS ÓRFÃOS
+async function cleanupOrphanedFiles() {
+    const confirmation = confirm(
+        '🧹 LIMPEZA DE ARQUIVOS ÓRFÃOS\n\n' +
+        'Esta ação irá:\n' +
+        '• Analisar todos os arquivos no Firebase Storage\n' +
+        '• Identificar arquivos sem solicitação correspondente\n' +
+        '• Remover arquivos órfãos automaticamente\n\n' +
+        '⚠️ Esta ação é IRREVERSÍVEL!\n\n' +
+        'Deseja continuar?'
+    );
+    
+    if (!confirmation) return;
+    
+    try {
+        const backupManager = new CompleteBackupManager(firebaseService);
+        await backupManager.cleanupOrphanedFiles();
+    } catch (error) {
+        console.error('❌ Erro na limpeza:', error);
+        ToastManager.show('❌ Erro ao executar limpeza de arquivos', 'error');
+    }
+}
+
+// Tornar função global
+window.cleanupOrphanedFiles = cleanupOrphanedFiles;
+
 console.log('🚀 Admin Main - Sistema principal carregado');
