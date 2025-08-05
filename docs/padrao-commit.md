@@ -1,6 +1,6 @@
 # SENAI Lab WebApp - Padrão de Commits
 
-**Versão Atual do Projeto:** 2.9.1 (29/07/2025)
+**Versão Atual do Projeto:** 2.9.3 (05/08/2025)
 
 ---
 
