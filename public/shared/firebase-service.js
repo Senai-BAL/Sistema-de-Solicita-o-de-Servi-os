@@ -269,7 +269,7 @@ class FirebaseService {
           old_status: oldStatus,
           new_status: status,
           comment: adminData.comment || null,
-          admin: adminData.responsavel || 'Administrador'
+          admin: adminData.responsavel || adminData.admin || 'Administrador'
         }
       });
 
@@ -279,9 +279,8 @@ class FirebaseService {
       await this.logAdminAction(requestId, 'status_update', {
         old_status: oldStatus,
         new_status: status,
-        comment: adminData.comment,
-        admin: adminData.responsavel || 'Administrador',
-        timestamp: currentTimestamp
+        comment: adminData.comment || null,
+        admin: adminData.responsavel || adminData.admin || 'Administrador'
       });
 
       console.log('✅ Status atualizado:', requestId, `${oldStatus} → ${status}`);

@@ -11,7 +11,7 @@ Adote sempre um padrão claro e objetivo para facilitar rastreabilidade, automa�
 ### 🔗 Estrutura Recomendada
 
 ```
-<tipo>: <descrição breve>
+<tipo>: <versão> <descrição breve>
 
 [opcional] #issue
 [opcional] descrição detalhada

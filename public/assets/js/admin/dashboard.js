@@ -51,7 +51,7 @@ function getStatusBadge(status) {
 
 function getServiceIcon(service, subService) {
     const icons = {
-        'espaco_maker': '🔧',
+        'espaco_maker': '⚙️', // Mudança de 🔧 para ⚙️
         'servicos': {
             'impressao': '🖨️',
             'impressao_3d': '🏗️',
@@ -661,16 +661,62 @@ function populateTimeline(request, logs = []) {
     const adminData = request.admin || {};
     const statusHistory = getStatusHistory(request);
 
-    // Função para buscar usuário do log do Firestore
+    // Combinar logs do Firestore com logs internos da solicitação
+    const allLogs = [...logs];
+    if (adminData.logs && Array.isArray(adminData.logs)) {
+        allLogs.push(...adminData.logs);
+    }
+
+    // Função para buscar usuário do log do Firestore ou logs internos
     function getUserForStatusChange(status) {
-        const statusLog = logs.find(log =>
+        // Buscar primeiro nos logs do Firestore
+        const firestoreLog = allLogs.find(log =>
             (log.acao === 'status_update' || log.action === 'status_update') &&
             (log.detalhes?.new_status === status || log.details?.new_status === status)
         );
-        if (statusLog) {
-            return statusLog.detalhes?.admin || statusLog.details?.admin || statusLog.admin || null;
+        
+        if (firestoreLog) {
+            // Buscar o nome do responsável em diferentes campos possíveis
+            const user = firestoreLog.detalhes?.admin || 
+                        firestoreLog.details?.admin || 
+                        firestoreLog.detalhes?.responsavel ||
+                        firestoreLog.details?.responsavel ||
+                        firestoreLog.admin || 
+                        null;
+            return user;
         }
+
+        // Se não encontrar nos logs do Firestore, buscar nos logs internos por timestamp
+        const statusTimestamp = getStatusTimestamp(status, statusHistory);
+        if (statusTimestamp) {
+            const internalLog = allLogs.find(log =>
+                Math.abs((log.timestamp || 0) - statusTimestamp) < 5000 && // 5 segundos de tolerância
+                (log.action === 'status_update' || log.acao === 'status_update')
+            );
+            
+            if (internalLog) {
+                return internalLog.details?.admin || internalLog.detalhes?.admin || null;
+            }
+        }
+
+        // Fallback: buscar responsável atual nos dados administrativos APENAS se for o status atual E se o status realmente foi alcançado
+        if (status === currentStatus && adminData.responsavel && getStatusTimestamp(status, statusHistory)) {
+            return adminData.responsavel;
+        }
+        
         return null;
+    }
+
+    // Função auxiliar para obter timestamp de um status
+    function getStatusTimestamp(status, history) {
+        switch(status) {
+            case 'aprovado': return history.approved;
+            case 'em_andamento': return history.processing;
+            case 'concluido': return history.completed;
+            case 'cancelado': return history.cancelled;
+            case 'reaberto': return history.reopened;
+            default: return null;
+        }
     }
 
     const timelineStates = [
@@ -695,7 +741,7 @@ function populateTimeline(request, logs = []) {
         {
             key: 'started',
             title: currentStatus === 'cancelado' ? 'Processo Interrompido' : 'Execução Iniciada',
-            icon: currentStatus === 'cancelado' ? '⚠️' : '🔧',
+            icon: currentStatus === 'cancelado' ? '⚠️' : '⚙️', // Mudança aqui: de 🔧 para ⚙️
             timestamp: statusHistory.processing || statusHistory.started || (currentStatus === 'cancelado' ? statusHistory.cancelled : null),
             completed: ['em_andamento', 'concluido', 'reaberto'].includes(currentStatus) || (currentStatus === 'cancelado' && statusHistory.processing),
             description: currentStatus === 'cancelado' ? 'Execução foi interrompida' : 'Serviço em andamento',
@@ -708,7 +754,7 @@ function populateTimeline(request, logs = []) {
             timestamp: statusHistory.completed || statusHistory.reopened || (currentStatus === 'concluido' ? adminData.data_atualizacao : null),
             completed: currentStatus === 'concluido' || currentStatus === 'reaberto',
             description: currentStatus === 'reaberto' ? 'Reaberto para nova execução' : 'Serviço finalizado com sucesso',
-            user: getUserForStatusChange(currentStatus)
+            user: getUserForStatusChange(currentStatus === 'reaberto' ? 'reaberto' : 'concluido')
         }
     ];
 
@@ -739,6 +785,7 @@ function populateTimeline(request, logs = []) {
                 const isActive = state.completed;
                 const isLast = index === visibleStates.length - 1;
                 const showTimestamp = state.timestamp && isActive;
+                const showUser = isActive && state.user; // Só mostrar usuário se a etapa estiver ativa
                 return `
                     <div class="timeline-step ${isActive ? 'active' : 'inactive'}">
                         <div class="timeline-step-marker">
@@ -749,7 +796,7 @@ function populateTimeline(request, logs = []) {
                             <div class="timeline-step-title">${state.title}</div>
                             <div class="timeline-step-description" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${state.description}</div>
                             ${showTimestamp ? `<div class="timeline-step-time">${formatDateTime(state.timestamp)}</div>` : ''}
-                            ${state.user ? `<div class="timeline-step-user" style="font-size: 0.75rem; color: var(--primary-blue); margin-top: 4px; font-weight: 500;">👤 ${state.user}</div>` : ''}
+                            ${showUser ? `<div class="timeline-step-user" style="font-size: 0.75rem; color: var(--primary-blue); margin-top: 4px; font-weight: 500;">👤 ${state.user}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -888,7 +935,7 @@ function getStatusText(status) {
         case 'em_andamento': return '🔄 Em Andamento';
         case 'concluido': return '✅ Concluído';
         case 'cancelado': return '❌ Cancelado';
-        default: return '⏳ Pendente';
+        default: return '⏰ Pendente';
     }
 }
 
@@ -1020,7 +1067,7 @@ function populateActions(request) {
 function getStatusInfo(status) {
     const statusMap = {
         'pendente': {
-            icon: '⏳',
+            icon: '⏰',
             title: 'Aguardando Aprovação',
             description: 'Solicitação precisa ser analisada e aprovada',
             bgColor: '#fff8e1',
