@@ -452,7 +452,7 @@
         <!-- Tab Content 1 - Ações -->
         <div id="actions-audit-tab" class="tab-content active">
           <div class="audit-info-banner">
-            📊 Exibindo os últimos 20 registros de ações (máximo de 50 salvos)
+            📊 Exibindo os últimos 15 registros de ações relevantes
           </div>
           <div class="audit-filters">
             <div class="filter-group">
@@ -465,9 +465,11 @@
               <label>Filtrar por ação:</label>
               <select id="auditActionFilter" onchange="filterAuditLogs()">
                 <option value="">Todas as ações</option>
-                <option value="loadStats">Carregamento de dados</option>
                 <option value="updateStatus">Alteração de status</option>
                 <option value="setPriority">Definição de prioridade</option>
+                <option value="addComment">Adicionar comentários</option>
+                <option value="deleteRequest">Exclusão de solicitações</option>
+                <option value="exportData">Exportação de dados</option>
               </select>
             </div>
             <button class="btn-refresh-audit" onclick="refreshAuditLogs()">🔄 Atualizar</button>
@@ -480,7 +482,7 @@
         <!-- Tab Content 2 - Acessos -->
         <div id="access-audit-tab" class="tab-content">
           <div class="audit-info-banner">
-            🔐 Exibindo os últimos 20 registros de acesso (máximo de 50 salvos)
+            🔐 Exibindo os últimos 15 registros de acesso
           </div>
           <div class="access-logs-container" id="accessLogsContainer">
             <div class="loading-audit">Carregando logs de acesso...</div>

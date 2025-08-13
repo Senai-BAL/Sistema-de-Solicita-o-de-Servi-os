@@ -168,9 +168,9 @@ class AdminAuth {
     const logs = this.getActionLogs();
     logs.push(logEntry);
 
-    // Manter apenas os últimos 50 logs
-    if (logs.length > 50) {
-      logs.splice(0, logs.length - 50);
+    // Manter apenas os últimos 15 logs
+    if (logs.length > 15) {
+      logs.splice(0, logs.length - 15);
     }
 
     localStorage.setItem('senai_admin_logs', JSON.stringify(logs));
@@ -274,8 +274,8 @@ class AdminAuth {
       const accessRef = db.collection('admin_access_logs');
       accessRef.orderBy('timestamp', 'desc').get().then(snapshot => {
         const docs = snapshot.docs;
-        // Se já houver 50, remover o mais antigo
-        if (docs.length >= 50) {
+        // Se já houver 15, remover o mais antigo
+        if (docs.length >= 15) {
           const oldest = docs[docs.length - 1];
           if (oldest && oldest.ref) oldest.ref.delete();
         }

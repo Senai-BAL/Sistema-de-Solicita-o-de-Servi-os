@@ -100,20 +100,11 @@ async function loadDashboard() {
             LoadingManager.show('Carregando dados do dashboard...');
         }
 
-        // Registrar ação de carregamento
-        AdminAuth.logUserAction('loadStats', {
-            description: 'Carregamento do dashboard iniciado',
-            timestamp: new Date().toISOString()
-        });
+        // Removido log automático de loadStats para reduzir spam nos logs de auditoria
 
         const { stats, requests } = await DashboardManager.loadStats();
 
-        // Registrar ação de auditoria
-        AdminAuth.logUserAction('loadStats', {
-            description: `Dashboard carregado com ${requests.length} solicitações`,
-            requestCount: requests.length,
-            statsLoaded: Object.keys(stats).length
-        });
+        // Removido log automático de loadStats para reduzir spam nos logs de auditoria
 
         // Atualizar variáveis globais
         currentRequests = requests;

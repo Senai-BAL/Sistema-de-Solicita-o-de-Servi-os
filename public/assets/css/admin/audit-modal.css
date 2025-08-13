@@ -1,11 +1,140 @@
-/* Padronização de cor para títulos de modais do admin */
-.modal-title {
-  color: inherit;
+/* 📊 AUDIT LOG ITEMS v2.9.5 - Melhorias visuais */
+.audit-log-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-white);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  border-left: 3px solid var(--primary-blue);
 }
 
-.modal-detail-title,
-.audit-stat-title {
-  color: inherit;
+.audit-log-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.audit-log-avatar-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-light);
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+}
+
+.audit-log-avatar {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.audit-log-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.audit-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.audit-log-action {
+  font-weight: 600;
+  color: var(--primary-blue);
+  font-size: 0.95rem;
+}
+
+.audit-log-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.audit-log-details {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.audit-log-user {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.audit-log-username {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.audit-log-mention {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* 🔐 ACCESS LOG ITEMS v2.9.5 */
+.access-log-item {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-white);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+  border-left: 3px solid var(--success-color);
+}
+
+.access-log-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.access-log-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.access-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.access-log-type {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.access-log-type.login {
+  color: var(--success-color);
+}
+
+.access-log-type.logout {
+  color: var(--error-color);
+}
+
+.access-log-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.access-log-user-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .audit-filters {

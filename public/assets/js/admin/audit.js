@@ -8,6 +8,33 @@ class AuditManager {
   static currentTab = 'actions';
   static filteredLogs = [];
 
+  // 🎯 VERIFICAR SE AÇÃO É RELEVANTE
+  static isRelevantAction(action) {
+    // Lista de ações que NÃO devem aparecer nos logs (muito spam)
+    const irrelevantActions = [
+      'loadStats',           // Carregamento de dados (muito frequente)
+      'auditRefresh',        // Refresh de auditoria
+      'systemCheck',         // Verificações automáticas
+      'heartbeat',           // Pings de sistema
+      'sessionCheck'         // Verificações de sessão
+    ];
+    
+    // Lista de ações IMPORTANTES que sempre devem aparecer
+    const criticalActions = [
+      'updateStatus',        // Alteração de status
+      'setPriority',         // Definição de prioridade
+      'addComment',          // Adicionar comentários
+      'deleteRequest',       // Exclusão de solicitações
+      'exportData',          // Exportação de dados
+      'backupData',          // Backup manual
+      'login',               // Login (importante para segurança)
+      'logout'               // Logout
+    ];
+    
+    // Se não for uma ação irrelevante, considerar relevante
+    return !irrelevantActions.includes(action);
+  }
+
   // 🔄 ALTERNAR ABAS DO MODAL DE AUDITORIA
   static switchTab(tabName) {
     // Remover ativa de todas as abas
@@ -44,14 +71,17 @@ class AuditManager {
     try {
       const db = firebase.firestore();
       const logsRef = db.collection('admin_logs');
-      // Buscar os 50 logs mais recentes de todos os usuários
-      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(50).get();
-      // Filtrar para remover 'Carregamento de Dados' e limitar a 30
-      const logs = snapshot.docs.map(doc => doc.data()).filter(log => log.action !== 'loadStats').slice(0, 30);
+      // Buscar os 15 logs mais recentes de todos os usuários
+      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(15).get();
+      // Filtrar para remover ações irrelevantes (loadStats, etc)
+      const logs = snapshot.docs.map(doc => doc.data()).filter(log => 
+        this.isRelevantAction(log.action || log.acao)
+      );
+      
       if (logs.length === 0) {
         container.innerHTML = `
           <div class="loading-audit">
-            📝 Nenhuma ação registrada ainda
+            📝 Nenhuma ação relevante registrada ainda
           </div>
         `;
         return;
@@ -73,8 +103,8 @@ class AuditManager {
     try {
       const db = firebase.firestore();
       const accessRef = db.collection('admin_access_logs');
-      // Buscar os 50 logs de acesso mais recentes de todos os usuários
-      const snapshot = await accessRef.orderBy('timestamp', 'desc').limit(50).get();
+      // Buscar os 15 logs de acesso mais recentes de todos os usuários
+      const snapshot = await accessRef.orderBy('timestamp', 'desc').limit(15).get();
       const logs = snapshot.docs.map(doc => doc.data());
       if (logs.length === 0) {
         container.innerHTML = `
@@ -84,8 +114,8 @@ class AuditManager {
         `;
         return;
       }
-      // Ordenar por timestamp decrescente e limitar a 20
-      const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
+      // Ordenar por timestamp decrescente
+      const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp);
       const logsHtml = sortedLogs.map(log => this.createAccessLogItem(log)).join('');
       container.innerHTML = logsHtml;
     } catch (error) {
@@ -101,12 +131,14 @@ class AuditManager {
     try {
       const db = firebase.firestore();
       const logsRef = db.collection('admin_logs');
-      // Buscar os 100 logs de ações mais recentes
-      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(100).get();
-      const actionLogs = snapshot.docs.map(doc => doc.data());
+      // Buscar os 15 logs de ações mais recentes
+      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(15).get();
+      const actionLogs = snapshot.docs.map(doc => doc.data()).filter(log => 
+        this.isRelevantAction(log.action || log.acao)
+      );
 
-      // Buscar os 100 logs de acesso mais recentes do Firestore
-      const accessSnapshot = await db.collection('admin_access_logs').orderBy('timestamp', 'desc').limit(100).get();
+      // Buscar os 15 logs de acesso mais recentes do Firestore
+      const accessSnapshot = await db.collection('admin_access_logs').orderBy('timestamp', 'desc').limit(15).get();
       const accessLogs = accessSnapshot.docs.map(doc => doc.data());
 
       const stats = this.calculateAuditStats(actionLogs, accessLogs);
@@ -115,7 +147,7 @@ class AuditManager {
           <div class="audit-stat-card">
             <div class="audit-stat-title">Total de Ações</div>
             <div class="audit-stat-value">${stats.totalActions}</div>
-            <div class="audit-stat-description">Ações registradas no sistema</div>
+            <div class="audit-stat-description">Ações relevantes registradas</div>
           </div>
           <div class="audit-stat-card">
             <div class="audit-stat-title">Total de Acessos</div>
@@ -165,6 +197,7 @@ class AuditManager {
     // Ação: tenta pegar do campo acao, senão do action
     const acaoRaw = log.acao || log.action || 'desconhecida';
     const acao = this.getActionName(acaoRaw);
+    
     // Descrição inteligente
     let descricao = 'Sem detalhes';
     if (log.detalhes) {
@@ -197,32 +230,21 @@ class AuditManager {
     } else if (log.details && log.details.description) {
       descricao = log.details.description;
     }
-    // Se for genérico
-    const isGenerico = acao === '🔧 Ação desconhecida' && nomeUsuario === 'Sistema' && descricao === 'Sem detalhes';
-    if (isGenerico) {
-      return `
-        <div class="audit-log-item audit-log-generico">
-          <div class="audit-log-avatar">${avatar}</div>
-          <div class="audit-log-content">
-            <div class="audit-log-action" style="color:#888">Registro genérico ou do sistema</div>
-            <div class="audit-log-details" style="color:#aaa">Sem informações detalhadas</div>
-            <div class="audit-log-user" style="color:#aaa">
-              <span>${nomeUsuario} (@${username})</span>
-              <span class="audit-log-time">${timeStr}</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }
+    
     return `
       <div class="audit-log-item">
-        <div class="audit-log-avatar">${avatar}</div>
+        <div class="audit-log-avatar-container">
+          <span class="audit-log-avatar">${avatar}</span>
+        </div>
         <div class="audit-log-content">
-          <div class="audit-log-action">${acao}</div>
+          <div class="audit-log-header">
+            <span class="audit-log-action">${acao}</span>
+            <span class="audit-log-time">${timeStr}</span>
+          </div>
           <div class="audit-log-details">${descricao}</div>
           <div class="audit-log-user">
-            <span>${nomeUsuario} (@${username})</span>
-            <span class="audit-log-time">${timeStr}</span>
+            <span class="audit-log-username">${nomeUsuario}</span>
+            <span class="audit-log-mention">@${username}</span>
           </div>
         </div>
       </div>
@@ -238,12 +260,21 @@ class AuditManager {
 
     return `
       <div class="access-log-item">
-        <div class="access-log-info">
-          <div class="audit-log-avatar">${avatar}</div>
-          <div class="access-log-type ${log.type}">${log.type === 'login' ? 'Entrada' : 'Saída'}</div>
-          <div class="access-log-user-info">${name} (@${log.username})</div>
+        <div class="audit-log-avatar-container">
+          <span class="audit-log-avatar">${avatar}</span>
         </div>
-        <div class="access-log-time">${timeStr}</div>
+        <div class="access-log-content">
+          <div class="access-log-header">
+            <span class="access-log-type ${log.type}">
+              ${log.type === 'login' ? '🔐 Entrada' : '🚪 Saída'}
+            </span>
+            <span class="access-log-time">${timeStr}</span>
+          </div>
+          <div class="access-log-user-info">
+            <span class="audit-log-username">${name}</span>
+            <span class="audit-log-mention">@${log.username}</span>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -347,9 +378,11 @@ class AuditManager {
     try {
       const db = firebase.firestore();
       const logsRef = db.collection('admin_logs');
-      // Buscar os 50 logs mais recentes
-      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(50).get();
-      let logs = snapshot.docs.map(doc => doc.data()).filter(log => log.action !== 'loadStats');
+      // Buscar os 15 logs mais recentes
+      const snapshot = await logsRef.orderBy('timestamp', 'desc').limit(15).get();
+      let logs = snapshot.docs.map(doc => doc.data()).filter(log => 
+        this.isRelevantAction(log.action || log.acao)
+      );
       // Aplicar filtros
       if (userFilter) {
         logs = logs.filter(log => log.username === userFilter);
@@ -357,7 +390,7 @@ class AuditManager {
       if (actionFilter) {
         logs = logs.filter(log => log.action === actionFilter);
       }
-      // Re-renderizar logs filtrados (limitado a 20)
+      // Re-renderizar logs filtrados
       if (logs.length === 0) {
         container.innerHTML = `
           <div class="loading-audit">
@@ -366,7 +399,7 @@ class AuditManager {
         `;
         return;
       }
-      const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
+      const sortedLogs = logs.sort((a, b) => b.timestamp - a.timestamp);
       const logsHtml = sortedLogs.map(log => this.createActionLogItem(log)).join('');
       container.innerHTML = logsHtml;
     } catch (error) {

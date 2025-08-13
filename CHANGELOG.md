@@ -2,6 +2,40 @@
 
 ---
 
+## [2.9.5] - 2025-08-13
+**Commit Optimization**: `feat: otimização do sistema de auditoria - redução de limites, filtro de ações relevantes e melhoria visual dos logs`
+
+### 🎯 Otimizações de Performance
+- **Redução de Limites**: De 50 para 15 registros tanto no armazenamento quanto na exibição
+- **Firestore Otimizado**: Consultas mais rápidas com menos dados
+- **LocalStorage Limpo**: Cache reduzido para melhor performance
+
+### 🔍 Filtro de Ações Relevantes
+- **Spam Reduzido**: Removido registro automático de `loadStats` (muito frequente)
+- **Ações Críticas**: Foco apenas em ações administrativas importantes
+- **Lista Inteligente**: Sistema de filtro entre ações relevantes vs irrelevantes
+- **Logs Limpos**: Apenas alterações de status, comentários, prioridades, etc.
+
+### 🎨 Melhorias Visuais
+- **Avatars Corrigidos**: Emojis dos usuários agora aparecem corretamente
+- **Layout Modernizado**: Cards com bordas coloridas e hover effects
+- **Estrutura Melhor**: Header com ação + tempo, detalhes e usuário separados
+- **Responsividade**: Layout otimizado para diferentes telas
+
+### 📊 Interface Aprimorada
+- **Cards Individuais**: Cada log em card separado com sombra
+- **Cores Temáticas**: Login em verde, logout em vermelho, ações em azul
+- **Hierarquia Visual**: Ação em destaque, detalhes secundários
+- **Avatars em Círculo**: Container dedicado com borda colorida
+
+### 🔧 Atualizações Técnicas
+- **Filtros Atualizados**: Removido "Carregamento de dados" dos filtros
+- **Limites Unificados**: 15 registros em tudo (Firestore, exibição, cache)
+- **CSS Modularizado**: Estilos específicos para logs de ação e acesso
+- **Performance**: Consultas mais rápidas e interface mais fluida
+
+---
+
 ## [2.9.4] - 2025-08-13
 **Commit UI**: `feat: remodelagem dos cards do dashboard - layout horizontal compacto, responsivo e com gradientes coloridos`
 

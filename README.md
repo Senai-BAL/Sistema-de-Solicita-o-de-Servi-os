@@ -28,7 +28,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Version](https://img.shields.io/badge/Version-2.9.4-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.5-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Teste-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 ![Last Update](https://img.shields.io/badge/Última_Atualização-Agosto_2025-informational?style=for-the-badge)
@@ -43,7 +43,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
-**Versão Atual**: v2.9.4 (Remodelagem visual dos cards com layout horizontal compacto e responsivo)  
+**Versão Atual**: v2.9.5 (Otimização do sistema de auditoria com redução de limites, filtro de ações relevantes e melhorias visuais)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
