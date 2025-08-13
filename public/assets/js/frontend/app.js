@@ -34,6 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mostrar status de carregamento
     showStatus('Sistema carregado - GitHub Storage ativo!', 'success');
     
-    console.log('🔧 SENAI Lab - Sistema inicializado com sucesso!');
+
   });
 });

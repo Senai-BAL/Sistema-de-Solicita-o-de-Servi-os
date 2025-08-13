@@ -370,4 +370,4 @@ class CompleteBackupManager {
 // Expor classe no escopo global
 window.CompleteBackupManager = CompleteBackupManager;
 
-console.log('🗂️ Admin Backup - Sistema de backup carregado');
+

@@ -351,4 +351,4 @@ function downloadFile(content, fileName, mimeType) {
     URL.revokeObjectURL(url);
 }
 
-console.log('📊 Admin Export - Sistema de exportação carregado');
+

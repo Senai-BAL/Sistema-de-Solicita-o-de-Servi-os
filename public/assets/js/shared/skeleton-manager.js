@@ -335,4 +335,4 @@ document.addEventListener('DOMContentLoaded', () => {
   SkeletonManager.init();
 });
 
-console.log('✅ Skeleton Manager carregado com sucesso');
+

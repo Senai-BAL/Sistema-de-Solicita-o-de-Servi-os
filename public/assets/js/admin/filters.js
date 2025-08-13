@@ -124,4 +124,4 @@ function closeModal(modalId) {
     document.body.style.overflow = 'auto';
 }
 
-console.log('🔍 Admin Filters - Sistema de filtros carregado');
+

@@ -77,7 +77,7 @@ class NotificationManager {
             return;
         }
 
-        console.log('🔔 Iniciando monitoramento de notificações...');
+
         this.isListening = true;
 
         try {
@@ -100,7 +100,7 @@ class NotificationManager {
             this.unsubscribeListener = null;
         }
         this.isListening = false;
-        console.log('🔔 Monitoramento de notificações parado');
+
     }
 
     // 🔍 VERIFICAR NOVAS SOLICITAÇÕES
@@ -317,4 +317,4 @@ class DashboardWithNotifications {
 window.NotificationManager = NotificationManager;
 window.DashboardWithNotifications = DashboardWithNotifications;
 
-console.log('🔔 Admin Notifications - Sistema de notificações carregado');
+

@@ -11,7 +11,7 @@ class UIStates {
   static init() {
     this.injectCSS();
     this.setupGlobalStates();
-    console.log('✅ UI States Manager inicializado');
+
   }
 
   // 🎨 ESTILOS PARA ESTADOS
@@ -517,4 +517,4 @@ document.addEventListener('DOMContentLoaded', () => {
   UIStates.init();
 });
 
-console.log('✅ UI States Manager carregado com sucesso');
+

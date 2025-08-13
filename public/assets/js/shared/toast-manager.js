@@ -29,7 +29,6 @@ class ToastManager {
     if (this.lastMessages.has(messageKey)) {
       const lastTime = this.lastMessages.get(messageKey);
       if (now - lastTime < this.duplicateTimeout) {
-        console.log(`🚫 Toast duplicado ignorado: ${message}`);
         return null; // Ignora toast duplicado
       }
     }
@@ -48,7 +47,6 @@ class ToastManager {
     if (currentToasts.length >= this.maxToasts) {
       // 🔄 ADICIONAR À FILA se exceder limite
       this.toastQueue.push({ message, type, duration });
-      console.log(`📋 Toast adicionado à fila: ${this.toastQueue.length} pendentes`);
       return null;
     }
 
@@ -58,7 +56,7 @@ class ToastManager {
 
   // 🏗️ CRIAR TOAST (método separado) - COM EMPILHAMENTO DINÂMICO
   static createToast(message, type, duration) {
-    console.log(`🏗️ Criando toast: "${message}" tipo: ${type}`);
+
     
     const toast = document.createElement('div');
     const toastId = `toast-${++this.toastCounter}`;
@@ -154,7 +152,7 @@ class ToastManager {
 
     // Adicionar ao container primeiro (para calcular posições)
     this.toastContainer.appendChild(toast);
-    console.log(`✅ Toast ${toastId} adicionado ao DOM`);
+
 
     // 🎬 ANIMAÇÃO DE ENTRADA RÁPIDA - SLIDE DA DIREITA
     requestAnimationFrame(() => {
@@ -164,7 +162,6 @@ class ToastManager {
       requestAnimationFrame(() => { // Double RAF para garantir
         toast.style.opacity = '1';
         toast.style.transform = 'translateX(0)';
-        console.log(`🎬 Animação de entrada aplicada para ${toastId} (slide direita)`);
       });
     });
 
@@ -193,8 +190,6 @@ class ToastManager {
       const toastHeight = toast.offsetHeight || 44; // Fallback para altura mínima
       const gap = 8; // Gap entre toasts
       currentTop += toastHeight + gap;
-      
-      console.log(`📍 Toast ${toast.id} posição: top=${toast.style.top}, altura=${toastHeight}px`);
     });
   }
 
@@ -216,11 +211,11 @@ class ToastManager {
     const currentToasts = this.toastContainer.querySelectorAll('.toast');
     const availableSlots = this.maxToasts - currentToasts.length;
     
-    console.log(`🔄 ProcessQueue: ${currentToasts.length}/${this.maxToasts} toasts ativos, ${this.toastQueue.length} na fila`);
+
     
     for (let i = 0; i < availableSlots && this.toastQueue.length > 0; i++) {
       const { message, type, duration } = this.toastQueue.shift();
-      console.log(`📤 Processando da fila: ${message}`);
+
       this.createToast(message, type, duration);
     }
   }
@@ -242,7 +237,7 @@ class ToastManager {
     const toast = document.getElementById(toastId);
     if (!toast) return;
 
-    console.log(`🗑️ Removendo toast: ${toastId}`);
+
 
     // Animar saída rápida - deslizar para direita
     toast.style.transform = 'translateX(350px) scale(0.9)';
@@ -252,7 +247,7 @@ class ToastManager {
     setTimeout(() => {
       if (toast.parentNode) {
         toast.parentNode.removeChild(toast);
-        console.log(`🗑️ Toast ${toastId} removido do DOM`);
+
         
         // 📊 REPOSICIONAR TOASTS RESTANTES
         this.repositionAllToasts();
@@ -275,7 +270,7 @@ class ToastManager {
     this.toastQueue = [];
     this.lastMessages.clear();
     
-    console.log('🧹 Todos os toasts e fila limpos');
+
   }
 
   // 🏷️ OBTER TÍTULO DO TIPO
@@ -321,4 +316,4 @@ class ToastManager {
 // 🌐 DISPONIBILIZAR GLOBALMENTE
 window.ToastManager = ToastManager;
 
-console.log('✅ Toast Manager Module carregado com sucesso');
+

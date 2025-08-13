@@ -86,4 +86,4 @@ class LoadingManager {
 // 🌐 DISPONIBILIZAR GLOBALMENTE
 window.LoadingManager = LoadingManager;
 
-console.log('✅ Loading Manager Module carregado com sucesso');
+

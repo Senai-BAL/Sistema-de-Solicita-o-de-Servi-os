@@ -447,4 +447,4 @@ document.addEventListener('DOMContentLoaded', () => {
   MicroInteractions.init();
 });
 
-console.log('✅ Micro-interactions Manager carregado com sucesso');
+

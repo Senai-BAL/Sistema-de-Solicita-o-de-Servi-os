@@ -112,7 +112,7 @@ class AdminAuth {
       // Log de acesso
       this.logAccess('login', username);
 
-      console.log(`✅ Login realizado: ${user.name} (${username})`);
+
       return true;
 
     } catch (error) {
@@ -125,7 +125,7 @@ class AdminAuth {
   static logout() {
     if (this.currentUser) {
       this.logAccess('logout', this.currentUser.username);
-      console.log(`👋 Logout realizado: ${this.currentUser.name}`);
+
     }
 
     this.currentUser = null;
@@ -174,8 +174,6 @@ class AdminAuth {
     }
 
     localStorage.setItem('senai_admin_logs', JSON.stringify(logs));
-
-    console.log(`📋 Ação registrada: ${action} por ${this.currentUser.name}`);
   }
 
   // 📊 OBTER LOGS DE AÇÕES
@@ -315,5 +313,5 @@ document.addEventListener('DOMContentLoaded', () => {
   AdminAuth.restoreSession();
 });
 
-console.log('🔐 Admin Auth - Sistema de autenticação multiusuário carregado');
+
 console.log('👥 Usuários disponíveis:', AdminAuth.getUserList().map(u => `${u.avatar} ${u.name} (${u.username})`).join(', '));

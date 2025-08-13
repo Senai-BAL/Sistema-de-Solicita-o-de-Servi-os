@@ -32,13 +32,13 @@ class CSSLoader {
       'quick-actions': 'assets/css/admin/quick-actions.css'
     };
     
-    console.log('📦 CSS Loader inicializado');
+
   }
 
   // 🎯 CARREGAR CSS ESPECÍFICO
   async loadCSS(module) {
     if (this.loadedCSS.has(module)) {
-      console.log(`📦 CSS '${module}' já carregado`);
+
       return Promise.resolve();
     }
 
@@ -55,7 +55,7 @@ class CSSLoader {
       
       link.onload = () => {
         this.loadedCSS.add(module);
-        console.log(`✅ CSS '${module}' carregado`);
+
         resolve();
       };
       
@@ -70,13 +70,13 @@ class CSSLoader {
 
   // 🎯 CARREGAR MÚLTIPLOS CSS
   async loadMultiple(modules) {
-    console.log(`📦 Carregando CSS modules: ${modules.join(', ')}`);
+
     
     const promises = modules.map(module => this.loadCSS(module));
     
     try {
       await Promise.all(promises);
-      console.log(`✅ Todos os CSS carregados: ${modules.join(', ')}`);
+
     } catch (error) {
       console.error('❌ Erro ao carregar alguns CSS:', error);
     }
@@ -119,4 +119,4 @@ document.addEventListener('DOMContentLoaded', () => {
   window.cssLoader.preloadCritical();
 });
 
-console.log('📦 CSS Loader Module carregado');
+

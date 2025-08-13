@@ -315,8 +315,6 @@ window.closeThemeModal = function() {
 
 // ⚡ INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('🔧 SENAI Lab - Dashboard Administrativo v2.7.5.3 Sistema Multiusuário Iniciado');
-
     // ✨ Inicializar managers primeiro
     initializeManagers();
     
@@ -326,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicializar Firebase Service
     try {
         firebaseService = new FirebaseService();
-        console.log('✅ Firebase Service inicializado');
+
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);
         if (typeof ToastManager !== 'undefined') {
@@ -373,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshFrequency = 10 * 60 * 1000;
         }
 
-        console.log(`🔄 Smart refresh executado - Próximo em ${refreshFrequency / 60000} minutos`);
+
         loadDashboard();
         scheduleNextRefresh();
     };
@@ -399,47 +397,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }, 1000);
 });
-
-console.log(`
-🗂️ SENAI Lab - Dashboard com Sistema de Backup Completo + Limpeza
-
-🆕 NOVIDADES - SISTEMA DE BACKUP COMPLETO:
-    ✅ Backup completo Firestore + GitHub
-    ✅ Download de TODOS os arquivos
-    ✅ Múltiplos formatos (JSON, CSV, TXT)
-    ✅ Limpeza total automática
-    ✅ Sistema 100% gratuito mantido
-    ✅ Notificações desktop nativas
-    ✅ Monitoramento em tempo real
-    ✅ Exportação PDF HABILITADA! 📋
-
-🔔 Recursos mantidos:
-    ✅ Toast notifications elegantes
-    ✅ Modal de detalhes completos
-    ✅ Busca por texto em tempo real
-    ✅ Vista Kanban com drag & drop
-    ✅ Sistema de prioridades
-    ✅ Exportação para Excel
-    ✅ Interface responsiva
-    ✅ Comentários expandidos
-
-🚀 Fluxo do Backup Completo:
-    1. Coleta dados Firestore
-    2. Baixa TODOS os arquivos GitHub
-    3. Gera backup completo
-    4. Apaga TUDO do Firestore
-    5. Apaga TUDO do GitHub
-    6. Sistema volta ao estado inicial
-
-💰 RESULTADO: CUSTO ZERO PERMANENTE
-
-⚠️  SISTEMA MULTIUSUÁRIO ATIVO:
-    ✅ 5 usuários configurados
-    ✅ Auditoria completa habilitada
-    ✅ Controle de acesso por usuário
-    
-🎉 NOVO: Sistema de usuários admins + Botão "🗂️ Backup Completo + Limpar" disponível!
-`);
 
 // Inicializar variáveis globais
 initializeGlobalVariables();
@@ -512,4 +469,4 @@ async function cleanupOrphanedFiles() {
 // Tornar função global
 window.cleanupOrphanedFiles = cleanupOrphanedFiles;
 
-console.log('🚀 Admin Main - Sistema principal carregado');
+

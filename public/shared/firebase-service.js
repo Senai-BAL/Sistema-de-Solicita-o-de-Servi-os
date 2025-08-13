@@ -16,7 +16,6 @@ class FirebaseService {
     this.isMockMode = ENVIRONMENT_CONFIG.mode === 'mock';
     
     if (this.isMockMode) {
-      console.log('🧪 Modo MOCK ativado - usando dados fictícios');
       this.initMockMode();
       return;
     }
@@ -39,10 +38,6 @@ class FirebaseService {
     
     this.collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
     
-    // Log do ambiente atual
-    console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
-    console.log(`📂 Coleção: ${this.collectionName}`);
-    
     // Teste de conectividade automático
     this.testConnection();
   }
@@ -50,7 +45,20 @@ class FirebaseService {
   // 🧪 INICIALIZAR MODO MOCK
   initMockMode() {
     this.mockData = this.generateMockData();
-    console.log(`✅ Modo mock iniciado com ${this.mockData.length} registros fictícios`);
+  }
+
+  // 🧪 TESTE DE CONECTIVIDADE
+  async testConnection() {
+    try {
+      const testDoc = await this.db.collection(this.collectionName).limit(1).get();
+      return true;
+    } catch (error) {
+      console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
+      if (error.code === 'permission-denied') {
+        console.warn('🔒 ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
+      }
+      return false;
+    }
   }
 
   // 📊 GERAR DADOS FICTÍCIOS
@@ -102,15 +110,12 @@ class FirebaseService {
   // 🧪 TESTE DE CONECTIVIDADE
   async testConnection() {
     try {
-      console.log('🧪 Testando conectividade Firebase...');
       const testDoc = await this.db.collection(this.collectionName).limit(1).get();
-      console.log('✅ Conexão Firebase OK - Regras funcionando');
       return true;
     } catch (error) {
       console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
       if (error.code === 'permission-denied') {
         console.warn('🔒 ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
-        console.warn('📋 Instruções em: CORRECAO-PERMISSOES-FIREBASE.md');
       }
       return false;
     }
@@ -120,7 +125,6 @@ class FirebaseService {
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
     if (this.isMockMode) {
-      console.log('🧪 Mock: Retornando dados fictícios');
       return Promise.resolve([...this.mockData]);
     }
     
@@ -131,21 +135,13 @@ class FirebaseService {
 
     for (const collection of collectionsToTry) {
       try {
-        console.log(`🔍 Tentando coleção: ${collection}`);
         const snapshot = await this.db.collection(collection).orderBy('d', 'desc').get();
-        console.log(`✅ Sucesso em ${collection}: ${snapshot.docs.length} solicitações`);
         
-        // � CACHE: Se não é a coleção principal, atualizar referência
-        if (collection !== this.collectionName) {
-          console.log(`🔄 Coleção ${this.collectionName} indisponível, usando ${collection}`);
-        }
-
         return snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
       } catch (error) {
-        console.warn(`❌ Falha na coleção ${collection}:`, error.code);
         lastError = error;
         continue; // Tentar próxima coleção
       }
@@ -159,7 +155,6 @@ class FirebaseService {
   async getRequestById(id) {
     if (this.isMockMode) {
       const request = this.mockData.find(req => req.id === id);
-      console.log(`🧪 Mock: Buscando ID ${id}`, request ? 'encontrado' : 'não encontrado');
       return Promise.resolve(request || null);
     }
     
@@ -170,20 +165,16 @@ class FirebaseService {
 
     for (const collection of collectionsToTry) {
       try {
-        console.log(`� Buscando ID ${id} na coleção: ${collection}`);
         const doc = await this.db.collection(collection).doc(id).get();
         if (doc.exists) {
-          console.log(`✅ Documento encontrado em ${collection}`);
           return { id: doc.id, ...doc.data() };
         }
       } catch (error) {
-        console.warn(`❌ Falha ao buscar em ${collection}:`, error.code);
         continue;
       }
     }
 
     // Não encontrado em nenhuma coleção
-    console.log(`❌ Documento ${id} não encontrado em nenhuma coleção`);
     return null;
   }
 
@@ -237,7 +228,6 @@ class FirebaseService {
         }
       });
       
-      console.log('✅ Solicitação criada:', docRef.id);
       return docRef.id;
     } catch (error) {
       console.error('❌ Erro ao criar solicitação:', error);
@@ -351,7 +341,7 @@ class FirebaseService {
         admin: adminData.responsavel || adminData.admin || 'Administrador'
       });
 
-      console.log('✅ Status atualizado:', requestId, `${oldStatus} → ${status}`);
+      
       return true;
     } catch (error) {
       console.error('❌ Erro ao atualizar status:', error);
@@ -397,7 +387,7 @@ class FirebaseService {
         admin: author
       });
 
-      console.log('✅ Prioridade definida:', requestId);
+      
       return true;
     } catch (error) {
       console.error('❌ Erro ao definir prioridade:', error);
@@ -420,7 +410,7 @@ class FirebaseService {
       // 2. Deletar arquivos do Firebase Storage se houver
       let deletedFilesCount = 0;
       if (requestData.arq && requestData.arq.length > 0) {
-        console.log(`🗑️ Deletando ${requestData.arq.length} arquivos do Storage...`);
+
         
         for (const arquivo of requestData.arq) {
           try {
@@ -429,7 +419,7 @@ class FirebaseService {
               const fileRef = storage.ref(arquivo.p);
               await fileRef.delete();
               deletedFilesCount++;
-              console.log(`✅ Arquivo deletado: ${arquivo.n}`);
+
             }
           } catch (fileError) {
             console.warn(`⚠️ Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
@@ -509,7 +499,7 @@ class FirebaseService {
         admin: 'Sistema'
       });
 
-      console.log(`✅ ${requestIds.length} solicitações deletadas em batch (${totalFilesDeleted}/${totalFiles} arquivos removidos)`);
+
       return {
         success: true,
         requestsDeleted: requestIds.length,
@@ -572,7 +562,7 @@ class FirebaseService {
   // 🧹 LIMPEZA DE ARQUIVOS ÓRFÃOS (OPCIONAL)
   async cleanupOrphanedFiles() {
     try {
-      console.log('🔍 Iniciando limpeza de arquivos órfãos...');
+
       
       // 1. Buscar todas as solicitações
       const requests = await this.getAllRequests();

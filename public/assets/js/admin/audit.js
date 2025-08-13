@@ -431,4 +431,4 @@ function openAuditModal() {
   AuditManager.loadTabContent('actions');
 }
 
-console.log('📊 Admin Audit - Sistema de auditoria carregado');
+

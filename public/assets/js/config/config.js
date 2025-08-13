@@ -31,7 +31,7 @@ const ENVIRONMENT_CONFIG = {
 };
 
 const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
-console.log(`� Config.js carregado - Modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
+
 console.log(`📂 Coleção de fallback: ${collectionName}`);
 
 // 🧪 TESTE DE CONECTIVIDADE (opcional)
@@ -59,32 +59,3 @@ setTimeout(() => {
 
 // 🐙 CONFIGURAÇÃO GITHUB API (carregada externamente)
 const GITHUB_CONFIG = window.githubConfig;
-
-console.log(`
-🔥 SENAI Lab - GitHub Storage (NOVO PADRÃO)
-📊 Recursos utilizados:
-   • Firestore: 20.000 writes/dia (gratuito)
-   • GitHub: 1GB storage + 5k requests/hora (gratuito)
-   • Firebase Hosting: 10GB (gratuito)
-
-💡 Funcionalidades ativas:
-   ✅ Upload automático para GitHub
-   ✅ Compressão automática de imagens
-   ✅ Progress bars visuais
-   ✅ NOVO: Pasta única organizacional
-   ✅ NOVO: Nomenclatura padronizada
-   ✅ URLs públicas permanentes
-   ✅ Retry automático em falhas
-
-🎯 100% Gratuito - Custo: R$ 0,00
-
-📂 Nova Estrutura GitHub:
-   📁 senai-arquivos/
-      📄 TIPO_DATA_SOLICITANTE_ARQUIVO
-      📄 Ex: IMPRESSAO_20250715_123000_JOAO_documento.pdf
-      📸 Ex: EMPRESTIMO_20250715_140500_MARIA_foto.jpg
-      📷 Ex: MANUTENCAO_20250715_160000_PEDRO_problema.png
-
-🏢 Organização: Senai-BAL
-📁 Repositório: senai-lab-arquivos
-`);

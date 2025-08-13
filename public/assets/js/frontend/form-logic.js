@@ -130,9 +130,9 @@ async function submitForm() {
     
     // 🔍 DEBUG: Mostrar novo padrão de nomenclatura
     console.log('🔧 NOVO PADRÃO DE NOMENCLATURA:');
-    console.log(`📂 Pasta: senai-arquivos/`);
+
     console.log(`🏷️ Padrão: ${serviceInfo.tipo}_DATA_${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}_ARQUIVO`);
-    console.log(`👤 Solicitante processado: ${serviceInfo.solicitante} → ${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}`);
+
 
     // Upload de arquivos para Firebase Storage
     const arquivos = [];
@@ -196,8 +196,8 @@ async function submitForm() {
     // Salvar no Firestore
     loadingText.textContent = '⏳ Salvando dados...';
     
-    console.log('🔥 Tentando salvar na coleção:', collectionName);
-    console.log('📄 Dados a serem salvos:', formData);
+
+
     
     try {
       const docRef = await db.collection(collectionName).add(formData);
