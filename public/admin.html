@@ -113,9 +113,9 @@
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
-      <!-- Cards de Estatísticas -->
+      <!-- Cards de Estatísticas v2.9.4 - Layout Horizontal -->
       <div class="stats-grid">
-        <div class="stat-card" onclick="filterByStatus('')">
+        <div class="stat-card" onclick="filterByStatus('')" title="Ver todas as solicitações">
           <div class="stat-header">
             <span class="stat-title">Total de Solicitações</span>
             <span class="stat-icon">📋</span>
@@ -124,7 +124,7 @@
           <div class="stat-change positive" id="totalChange">Carregando...</div>
         </div>
 
-        <div class="stat-card" onclick="filterByStatus('pendente')">
+        <div class="stat-card" onclick="filterByStatus('pendente')" title="Ver solicitações pendentes">
           <div class="stat-header">
             <span class="stat-title">Pendentes</span>
             <span class="stat-icon">⏳</span>
@@ -133,7 +133,7 @@
           <div class="stat-change" id="pendingChange">Carregando...</div>
         </div>
 
-        <div class="stat-card" onclick="filterByStatus('em_andamento')">
+        <div class="stat-card" onclick="filterByStatus('em_andamento')" title="Ver solicitações em andamento">
           <div class="stat-header">
             <span class="stat-title">Em Andamento</span>
             <span class="stat-icon">🔄</span>
@@ -142,7 +142,7 @@
           <div class="stat-change" id="progressChange">Carregando...</div>
         </div>
 
-        <div class="stat-card" onclick="filterByStatus('concluido')">
+        <div class="stat-card" onclick="filterByStatus('concluido')" title="Ver solicitações concluídas">
           <div class="stat-header">
             <span class="stat-title">Concluídas</span>
             <span class="stat-icon">✅</span>
@@ -151,7 +151,7 @@
           <div class="stat-change positive" id="completedChange">Carregando...</div>
         </div>
 
-        <div class="stat-card storage-card" onclick="openStorageModal()">
+        <div class="stat-card storage-card" onclick="openStorageModal()" title="Ver detalhes do storage Firebase">
           <div class="stat-header">
             <span class="stat-title">Storage Usado</span>
             <span class="stat-icon">💾</span>

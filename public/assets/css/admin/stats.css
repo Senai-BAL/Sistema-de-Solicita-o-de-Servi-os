@@ -1,12 +1,17 @@
-/* ===== STATS IMPROVEMENTS ===== */
+/* ===== STATS IMPROVEMENTS v2.9.4 ===== */
 .stat-card {
   background: var(--bg-white);
   border-radius: 12px;
-  padding: 25px;
+  padding: 20px 16px;
   box-shadow: var(--shadow-medium);
   transition: all var(--transition-medium);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .stat-card:hover {
@@ -22,4 +27,59 @@
   width: 100%;
   height: 4px;
   background: var(--primary-gradient);
+}
+
+/* 🎨 Cards especiais com cores diferentes */
+.stat-card.storage-card::before {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 🎯 Cores específicas por tipo de card */
+.stat-card:nth-child(1)::before {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-card:nth-child(2)::before {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.stat-card:nth-child(3)::before {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+}
+
+.stat-card:nth-child(4)::before {
+  background: linear-gradient(135deg, #96fbc4 0%, #f9f047 100%);
+}
+
+/* 🎨 Efeitos hover melhorados para layout horizontal */
+.stat-card:hover .stat-value {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover .stat-icon {
+  transform: rotate(5deg) scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/* 📱 Responsividade para cards compactos */
+@media (max-width: 1400px) {
+  .stat-card {
+    padding: 18px 14px;
+    min-height: 110px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .stat-card {
+    padding: 20px 16px;
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 16px 12px;
+    min-height: 100px;
+  }
 }

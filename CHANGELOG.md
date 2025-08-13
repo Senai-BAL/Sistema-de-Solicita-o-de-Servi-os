@@ -2,6 +2,34 @@
 
 ---
 
+## [2.9.4] - 2025-08-13
+**Commit UI**: `feat: remodelagem dos cards do dashboard - layout horizontal compacto, responsivo e com gradientes coloridos`
+
+### 🎨 Remodelagem Visual dos Cards
+- **Layout Horizontal**: Todos os 5 cards organizados em uma única linha
+- **Aproveitamento de Espaço**: Eliminado espaço vazio anterior com layout otimizado
+- **Cards Compactos**: Reduzido padding e ajustados tamanhos de fonte para melhor densidade
+- **Gradientes Únicos**: Cada card com gradiente colorido personalizado na borda superior
+
+### 📱 Responsividade Aprimorada
+- **Desktop (>1200px)**: 5 cards em linha horizontal
+- **Tablet (768px-1200px)**: Layout 3-2 (3 cards na primeira linha, 2 na segunda)
+- **Mobile (480px-768px)**: Layout 2-2-1 (cards em pares + storage centralizado)
+- **Mobile Pequeno (<480px)**: Layout vertical em coluna única
+
+### ✨ Melhorias de UX
+- **Efeitos Hover**: Animações suaves nos ícones e valores ao passar o mouse
+- **Tooltips**: Títulos descritivos para melhor acessibilidade
+- **Cores Temáticas**: Gradientes diferenciados para cada tipo de métrica
+- **Transições**: Animações fluidas para todas as interações
+
+### 🎯 Otimizações
+- **Performance**: CSS otimizado com media queries eficientes
+- **Acessibilidade**: Tooltips e estados de foco melhorados
+- **Consistência**: Alinhamento visual com o tema existente
+
+---
+
 ## [2.9.3] - 2025-08-13
 **Commit Feature**: `feat: sistema completo de monitoramento Firebase Storage, modal com analytics de custos, integração admin e correções de inicialização`
 
