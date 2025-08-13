@@ -2,6 +2,35 @@
 
 ---
 
+## [2.9.3] - 2025-08-13
+**Commit Feature**: `feat: sistema completo de monitoramento Firebase Storage, modal com analytics de custos, integração admin e correções de inicialização`
+
+### 🚀 Novas Funcionalidades
+- **Monitor de Storage**: Sistema completo de análise de uso do Firebase Storage
+- **Modal Analytics**: Interface completa com abas para visão geral, arquivos, usuários e custos
+- **Cálculo de Custos**: Estimativa automática de custos baseada nos preços do Firebase Storage
+- **Dashboard Integration**: Card de storage integrado ao painel administrativo
+- **Analytics Detalhadas**: Estatísticas por tipo de arquivo, tamanho médio e distribuição de uso
+
+### 🎨 Interface e UX
+- **Modal Responsivo**: Design moderno com tabs e animações suaves
+- **CSS Modularizado**: `storage-monitor.css` com design consistente ao tema admin
+- **Visualização Rica**: Gráficos de uso, lista de arquivos e métricas detalhadas
+- **Estados de Loading**: Skeleton screens e indicadores de carregamento
+
+### 🔧 Correções Técnicas
+- **Firebase Init**: Resolvidos conflitos de inicialização entre módulos
+- **Script Loading**: Ordem correta de carregamento de dependências
+- **Error Handling**: Sistema robusto de tratamento de erros e retry logic
+- **Variable Conflicts**: Eliminadas declarações duplicadas de variáveis globais
+
+### 📱 Estrutura
+- **StorageMonitor Class**: Classe dedicada para análise de storage
+- **Firebase Integration**: Integração nativa com Firebase Storage API
+- **Admin Module**: Integração completa com sistema administrativo existente
+
+---
+
 ## [2.9.2] - 2025-08-13
 **Commit Fix**: `fix: reorganização estrutural, correções Firebase e limpeza de arquivos v2.9.2`
 

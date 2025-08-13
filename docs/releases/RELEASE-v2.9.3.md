@@ -1,18 +1,35 @@
 # 🚀 SENAI Lab WebApp - Release v2.9.3
 
-**Data de Release:** 05 de agosto de 2025  
-**Branch:** `test-environment`  
+**Data de Release:** 13 de agosto de 2025  
+**Branch:** `test-environment-v2`  
 **Responsável:** Equipe de Desenvolvimento SENAI Lab  
 
 ---
 
 ## 📋 Resumo do Release
 
-Este release consolida **correções críticas** e **melhorias de interface** implementadas nas versões 2.9.1, 2.9.2 e 2.9.3, focando em **estabilidade**, **usabilidade** e **correção de bugs**.
+Este release introduz o **Sistema Completo de Monitoramento Firebase Storage** com analytics de custos, interface modal moderna e correções críticas de inicialização, consolidando a plataforma para uso em produção.
 
 ---
 
-## 🔧 Correções Implementadas
+## 🚀 Principais Novidades
+
+### 📊 **Sistema de Monitoramento Firebase Storage**
+- **Analytics Completo**: Análise detalhada do uso do Firebase Storage
+- **Cálculo de Custos**: Estimativa automática baseada nos preços oficiais
+- **Interface Modal**: Design moderno com 4 tabs organizadas
+- **Métricas Detalhadas**: Tamanho total, quantidade de arquivos, distribuição por tipo
+- **Dados em Tempo Real**: Conectado diretamente à API do Firebase Storage
+
+### 🎨 **Interface e UX**
+- **Modal Responsivo**: Posicionamento fixo e design adaptativo
+- **CSS Modularizado**: `storage-monitor.css` integrado ao tema admin
+- **Animações Suaves**: Transições elegantes entre estados
+- **Estados de Loading**: Skeleton screens e indicadores visuais
+
+---
+
+## 🔧 Correções Críticas
 
 ### 🗑️ **Sistema de Exclusão de Arquivos (v2.9.1-2.9.2)**
 - **Correção crítica:** Exclusão definitiva de arquivos do Firebase Storage

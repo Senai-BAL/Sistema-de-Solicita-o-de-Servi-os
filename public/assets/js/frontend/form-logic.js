@@ -3,6 +3,14 @@
  * Descrição: Coleta de dados, validação e envio com UX melhorado
  */
 
+// 🧪 VERIFICAÇÃO DE CONFIGURAÇÃO DE AMBIENTE
+if (typeof ENVIRONMENT_CONFIG === 'undefined') {
+  console.error('❌ ENVIRONMENT_CONFIG não encontrado! Verifique se config.js foi carregado.');
+} else {
+  console.log(`🧪 Modo de ambiente: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
+  console.log(`📂 Coleção: ${ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode]}`);
+}
+
 // 📋 COLETA DE DADOS OTIMIZADA
 function collectFormData() {
   const form = document.getElementById('senaiForm');

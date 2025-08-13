@@ -8,6 +8,7 @@ document.addEventListener('mousedown', function(e) {
     }
   }
 });
+
 // ====== TEMA ADMIN (2.7.5.3) ======
 
 const ADMIN_THEMES = {
@@ -129,6 +130,38 @@ async function loadDashboard() {
             renderKanbanBoard(filteredRequests);
         }
 
+        // 💾 CARREGAR DADOS DE STORAGE (em paralelo para não bloquear)
+        if (typeof storageMonitor !== 'undefined' && storageMonitor) {
+            storageMonitor.analyzeStorage().then(data => {
+                updateStorageDashboardCard(data);
+            }).catch(error => {
+                console.warn('⚠️ Erro ao carregar dados de storage:', error);
+                // Fallback para card de storage
+                const element = document.getElementById('storageUsed');
+                const changeElement = document.getElementById('storageChange');
+                if (element) element.textContent = 'Erro';
+                if (changeElement) changeElement.textContent = 'Não disponível';
+            });
+        } else if (typeof initializeStorageMonitor !== 'undefined') {
+            // Tentar inicializar storage monitor se não existe
+            initializeStorageMonitor().then(() => {
+                if (storageMonitor) {
+                    return storageMonitor.analyzeStorage();
+                }
+            }).then(data => {
+                if (data) {
+                    updateStorageDashboardCard(data);
+                }
+            }).catch(error => {
+                console.warn('⚠️ Não foi possível inicializar storage monitor:', error);
+                // Fallback silencioso
+                const element = document.getElementById('storageUsed');
+                const changeElement = document.getElementById('storageChange');
+                if (element) element.textContent = 'N/A';
+                if (changeElement) changeElement.textContent = 'Clique para detalhes';
+            });
+        }
+
         LoadingManager.hide();
         showToast(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
 
@@ -158,6 +191,29 @@ function updateStatsDisplay(stats) {
     document.getElementById('pendingChange').textContent = stats.pending > 5 ? 'Requer atenção' : 'Sob controle';
     document.getElementById('progressChange').textContent = 'Em processo';
     document.getElementById('completedChange').textContent = 'Finalizadas';
+}
+
+// 🔄 REFRESH COMPLETO DO DASHBOARD (incluindo storage)
+async function refreshDashboard() {
+    try {
+        LoadingManager.show('Atualizando dashboard e storage...');
+        
+        // Recarregar dados principais
+        await loadDashboard();
+        
+        // Forçar atualização dos dados de storage
+        if (typeof storageMonitor !== 'undefined' && storageMonitor) {
+            const data = await storageMonitor.analyzeStorage();
+            updateStorageDashboardCard(data);
+        }
+        
+        showToast('Dashboard e storage atualizados!', 'success');
+    } catch (error) {
+        console.error('❌ Erro no refresh completo:', error);
+        showToast('Erro ao atualizar dados', 'error');
+    } finally {
+        LoadingManager.hide();
+    }
 }
 
 // �🎛️ INTEGRAÇÃO COM O DASHBOARD (Backup)
@@ -323,7 +379,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar Firebase Service
     try {
-        firebaseService = new FirebaseService();
+        window.firebaseService = new FirebaseService();
+        firebaseService = window.firebaseService; // ✅ Usar variável existente
 
     } catch (error) {
         console.error('❌ Erro ao inicializar Firebase:', error);

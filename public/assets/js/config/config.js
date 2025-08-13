@@ -23,7 +23,7 @@ if (firebase.apps.length === 0) {
 // 🧪 CONFIGURAÇÃO DE AMBIENTE
 const ENVIRONMENT_CONFIG = {
   // Altere para 'production' ou 'test' conforme necessário
-  mode: 'production', // 'production' ou 'test'
+  mode: 'test', // 'production' ou 'test'
   collections: {
     production: 'solicitacoes',
     test: 'solicitacoes_test'

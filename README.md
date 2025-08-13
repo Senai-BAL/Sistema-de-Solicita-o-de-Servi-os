@@ -28,10 +28,10 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Version](https://img.shields.io/badge/Version-2.9.1-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.3-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Teste-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
-![Last Update](https://img.shields.io/badge/Última_Atualização-Julho_2025-informational?style=for-the-badge)
+![Last Update](https://img.shields.io/badge/Última_Atualização-Agosto_2025-informational?style=for-the-badge)
 
 ## 📋 Descrição
 
@@ -43,7 +43,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
-**Versão Atual**: v2.9.1 (Auditoria multiusuário, logs Firestore, estatísticas reais, robustez, documentação atualizada)  
+**Versão Atual**: v2.9.3 (Sistema de monitoramento Firebase Storage, modal com analytics, integração admin, correções de inicialização)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
@@ -347,6 +347,14 @@ firebase deploy
 - **Design Adaptativo**: Funciona em desktop, tablet e mobile
 - **Auto-refresh**: Atualização automática a cada 30 segundos
 - **Indicadores de Status**: Feedback visual em tempo real
+
+#### 📊 **Monitor de Storage** ✨ **NOVO v2.9.3!**
+- **Analytics Completo**: Análise detalhada do uso do Firebase Storage
+- **Cálculo de Custos**: Estimativa automática baseada nos preços do Firebase
+- **Visualização por Tipo**: Distribuição de arquivos por categoria (STL, PDF, imagens, etc.)
+- **Métricas Detalhadas**: Tamanho total, quantidade de arquivos, tamanho médio
+- **Interface Modal**: Tabs organizadas para visão geral, arquivos, usuários e custos
+- **Dados em Tempo Real**: Conectado diretamente à API do Firebase Storage
 
 ## 📋 **Exportação PDF Avançada - Nova Funcionalidade**
 

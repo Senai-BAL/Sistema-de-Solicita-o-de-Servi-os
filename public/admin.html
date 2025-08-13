@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SENAI Lab - Dashboard Administrativo v2</title>
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+  <link rel="icon" type="image/png" sizes="32x32" 
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEHRFWHRTb2Z0d2FyZQBTaHV0dGVyY4LQCQAAAAlwSFlzAAALEwAACxMBAJqcGAAAADhJREFUWIXt1kEKADAIA0D9/6e3FQQTK7TCDCiE5Y0bAJg7AAAAAPgfAAAAAAAAAAAAAAAAAMDPvgF0DQEB1w8a0wAAAABJRU5ErkJggg==">
+  <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA">
+  <link rel="apple-touch-icon" sizes="180x180" 
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+
   <!-- Estilos CSS -->
   <link rel="stylesheet" href="assets/css/common.css">
   <link rel="stylesheet" href="assets/css/admin.css">
@@ -28,6 +37,7 @@
   <link rel="stylesheet" href="assets/css/admin/admin-delete-modal.css">
   <link rel="stylesheet" href="assets/css/admin/search-filter.css">
   <link rel="stylesheet" href="assets/css/admin/loading.css">
+  <link rel="stylesheet" href="assets/css/admin/storage-monitor.css">
   <link rel="stylesheet" href="assets/css/admin/toast.css">
   <link rel="stylesheet" href="assets/css/admin/login.css">
   <link rel="stylesheet" href="assets/css/admin/pdf-modal.css">
@@ -139,6 +149,15 @@
           </div>
           <div class="stat-value" id="completedRequests">-</div>
           <div class="stat-change positive" id="completedChange">Carregando...</div>
+        </div>
+
+        <div class="stat-card storage-card" onclick="openStorageModal()">
+          <div class="stat-header">
+            <span class="stat-title">Storage Usado</span>
+            <span class="stat-icon">💾</span>
+          </div>
+          <div class="stat-value" id="storageUsed">-</div>
+          <div class="stat-change" id="storageChange">Carregando...</div>
         </div>
       </div>
 
@@ -509,6 +528,7 @@
   <script src="assets/js/admin/export.js"></script>
   <script src="assets/js/admin/audit.js"></script>
   <script src="assets/js/admin/main.js"></script>
+  <script src="assets/js/admin/storage-monitor.js"></script>
   <!-- Modal de Tema Personalizável -->
   <div class="theme-modal hide" id="themeModal">
     <div class="modal-content">
@@ -542,6 +562,128 @@
       <div class="modal-actions">
         <button class="btn" onclick="applyThemeCustom()">Aplicar</button>
         <button class="btn cancel" onclick="closeThemeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Monitoramento de Storage -->
+  <div class="modal-overlay" id="storageModal">
+    <div class="modal-content storage-modal">
+      <div class="modal-header">
+        <h3>💾 Monitoramento de Storage</h3>
+        <span class="modal-close" onclick="closeStorageModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- Visão Geral -->
+        <div class="storage-overview">
+          <div class="storage-stat-grid">
+            <div class="storage-stat-card">
+              <div class="storage-stat-title">📊 Uso Total</div>
+              <div class="storage-stat-value" id="totalStorageUsed">Calculando...</div>
+              <div class="storage-progress">
+                <div class="storage-progress-bar" id="totalProgressBar"></div>
+              </div>
+              <div class="storage-stat-subtitle" id="totalStorageLimit">de 1 GB (gratuito)</div>
+            </div>
+            <div class="storage-stat-card">
+              <div class="storage-stat-title">📁 Total de Arquivos</div>
+              <div class="storage-stat-value" id="totalFiles">-</div>
+              <div class="storage-stat-subtitle" id="avgFileSize">Tamanho médio: -</div>
+            </div>
+            <div class="storage-stat-card">
+              <div class="storage-stat-title">💰 Custo Estimado</div>
+              <div class="storage-stat-value" id="estimatedCost">US$ 0.00</div>
+              <div class="storage-stat-subtitle">Este mês</div>
+            </div>
+            <div class="storage-stat-card">
+              <div class="storage-stat-title">🗑️ Arquivos Órfãos</div>
+              <div class="storage-stat-value" id="orphanedFiles">-</div>
+              <div class="storage-stat-subtitle">
+                <button class="btn-cleanup-orphans" onclick="cleanupOrphanedFiles()">🧹 Limpar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs de Detalhes -->
+        <div class="storage-tabs">
+          <button class="storage-tab active" onclick="switchStorageTab('overview')">📊 Visão Geral</button>
+          <button class="storage-tab" onclick="switchStorageTab('files')">📁 Arquivos</button>
+          <button class="storage-tab" onclick="switchStorageTab('users')">👥 Por Usuário</button>
+          <button class="storage-tab" onclick="switchStorageTab('costs')">💰 Custos</button>
+        </div>
+
+        <!-- Conteúdo das Tabs -->
+        <div class="storage-tab-content">
+          <!-- Tab Overview -->
+          <div id="storageTabOverview" class="storage-tab-panel active">
+            <div class="storage-chart-container">
+              <canvas id="storageChart" width="400" height="200"></canvas>
+            </div>
+            <div class="storage-breakdown">
+              <h4>📋 Breakdown por Tipo de Arquivo</h4>
+              <div id="fileTypeBreakdown"></div>
+            </div>
+          </div>
+
+          <!-- Tab Files -->
+          <div id="storageTabFiles" class="storage-tab-panel">
+            <div class="storage-files-header">
+              <h4>📁 Maiores Arquivos</h4>
+              <div class="storage-files-controls">
+                <select id="sortFilesBy">
+                  <option value="size">Por Tamanho</option>
+                  <option value="date">Por Data</option>
+                  <option value="name">Por Nome</option>
+                </select>
+                <button class="btn" onclick="refreshFilesList()">🔄 Atualizar</button>
+              </div>
+            </div>
+            <div class="storage-files-list" id="storageFilesList">
+              <div class="loading-files">Carregando arquivos...</div>
+            </div>
+          </div>
+
+          <!-- Tab Users -->
+          <div id="storageTabUsers" class="storage-tab-panel">
+            <div class="storage-users-header">
+              <h4>👥 Uso por Usuário</h4>
+            </div>
+            <div class="storage-users-list" id="storageUsersList">
+              <div class="loading-files">Carregando dados...</div>
+            </div>
+          </div>
+
+          <!-- Tab Costs -->
+          <div id="storageTabCosts" class="storage-tab-panel">
+            <div class="storage-costs-info">
+              <h4>💰 Detalhamento de Custos Firebase Storage</h4>
+              <div class="cost-breakdown">
+                <div class="cost-item">
+                  <span class="cost-label">Armazenamento (GB/mês):</span>
+                  <span class="cost-value" id="storageCostValue">US$ 0.00</span>
+                </div>
+                <div class="cost-item">
+                  <span class="cost-label">Downloads (GB):</span>
+                  <span class="cost-value" id="downloadCostValue">US$ 0.00</span>
+                </div>
+                <div class="cost-item">
+                  <span class="cost-label">Operações (Class A):</span>
+                  <span class="cost-value" id="operationsCostValue">US$ 0.00</span>
+                </div>
+                <div class="cost-item total">
+                  <span class="cost-label">Total Estimado:</span>
+                  <span class="cost-value" id="totalCostValue">US$ 0.00</span>
+                </div>
+              </div>
+              <div class="cost-alerts" id="costAlerts"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="exportStorageReport()">📊 Exportar Relatório</button>
+        <button class="btn cancel" onclick="closeStorageModal()">Fechar</button>
       </div>
     </div>
   </div>
