@@ -4,7 +4,7 @@
 // 🧪 CONFIGURAÇÃO DE AMBIENTE
 const ENVIRONMENT_CONFIG = {
   // Altere para 'production' ou 'test' conforme necessário
-  mode: 'production', // 'production' ou 'test'
+  mode: 'test', // 'production' ou 'test'
   collections: {
     production: 'solicitacoes',
     test: 'solicitacoes_test'
@@ -13,6 +13,14 @@ const ENVIRONMENT_CONFIG = {
 
 class FirebaseService {
   constructor() {
+    this.isMockMode = ENVIRONMENT_CONFIG.mode === 'mock';
+    
+    if (this.isMockMode) {
+      console.log('🧪 Modo MOCK ativado - usando dados fictícios');
+      this.initMockMode();
+      return;
+    }
+    
     if (!window.firebaseConfig) {
       throw new Error('Firebase configuration not found');
     }
@@ -21,9 +29,15 @@ class FirebaseService {
       firebase.initializeApp(window.firebaseConfig);
     }
     
+    // Configuração moderna do Firestore 
     this.db = firebase.firestore();
+    
+    // Configurar settings básicas (sem cache persistente para evitar warnings)
+    this.db.settings({
+      ignoreUndefinedProperties: true
+    });
+    
     this.collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
-    this.enableOfflineSupport();
     
     // Log do ambiente atual
     console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
@@ -31,6 +45,58 @@ class FirebaseService {
     
     // Teste de conectividade automático
     this.testConnection();
+  }
+
+  // 🧪 INICIALIZAR MODO MOCK
+  initMockMode() {
+    this.mockData = this.generateMockData();
+    console.log(`✅ Modo mock iniciado com ${this.mockData.length} registros fictícios`);
+  }
+
+  // 📊 GERAR DADOS FICTÍCIOS
+  generateMockData() {
+    const services = ['impressao', 'formatacao', 'instalacao', 'manutencao'];
+    const statuses = ['pendente', 'aprovado', 'em_andamento', 'concluido', 'cancelado'];
+    const priorities = ['baixa', 'media', 'alta'];
+    
+    const mockRequests = [];
+    
+    for (let i = 1; i <= 20; i++) {
+      const baseDate = Date.now() - (Math.random() * 30 * 24 * 60 * 60 * 1000); // Últimos 30 dias
+      
+      mockRequests.push({
+        id: `mock_${i}`,
+        n: `Usuario Teste ${i}`,
+        e: `usuario${i}@teste.com`,
+        s: services[Math.floor(Math.random() * services.length)],
+        ts: `Serviço específico ${i}`,
+        d: Math.floor(baseDate),
+        descricao: `Descrição da solicitação fictícia número ${i} para teste do sistema.`,
+        admin: {
+          status: statuses[Math.floor(Math.random() * statuses.length)],
+          prioridade: priorities[Math.floor(Math.random() * priorities.length)],
+          data_criacao: Math.floor(baseDate),
+          data_atualizacao: Math.floor(baseDate + Math.random() * 7 * 24 * 60 * 60 * 1000),
+          responsavel: 'Admin Teste',
+          comentarios: [
+            {
+              texto: `Comentário de teste para solicitação ${i}`,
+              timestamp: Math.floor(baseDate + Math.random() * 3 * 24 * 60 * 60 * 1000),
+              autor: 'Admin Teste'
+            }
+          ]
+        },
+        arq: i % 3 === 0 ? [
+          {
+            n: `arquivo_teste_${i}.pdf`,
+            s: Math.floor(Math.random() * 1000000),
+            p: `uploads/mock/arquivo_teste_${i}.pdf`
+          }
+        ] : []
+      });
+    }
+    
+    return mockRequests;
   }
 
   // 🧪 TESTE DE CONECTIVIDADE
@@ -51,17 +117,13 @@ class FirebaseService {
   }
 
   // 🔧 CONFIGURAÇÃO INICIAL
-  async enableOfflineSupport() {
-    try {
-      await this.db.enablePersistence();
-      console.log('✅ Cache offline ativado');
-    } catch (err) {
-      console.warn('⚠️ Cache offline não disponível:', err.code);
-    }
-  }
-
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
+    if (this.isMockMode) {
+      console.log('🧪 Mock: Retornando dados fictícios');
+      return Promise.resolve([...this.mockData]);
+    }
+    
     // 🎯 ESTRATÉGIA UNIFICADA: Lista de coleções para tentar em ordem
     const collectionsToTry = [this.collectionName];
 
@@ -95,6 +157,12 @@ class FirebaseService {
   }
 
   async getRequestById(id) {
+    if (this.isMockMode) {
+      const request = this.mockData.find(req => req.id === id);
+      console.log(`🧪 Mock: Buscando ID ${id}`, request ? 'encontrado' : 'não encontrado');
+      return Promise.resolve(request || null);
+    }
+    
     // 🎯 USAR MESMA ESTRATÉGIA DE FALLBACK
     const collectionsToTry = this.collectionName === 'solicitacoes_test' 
       ? ['solicitacoes_test', 'solicitacoes'] 

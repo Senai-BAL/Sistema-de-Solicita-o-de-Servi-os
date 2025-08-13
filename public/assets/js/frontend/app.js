@@ -1,7 +1,7 @@
 function ensureShowStatus(callback) {
   if (typeof showStatus === 'undefined') {
     const script = document.createElement('script');
-    script.src = 'assets/js/showStatus.js';
+    script.src = 'assets/js/frontend/showStatus.js';
     script.onload = function() {
       callback();
     };

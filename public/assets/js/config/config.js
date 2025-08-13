@@ -9,10 +9,16 @@ if (!window.firebaseConfig) {
   throw new Error('Firebase configuration not found');
 }
 
-
-// Inicializar Firebase com a configuração externa
-firebase.initializeApp(window.firebaseConfig);
-const db = firebase.firestore();
+// Verificar se Firebase já foi inicializado pelo firebase-service.js
+let db;
+if (firebase.apps.length === 0) {
+  // Inicializar Firebase apenas se não foi inicializado
+  firebase.initializeApp(window.firebaseConfig);
+  db = firebase.firestore();
+} else {
+  // Usar instância existente
+  db = firebase.firestore();
+}
 
 // 🧪 CONFIGURAÇÃO DE AMBIENTE
 const ENVIRONMENT_CONFIG = {
@@ -25,8 +31,8 @@ const ENVIRONMENT_CONFIG = {
 };
 
 const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
-console.log(`🔥 Firebase Service iniciado em modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
-console.log(`📂 Coleção: ${collectionName}`);
+console.log(`� Config.js carregado - Modo: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
+console.log(`📂 Coleção de fallback: ${collectionName}`);
 
 // 🧪 TESTE DE CONECTIVIDADE (opcional)
 async function testFirebaseConnection() {
@@ -49,20 +55,7 @@ setTimeout(() => {
   testFirebaseConnection();
 }, 2000);
 
-// Ativar cache offline (opcional - pode causar problemas de permissão)
-try {
-  db.enablePersistence().catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.log('⚠️ Cache offline: Múltiplas abas abertas');
-    } else if (err.code === 'unimplemented') {
-      console.log('⚠️ Cache offline: Navegador não suporta');
-    } else {
-      console.log('⚠️ Cache offline não disponível:', err.code);
-    }
-  });
-} catch (err) {
-  console.log('⚠️ Erro ao habilitar cache offline:', err);
-}
+// Cache offline agora é gerenciado pelo firebase-service.js
 
 // 🐙 CONFIGURAÇÃO GITHUB API (carregada externamente)
 const GITHUB_CONFIG = window.githubConfig;

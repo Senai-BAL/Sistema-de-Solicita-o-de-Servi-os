@@ -2,6 +2,35 @@
 
 ---
 
+## [2.9.2] - 2025-08-13
+**Commit Fix**: `fix: reorganização estrutural, correções Firebase e limpeza de arquivos v2.9.2`
+
+### 🔧 Correções Críticas
+- **Firebase**: Eliminados warnings de cache persistente (`enableIndexedDbPersistence`)
+- **Firebase**: Corrigidas configurações duplicadas e conflitos de inicialização
+- **Firebase**: Implementada inicialização única e moderna
+- **Paths**: Corrigidos caminhos de arquivos após reorganização estrutural
+
+### 📁 Reorganização Estrutural
+- **Firebase Configs**: Unificados em `public/config/` (removidas duplicações)
+- **JavaScript Modular**: Nova estrutura organizada:
+  ```
+  public/assets/js/
+  ├── admin/ (painel administrativo)
+  ├── config/ (configurações)  
+  ├── core/ (módulos centrais - preparado para expansão)
+  ├── frontend/ (aplicação principal)
+  └── shared/ (componentes compartilhados)
+  ```
+- **HTML**: Atualizados caminhos de importação nos arquivos `index.html` e `admin.html`
+
+### 🧹 Limpeza e Otimização
+- **Arquivos duplicados**: Removidos configs Firebase redundantes
+- **Estrutura limpa**: Base preparada para implementação do sistema de calendário
+- **Warnings**: Console limpo sem avisos de deprecação
+
+---
+
 ## [2.9.1] - 2025-07-29
 **Commit Patch**: `fix: auditoria multiusuário, logs Firestore, estatísticas reais, robustez e documentação.`
 
