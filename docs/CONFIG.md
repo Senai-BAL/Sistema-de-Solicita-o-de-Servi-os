@@ -1,7 +1,7 @@
 # ⚙️ Configurações do SENAI Lab
 
-**Versão Atual**: v2.9.3 (Sistema de Monitoramento Firebase Storage)  
-**Data de Deploy**: 13 de agosto de 2025  
+**Versão Atual**: v2.9.5 (Documentação simplificada e versões corrigidas)  
+**Data de Deploy**: 14 de agosto de 2025  
 **Branch Produção**: `main`
 
 ## 🌐 URLs de Acesso
@@ -11,9 +11,9 @@
 - **Dashboard Admin**: https://senai-lab-6fe79.web.app/admin.html
 - **Firebase Console**: https://console.firebase.google.com/project/senai-lab-6fe79
 
-### Repositórios GitHub
-- **Produção**: [senai-lab-arquivos](https://github.com/GetuliovmSantos/senai-lab-arquivos)
-- **Teste**: [senai-lab-test](https://github.com/GetuliovmSantos/senai-lab-test)
+### Repositórios
+- **Produção**: Sistema hospedado no Firebase Hosting
+- **Storage**: Firebase Storage para arquivos
 
 ## 🔧 Configurações do Sistema
 
@@ -30,9 +30,8 @@
 - **⚠️ Importante**: Alterar senha padrão em produção
 
 ### GitHub Integration
-- **API**: GitHub REST API v3
-- **Permissões necessárias**: `repo` (controle total de repositórios)
-- **Configuração**: `public/shared/github-config.js`
+- **Removido**: Sistema agora usa 100% Firebase Storage
+- **Arquivos**: Upload direto para Firebase Storage
 
 ## 🌍 Ambientes
 
@@ -40,13 +39,13 @@
 - **Branch**: `main`
 - **Modo**: `production`
 - **Firebase Collection**: `solicitacoes`
-- **GitHub Repo**: `senai-lab-arquivos`
+- **Storage**: Firebase Storage
 
 ### Teste
-- **Branch**: `test-environment`
+- **Branch**: `test-environment-v2`
 - **Modo**: `test`
 - **Firebase Collection**: `solicitacoes_test`
-- **GitHub Repo**: `senai-lab-test`
+- **Storage**: Firebase Storage (pasta test)
 
 ## 📊 Limites e Quotas
 
@@ -55,10 +54,6 @@
 - **Escritas**: 20.000/dia
 - **Storage**: 1GB
 - **Bandwidth**: 10GB/mês
-
-### GitHub
-- **Storage**: Ilimitado (repositórios públicos)
-- **API Rate Limit**: 5.000 requests/hora (autenticado)
 
 ## 🔐 Segurança
 
@@ -69,7 +64,6 @@
 
 ### Arquivos de Configuração (⚠️ Não commitar)
 - `public/shared/firebase-config.js`
-- `public/shared/github-config.js`
 
 ## 📞 Suporte
 

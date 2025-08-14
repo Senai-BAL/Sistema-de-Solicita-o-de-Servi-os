@@ -81,8 +81,8 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.9.1  
-**Data**: 29 de julho de 2025  
+**Versão Atual**: v2.9.5  
+**Data**: 14 de agosto de 2025  
 **Principais Melhorias**:
 - Auditoria multiusuário: logs de acesso e ações centralizados no Firestore
 - Estatísticas reais e robustas no painel de auditoria
@@ -176,9 +176,7 @@ senai-lab-webapp/
 │   └── shared/                         # Configurações compartilhadas
 │       ├── firebase-config.example.js  # Exemplo configuração Firebase
 │       ├── firebase-config.js          # Suas credenciais Firebase (não commitado)
-│       ├── firebase-service.js         # Serviços Firebase centralizados
-│       ├── github-config.example.js    # Exemplo configuração GitHub
-│       └── github-config.js            # Suas credenciais GitHub (não commitado)
+│       └── firebase-service.js         # Serviços Firebase centralizados
 ├── docs/                               # 📚 Documentação
 │   ├── CONFIG.md                       # Configurações centrais
 │   └── releases/                       # Releases específicas
@@ -221,15 +219,11 @@ firebase init
 # Copie o arquivo de exemplo do Firebase
 cp public/shared/firebase-config.example.js public/shared/firebase-config.js
 
-# Copie o arquivo de exemplo do GitHub
-cp public/shared/github-config.example.js public/shared/github-config.js
-
-# Edite ambos os arquivos com suas credenciais
-# Firebase: Substitua os valores de exemplo pelas suas credenciais Firebase
-# GitHub: Substitua pelas suas credenciais GitHub (token com permissões 'repo')
+# Edite o arquivo com suas credenciais Firebase
+# Substitua os valores de exemplo pelas suas credenciais Firebase do Console
 ```
 
-**Importante**: Os arquivos `*-config.js` contêm credenciais e não devem ser commitados no Git.
+**Importante**: O arquivo `firebase-config.js` contém credenciais e não deve ser commitado no Git.
 
 ### 4. Configure as Regras do Firestore
 
@@ -298,7 +292,7 @@ firebase deploy
 ### 🖨️ Impressão
 - Limites automáticos (A3: 10 folhas, A4: 30 folhas)
 - Opções: Frente/verso, Colorido, Escaneamento
-- Upload de arquivos para GitHub
+- Upload de arquivos para Firebase Storage
 
 ### 🏗️ Impressão 3D
 - Seleção de material (ABS/PLA)
@@ -307,7 +301,7 @@ firebase deploy
 
 ### 🔧 Manutenção
 - Descrição detalhada do problema
-- Upload de foto para GitHub
+- Upload de foto para Firebase Storage
 
 ### 🎨 Arte Digital/Projeto
 - Descrição das ideias e utilização
@@ -315,7 +309,7 @@ firebase deploy
 ### 📦 Empréstimo
 - Nome do item
 - Datas de retirada e devolução
-- Foto obrigatória com upload para GitHub
+- Foto obrigatória com upload para Firebase Storage
 
 ## 🔐 Dashboard Administrativo
 
@@ -478,7 +472,7 @@ firebase deploy
 - **Firestore Rules**: Apenas criação permitida, sem leitura/edição
 - **Validação Client-Side**: Múltiplas camadas de validação
 - **Sanitização**: Dados tratados antes do envio
-- **GitHub Storage**: Arquivos armazenados de forma segura
+- **Firebase Storage**: Arquivos armazenados de forma segura
 
 ## 📱 Responsividade
 
@@ -547,3 +541,27 @@ http://localhost:5000/teste-pdf.html  # ou sua URL do Firebase
 # 4. Configure opções no modal
 # 5. Gere o relatório final
 ```
+
+---
+
+## 📝 Padrão de Commits
+
+### 🔗 Estrutura Recomendada
+```
+<tipo>: <descrição breve>
+
+[opcional] descrição detalhada
+```
+
+### 🏷️ Tipos de Commit
+- **feat**: Nova funcionalidade
+- **fix**: Correção de bug
+- **docs**: Mudança na documentação
+- **refactor**: Refatoração de código
+- **chore**: Tarefas de manutenção
+
+### 📋 Boas Práticas
+- Seja objetivo e claro
+- Use português para facilitar o entendimento
+- Commits pequenos e frequentes
+- Evite mensagens genéricas

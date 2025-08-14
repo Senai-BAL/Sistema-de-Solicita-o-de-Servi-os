@@ -22,9 +22,6 @@ public/shared/netlify-config.js
 public/shared/firebase-config.js
 public/config/firebase-config.js
 
-# GitHub config - CREDENCIAIS SENSÍVEIS
-public/shared/github-config.js
-
 # Uncomment this if you'd like others to create their own Firebase project.
 # For a team working on the same Firebase project(s), it is recommended to leave
 # it commented so all members can deploy to the same project(s) in .firebaserc.

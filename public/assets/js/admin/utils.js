@@ -349,8 +349,8 @@ SENAI LAB - RESUMO EXECUTIVO
 ============================
 
 Data de Geração: ${now.toLocaleString('pt-BR')}
-Tipo de Backup: Completo com Arquivos GitHub
-Versão do Sistema: 2.7.4
+Tipo de Backup: Completo com Arquivos Firebase Storage
+Versão do Sistema: 2.9.5
 
 ESTATÍSTICAS GERAIS
 -------------------
@@ -368,7 +368,7 @@ POR TIPO DE SERVIÇO
 
 ARQUIVOS
 --------
-Total de Arquivos no GitHub: ${downloadedFiles.length}
+Total de Arquivos no Firebase Storage: ${downloadedFiles.length}
 Arquivos Baixados com Sucesso: ${downloadedFiles.filter(f => f.downloaded).length}
 Arquivos com Erro: ${downloadedFiles.filter(f => !f.downloaded).length}
 Tamanho Total: ${(downloadedFiles.reduce((sum, f) => sum + (f.sizeBytes || 0), 0) / 1024 / 1024).toFixed(2)} MB
@@ -386,7 +386,7 @@ OBSERVAÇÕES
 ✅ Custo de operação mantido em R$ 0,00
 
 ---
-Gerado automaticamente pelo Sistema SENAI Lab v2.7.4
+Gerado automaticamente pelo Sistema SENAI Lab v2.9.5
     `.trim();
 }
 
