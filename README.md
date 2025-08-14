@@ -29,7 +29,7 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Version](https://img.shields.io/badge/Version-2.9.5-success?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Teste-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Produção-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 ![Last Update](https://img.shields.io/badge/Última_Atualização-Agosto_2025-informational?style=for-the-badge)
 
@@ -149,8 +149,6 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 - **Configurações**: [`docs/CONFIG.md`](docs/CONFIG.md) - URLs, credenciais e configurações
 - **Releases**: [`docs/releases/`](docs/releases/) - Histórico detalhado de versões
 - **Changelog**: [`CHANGELOG.md`](CHANGELOG.md) - Histórico completo de mudanças e versões
-
-> 🧪 **Ambiente de Teste**: Documentação específica disponível apenas na branch `test-environment`
 
 ## 🏗️ Estrutura do Projeto
 
