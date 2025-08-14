@@ -220,15 +220,42 @@ class ToastManager {
     }
   }
 
-  // 🧹 LIMPAR CACHE DE MENSAGENS ANTIGAS
+  // 🧹 LIMPAR CACHE DE MENSAGENS (MELHORADO)
   static cleanupMessageCache() {
     const now = Date.now();
-    const expireTime = this.duplicateTimeout * 2; // 4 segundos
-    
-    for (const [key, time] of this.lastMessages.entries()) {
-      if (now - time > expireTime) {
+    const cleanupThreshold = 5 * 60 * 1000; // 5 minutos
+
+    // Remover mensagens antigas do cache
+    for (const [key, timestamp] of this.lastMessages) {
+      if (now - timestamp > cleanupThreshold) {
         this.lastMessages.delete(key);
       }
+    }
+
+    // Limitar tamanho do cache (máximo 50 mensagens)
+    if (this.lastMessages.size > 50) {
+      const entries = Array.from(this.lastMessages.entries())
+        .sort((a, b) => b[1] - a[1]) // Ordenar por timestamp (mais recente primeiro)
+        .slice(0, 30); // Manter apenas as 30 mais recentes
+      
+      this.lastMessages.clear();
+      entries.forEach(([key, timestamp]) => {
+        this.lastMessages.set(key, timestamp);
+      });
+    }
+
+    // Limpar localStorage de toast cache se muito grande
+    try {
+      const toastCache = localStorage.getItem('toast_message_cache');
+      if (toastCache) {
+        const parsed = JSON.parse(toastCache);
+        if (Array.isArray(parsed) && parsed.length > 100) {
+          const recent = parsed.slice(-50); // Manter apenas os 50 mais recentes
+          localStorage.setItem('toast_message_cache', JSON.stringify(recent));
+        }
+      }
+    } catch (error) {
+      localStorage.removeItem('toast_message_cache');
     }
   }
 

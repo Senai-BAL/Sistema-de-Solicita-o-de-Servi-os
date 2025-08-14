@@ -43,7 +43,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 ## ✨ Funcionalidades
 
 ### 👥 **Para Colaboradores (index.html)**
-**Versão Atual**: v2.9.5 (Otimização do sistema de auditoria com redução de limites, filtro de ações relevantes e melhorias visuais)  
+**Versão Atual**: v2.9.6 (Otimização do sistema de auditoria com redução de limites, filtro de ações relevantes e melhorias visuais)  
 - ✅ **Validações em Tempo Real**: Verificação automática de dados e limites
 - ✅ **Máscara de WhatsApp**: Formatação automática (xx)xxxxx-xxxx
 - ✅ **Upload Múltiplo**: Envio de múltiplos arquivos por categoria
@@ -81,7 +81,7 @@ Sistema web completo para solicitação de serviços do SENAI Lab, permitindo ao
 
 ## 🆕 Última Atualização
 
-**Versão Atual**: v2.9.5  
+**Versão Atual**: v2.9.6  
 **Data**: 14 de agosto de 2025  
 **Principais Melhorias**:
 - Auditoria multiusuário: logs de acesso e ações centralizados no Firestore
@@ -181,7 +181,7 @@ senai-lab-webapp/
 │   ├── CONFIG.md                       # Configurações centrais
 │   └── releases/                       # Releases específicas
 │       ├── README.md                   # Índice de releases
-│       └── RELEASE-v2.5.0.md          # Release v2.5.0
+│       └── RELEASE-v2.9.6.md          # Release v2.9.6
 ├── firebase/                           # 🔥 Configurações Firebase
 │   ├── README.md                       # Documentação Firebase
 │   ├── firestore.rules                 # Regras de segurança
@@ -342,7 +342,7 @@ firebase deploy
 - **Auto-refresh**: Atualização automática a cada 30 segundos
 - **Indicadores de Status**: Feedback visual em tempo real
 
-#### 📊 **Monitor de Storage** ✨ **NOVO v2.9.3!**
+#### 📊 **Monitor de Storage** ✨ **NOVO v2.9.6!**
 - **Analytics Completo**: Análise detalhada do uso do Firebase Storage
 - **Cálculo de Custos**: Estimativa automática baseada nos preços do Firebase
 - **Visualização por Tipo**: Distribuição de arquivos por categoria (STL, PDF, imagens, etc.)

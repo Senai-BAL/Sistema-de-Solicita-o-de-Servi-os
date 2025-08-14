@@ -454,10 +454,178 @@ Deseja prosseguir com a LIMPEZA TOTAL?
     }, 2000);
 }
 
-// 🧹 EXECUTAR LIMPEZA TOTAL (placeholder - será implementado)
+// 🧹 EXECUTAR LIMPEZA TOTAL
 async function performTotalCleanup() {
-    ToastManager.show('Limpeza total ainda não implementada nesta versão', 'info');
-    console.log('🧹 Total cleanup would be performed here');
+    try {
+        LoadingManager.show('Iniciando limpeza do sistema...');
+        
+        // 1. Verificar última limpeza
+        const lastCleanup = localStorage.getItem('last_system_cleanup');
+        const now = Date.now();
+        const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000; // 5 dias em millisegundos
+        
+        if (lastCleanup && (now - parseInt(lastCleanup)) < fiveDaysInMs) {
+            const nextCleanup = new Date(parseInt(lastCleanup) + fiveDaysInMs);
+            ToastManager.show(`Próxima limpeza programada para: ${nextCleanup.toLocaleDateString('pt-BR')}`, 'info');
+            LoadingManager.hide();
+            return;
+        }
+
+        LoadingManager.show('Limpando logs antigos do Firestore...');
+        
+        // 2. Limpar logs antigos do Firestore (> 5 dias)
+        const cleanupResult = await cleanupOldLogs();
+        
+        LoadingManager.show('Otimizando cache local...');
+        
+        // 3. Limpar cache desnecessário
+        cleanupLocalStorage();
+        
+        LoadingManager.show('Otimizando contadores...');
+        
+        // 4. Resetar contadores de uso se necessário
+        resetUsageCounters();
+        
+        // 5. Registrar limpeza realizada
+        localStorage.setItem('last_system_cleanup', now.toString());
+        
+        LoadingManager.hide();
+        ToastManager.show(`Limpeza concluída! ${cleanupResult.deleted} logs antigos removidos. Próxima limpeza em 5 dias.`, 'success');
+        
+        // 6. Log da ação de limpeza
+        AdminAuth.logUserAction('system_cleanup', {
+            description: `Limpeza automática executada - ${cleanupResult.deleted} logs removidos`,
+            logsDeleted: cleanupResult.deleted,
+            nextCleanup: new Date(now + fiveDaysInMs).toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ Erro na limpeza do sistema:', error);
+        LoadingManager.hide();
+        ToastManager.show('Erro durante limpeza do sistema: ' + error.message, 'error');
+    }
+}
+
+// 🗑️ LIMPAR LOGS ANTIGOS DO FIRESTORE
+async function cleanupOldLogs() {
+    try {
+        const db = firebase.firestore();
+        const fiveDaysAgo = Date.now() - (5 * 24 * 60 * 60 * 1000);
+        
+        // Buscar logs antigos (admin_logs)
+        const oldLogsQuery = await db.collection('admin_logs')
+            .where('timestamp', '<', fiveDaysAgo)
+            .get();
+        
+        const oldAccessQuery = await db.collection('admin_access_logs')
+            .where('timestamp', '<', fiveDaysAgo)
+            .get();
+        
+        let deletedCount = 0;
+        const batch = db.batch();
+        
+        // Marcar logs administrativos para exclusão (mas manter logs críticos)
+        oldLogsQuery.forEach(doc => {
+            const data = doc.data();
+            // Manter logs críticos (exclusões, alterações importantes)
+            const criticalActions = ['request_deleted', 'status_update', 'priority_set'];
+            
+            if (!criticalActions.includes(data.acao) && !criticalActions.includes(data.action)) {
+                batch.delete(doc.ref);
+                deletedCount++;
+            }
+        });
+        
+        // Logs de acesso podem ser removidos normalmente
+        oldAccessQuery.forEach(doc => {
+            batch.delete(doc.ref);
+            deletedCount++;
+        });
+        
+        // Executar exclusão em lote
+        if (deletedCount > 0) {
+            await batch.commit();
+        }
+        
+        return { deleted: deletedCount };
+        
+    } catch (error) {
+        console.error('❌ Erro ao limpar logs do Firestore:', error);
+        return { deleted: 0 };
+    }
+}
+
+// 🧹 LIMPAR LOCALSTORAGE DESNECESSÁRIO
+function cleanupLocalStorage() {
+    try {
+        // Lista de chaves que podem ser limpas se muito antigas
+        const cleanableKeys = [
+            'senai_admin_logs',
+            'senai_access_logs',
+            'toast_message_cache',
+            'temp_upload_data'
+        ];
+        
+        cleanableKeys.forEach(key => {
+            const data = localStorage.getItem(key);
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (Array.isArray(parsed)) {
+                        // Manter apenas os 15 mais recentes para logs
+                        if (key.includes('logs') && parsed.length > 15) {
+                            const recent = parsed.slice(-15);
+                            localStorage.setItem(key, JSON.stringify(recent));
+                        }
+                    }
+                } catch (e) {
+                    // Se não conseguir parsear, remover
+                    localStorage.removeItem(key);
+                }
+            }
+        });
+        
+        // Limpar dados temporários de upload
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('temp_') && localStorage.getItem(key)) {
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+                    if (data.timestamp && data.timestamp < oneHourAgo) {
+                        localStorage.removeItem(key);
+                    }
+                } catch (e) {
+                    localStorage.removeItem(key);
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.warn('⚠️ Erro ao limpar localStorage:', error);
+    }
+}
+
+// 🔄 RESETAR CONTADORES DE USO
+function resetUsageCounters() {
+    try {
+        // Resetar contadores diários se for um novo dia
+        const today = new Date().toDateString();
+        const lastReset = localStorage.getItem('lastReset');
+        
+        if (lastReset !== today) {
+            localStorage.setItem('dailyWrites', '0');
+            localStorage.setItem('dailyUploads', '0');
+            localStorage.setItem('lastReset', today);
+        }
+        
+        // Limpar cache de Toast messages antigas
+        if (window.ToastManager && typeof ToastManager.cleanupMessageCache === 'function') {
+            ToastManager.cleanupMessageCache();
+        }
+        
+    } catch (error) {
+        console.warn('⚠️ Erro ao resetar contadores:', error);
+    }
 }
 
 console.log('🛠️ Admin Utils - Funções utilitárias carregadas');
