@@ -18,7 +18,7 @@ PLANOS-FUTUROS.md
 PIPELINE-COMMIT.md
 
 # Scripts de automação (opcionalmente locais)
-scripts/
+# scripts/
 
 # Ambiente de teste (apenas na branch test-environment)
 # AMBIENTE-TESTE.md deve ficar apenas na branch de teste
