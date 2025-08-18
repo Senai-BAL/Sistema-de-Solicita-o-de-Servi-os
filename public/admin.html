@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="version" content="v2.9.8">
   <title>SENAI Lab - Dashboard Administrativo v2.9.8</title>
 
   <!-- Favicon -->
@@ -116,10 +117,10 @@
     <main class="main-content">
       <!-- Cards de Estatísticas v2.9.8 - Layout Horizontal -->
       <div class="stats-grid">
-        <div class="stat-card" onclick="filterByStatus('')" title="Ver todas as solicitações">
+        <div class="stat-card" onclick="filterByStatus('')" title="Clique para visualizar todas as solicitações no sistema">
           <div class="stat-header">
             <span class="stat-title">Total de Solicitações</span>
-            <span class="stat-icon">📋</span>
+            <span class="stat-icon" data-tooltip="Número total de solicitações registradas">📋</span>
           </div>
           <div class="stat-value" id="totalRequests">-</div>
           <div class="stat-change positive" id="totalChange">Carregando...</div>
@@ -134,25 +135,25 @@
           <div class="stat-change" id="pendingChange">Carregando...</div>
         </div>
 
-        <div class="stat-card" onclick="filterByStatus('em_andamento')" title="Ver solicitações em andamento">
+        <div class="stat-card" onclick="filterByStatus('em_andamento')" title="Clique para filtrar apenas solicitações em andamento">
           <div class="stat-header">
             <span class="stat-title">Em Andamento</span>
-            <span class="stat-icon">🔄</span>
+            <span class="stat-icon" data-tooltip="Solicitações que estão sendo processadas atualmente">🔄</span>
           </div>
           <div class="stat-value" id="inProgressRequests">-</div>
           <div class="stat-change" id="progressChange">Carregando...</div>
         </div>
 
-        <div class="stat-card" onclick="filterByStatus('concluido')" title="Ver solicitações concluídas">
+        <div class="stat-card" onclick="filterByStatus('concluido')" title="Clique para visualizar solicitações finalizadas">
           <div class="stat-header">
             <span class="stat-title">Concluídas</span>
-            <span class="stat-icon">✅</span>
+            <span class="stat-icon" data-tooltip="Solicitações finalizadas com sucesso">✅</span>
           </div>
           <div class="stat-value" id="completedRequests">-</div>
           <div class="stat-change positive" id="completedChange">Carregando...</div>
         </div>
 
-        <div class="stat-card storage-card" onclick="openStorageModal()" title="Ver detalhes do storage Firebase">
+        <div class="stat-card storage-card" onclick="openStorageModal()" title="Monitorar uso do Firebase Storage e Firestore">
           <div class="stat-header">
             <span class="stat-title">Storage Usado</span>
             <span class="stat-icon">💾</span>
@@ -167,10 +168,10 @@
         <div class="section-header">
           <h2 class="section-title">📋 Gestão de Solicitações</h2>
           <div class="export-buttons">
-            <button class="btn-refresh" onclick="refreshDashboard()" title="Atualizar dados">🔄 Atualizar</button>
-            <button class="btn-export excel" onclick="exportToExcel()">📊 Excel</button>
-            <button class="btn-export pdf" onclick="openModal('pdfConfigModal')">📄 Relatório PDF</button>
-            <button class="btn-export cleanup" onclick="cleanupOrphanedFiles()" title="Remover arquivos órfãos do Storage">🧹 Limpeza</button>
+            <button class="btn-refresh" onclick="refreshDashboard()" title="Recarregar todas as solicitações do Firebase" data-tooltip="Sincronizar dados em tempo real">🔄 Atualizar</button>
+            <button class="btn-export excel" onclick="exportToExcel()" title="Exportar dados para planilha Excel" data-tooltip="Baixar relatório em formato .xlsx">📊 Excel</button>
+            <button class="btn-export pdf" onclick="openModal('pdfConfigModal')" title="Gerar relatório PDF personalizado" data-tooltip="Criar relatório em PDF com filtros">📄 Relatório PDF</button>
+            <button class="btn-export cleanup" onclick="cleanupOrphanedFiles()" title="Remover arquivos órfãos do Firebase Storage" data-tooltip="Otimizar armazenamento removendo arquivos não utilizados">🧹 Limpeza</button>
           </div>
         </div>
 
@@ -520,6 +521,8 @@
   <script src="assets/js/shared/ui-states.js"></script>
   <script src="assets/js/shared/tooltip-manager.js"></script>
   <script src="assets/js/shared/advanced-file-validator.js"></script>
+  <script src="assets/js/shared/rate-limiter.js"></script>
+  <script src="assets/js/shared/rate-limit-ui.js"></script>
 
   <!-- JavaScript Modularizado Admin -->
   <script src="assets/js/admin/config.js"></script>

@@ -84,6 +84,18 @@ function fileToBase64(file) {
 
 // 🌐 UPLOAD PARA FIREBASE STORAGE
 async function uploadToFirebaseStorage(file, serviceInfo, progressCallback) {
+  // 🛡️ RATE LIMITING: Verificar limites de upload
+  if (window.uploadRateLimiter) {
+    const rateLimitCheck = window.uploadRateLimiter.checkUpload(file.size, serviceInfo.solicitante);
+    if (!rateLimitCheck.allowed) {
+      // Mostrar feedback visual do rate limit
+      if (window.rateLimitUI) {
+        window.rateLimitUI.showRateLimitWarning('file_upload', rateLimitCheck.message, rateLimitCheck.waitTime);
+      }
+      throw new Error(rateLimitCheck.message || 'Limite de upload atingido');
+    }
+  }
+
   // Validação básica
   if (!file) throw new Error('Arquivo não fornecido');
   if (!serviceInfo || !serviceInfo.tipo || !serviceInfo.solicitante) {

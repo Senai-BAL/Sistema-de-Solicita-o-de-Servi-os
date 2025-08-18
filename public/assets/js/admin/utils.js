@@ -386,7 +386,7 @@ OBSERVAÇÕES
 ✅ Custo de operação mantido em R$ 0,00
 
 ---
-Gerado automaticamente pelo Sistema SENAI Lab v2.9.5
+Gerado automaticamente pelo Sistema SENAI Lab v2.9.8
     `.trim();
 }
 

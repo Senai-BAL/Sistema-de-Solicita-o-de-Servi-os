@@ -1,6 +1,7 @@
 /**
  * 🔍 Advanced File Validator - SENAI Lab v2.9.8
  * Validação de arquivos com magic numbers e análise de segurança
+ * Atualizado: Validação mais rigorosa e rate limiting
  */
 
 const AdvancedFileValidator = {
@@ -157,10 +158,8 @@ const AdvancedFileValidator = {
      * Inicializar o validador
      */
     init() {
-        console.log('🔄 Inicializando AdvancedFileValidator v2.9.8...');
         this.setupEventListeners();
         this.loadUploadHistory();
-        console.log('✅ AdvancedFileValidator inicializado');
     },
 
     /**
@@ -194,8 +193,6 @@ const AdvancedFileValidator = {
     async validateFileInput(input) {
         const files = Array.from(input.files);
         const serviceType = this.getServiceType(input);
-        
-        console.log(`🔍 Validando ${files.length} arquivo(s) para ${serviceType}`);
         
         // Rate limiting check
         if (!this.checkRateLimit()) {
@@ -808,8 +805,6 @@ const AdvancedFileValidator = {
      * Mostrar sucesso de arquivo
      */
     showFileSuccess(input, file) {
-        console.log(`✅ Arquivo válido: ${file.name}`);
-        
         // Remover erros anteriores
         const errorContainer = input.parentNode.querySelector('.file-validation-errors');
         if (errorContainer) {

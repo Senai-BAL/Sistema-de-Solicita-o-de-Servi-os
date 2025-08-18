@@ -175,9 +175,6 @@ class NotificationManager {
                 notification.close();
             }, 10000);
 
-            // Log para debug
-            console.log(`🔔 Notificação enviada: ${serviceName} - ${request.c}`);
-
             // Toast interno também
             ToastManager.show(`Nova solicitação: ${serviceName} - ${request.c}`, 'info', 6000);
 
@@ -254,8 +251,6 @@ class DashboardWithNotifications {
 
     // 🔐 INICIAR QUANDO ADMIN FIZER LOGIN
     async onAdminLogin() {
-        console.log('🔔 Admin logado - ativando notificações...');
-
         // Aguardar um pouco para garantir que o Firebase está pronto
         setTimeout(async () => {
             const hasPermission = await this.notificationManager.requestPermission();

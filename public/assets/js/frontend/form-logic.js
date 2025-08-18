@@ -1,14 +1,11 @@
-/* 🔧 SENAI Lab - Lógica do Formulário v2.7.4
+/* 🔧 SENAI Lab - Lógica do Formulário v2.9.8
  * Arquivo: public/assets/js/form-logic.js
  * Descrição: Coleta de dados, validação e envio com UX melhorado
  */
 
-// 🧪 VERIFICAÇÃO DE CONFIGURAÇÃO DE AMBIENTE
+// 🔧 VERIFICAÇÃO DE CONFIGURAÇÃO DE AMBIENTE (produção)
 if (typeof ENVIRONMENT_CONFIG === 'undefined') {
   console.error('❌ ENVIRONMENT_CONFIG não encontrado! Verifique se config.js foi carregado.');
-} else {
-  console.log(`🧪 Modo de ambiente: ${ENVIRONMENT_CONFIG.mode.toUpperCase()}`);
-  console.log(`📂 Coleção: ${ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode]}`);
 }
 
 // 📋 COLETA DE DADOS OTIMIZADA
@@ -116,6 +113,19 @@ async function submitForm() {
   const form = document.getElementById('senaiForm');
 
   try {
+    // 🛡️ RATE LIMITING: Verificar limites de submissão
+    if (window.rateLimiter) {
+      const email = form.querySelector('input[name="email"]')?.value || 'anonymous';
+      const rateLimitCheck = window.rateLimiter.isAllowed('form_submit', email);
+      if (!rateLimitCheck.allowed) {
+        // Mostrar feedback visual
+        if (window.rateLimitUI) {
+          window.rateLimitUI.showRateLimitWarning('form_submit', rateLimitCheck.message, rateLimitCheck.waitTime);
+        }
+        throw new Error(rateLimitCheck.message || 'Muitas submissões seguidas. Aguarde um momento.');
+      }
+    }
+
     // Estados UX v2.7.4
     if (window.UIStates) {
       UIStates.setFormSubmitting(form);
@@ -135,12 +145,6 @@ async function submitForm() {
     
     // Gerar informações de serviço para upload
     const serviceInfo = generateServiceInfo(formData);
-    
-    // 🔍 DEBUG: Mostrar novo padrão de nomenclatura
-    console.log('🔧 NOVO PADRÃO DE NOMENCLATURA:');
-
-    console.log(`🏷️ Padrão: ${serviceInfo.tipo}_DATA_${serviceInfo.solicitante.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toUpperCase()}_ARQUIVO`);
-
 
     // Upload de arquivos para Firebase Storage
     const arquivos = [];
@@ -209,7 +213,6 @@ async function submitForm() {
     
     try {
       const docRef = await db.collection(collectionName).add(formData);
-      console.log('✅ Solicitação enviada com ID:', docRef.id);
       usageMonitor.addWrite();
       
       // Estados de sucesso UX v2.7.4
@@ -224,12 +227,9 @@ async function submitForm() {
       
       // Tentar salvar com regras mais permissivas
       if (firestoreError.code === 'permission-denied') {
-        console.log('🔄 Tentando com configuração alternativa...');
-        
         // Tentar na coleção principal
         try {
           const docRef = await db.collection(ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode]).add(formData);
-          console.log('✅ Solicitação salva na coleção principal com ID:', docRef.id);
           usageMonitor.addWrite();
           
           // Estados de sucesso UX v2.7.4
