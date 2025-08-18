@@ -1,0 +1,302 @@
+/* 💡 Tooltips System - SENAI Lab v2.9.8 */
+
+/* Base tooltip styling */
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip::before,
+.tooltip::after {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+/* Tooltip content */
+.tooltip::before {
+    content: attr(data-tooltip);
+    background: #333;
+    color: white;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    max-width: 300px;
+    white-space: normal;
+    word-wrap: break-word;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Tooltip arrow */
+.tooltip::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+}
+
+/* Show tooltip on hover */
+.tooltip:hover::before,
+.tooltip:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Top tooltip (default) */
+.tooltip:not([data-tooltip-position])::before,
+.tooltip[data-tooltip-position="top"]::before {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+}
+
+.tooltip:not([data-tooltip-position])::after,
+.tooltip[data-tooltip-position="top"]::after {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 4px;
+    border-top-color: #333;
+}
+
+/* Bottom tooltip */
+.tooltip[data-tooltip-position="bottom"]::before {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+}
+
+.tooltip[data-tooltip-position="bottom"]::after {
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 4px;
+    border-bottom-color: #333;
+}
+
+/* Left tooltip */
+.tooltip[data-tooltip-position="left"]::before {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 10px;
+}
+
+.tooltip[data-tooltip-position="left"]::after {
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 4px;
+    border-left-color: #333;
+}
+
+/* Right tooltip */
+.tooltip[data-tooltip-position="right"]::before {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 10px;
+}
+
+.tooltip[data-tooltip-position="right"]::after {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 4px;
+    border-right-color: #333;
+}
+
+/* Success tooltip */
+.tooltip.tooltip-success::before {
+    background: #28a745;
+}
+
+.tooltip.tooltip-success[data-tooltip-position="top"]::after {
+    border-top-color: #28a745;
+}
+
+.tooltip.tooltip-success[data-tooltip-position="bottom"]::after {
+    border-bottom-color: #28a745;
+}
+
+.tooltip.tooltip-success[data-tooltip-position="left"]::after {
+    border-left-color: #28a745;
+}
+
+.tooltip.tooltip-success[data-tooltip-position="right"]::after {
+    border-right-color: #28a745;
+}
+
+/* Warning tooltip */
+.tooltip.tooltip-warning::before {
+    background: #ffc107;
+    color: #212529;
+}
+
+.tooltip.tooltip-warning[data-tooltip-position="top"]::after {
+    border-top-color: #ffc107;
+}
+
+.tooltip.tooltip-warning[data-tooltip-position="bottom"]::after {
+    border-bottom-color: #ffc107;
+}
+
+.tooltip.tooltip-warning[data-tooltip-position="left"]::after {
+    border-left-color: #ffc107;
+}
+
+.tooltip.tooltip-warning[data-tooltip-position="right"]::after {
+    border-right-color: #ffc107;
+}
+
+/* Error tooltip */
+.tooltip.tooltip-error::before {
+    background: #dc3545;
+}
+
+.tooltip.tooltip-error[data-tooltip-position="top"]::after {
+    border-top-color: #dc3545;
+}
+
+.tooltip.tooltip-error[data-tooltip-position="bottom"]::after {
+    border-bottom-color: #dc3545;
+}
+
+.tooltip.tooltip-error[data-tooltip-position="left"]::after {
+    border-left-color: #dc3545;
+}
+
+.tooltip.tooltip-error[data-tooltip-position="right"]::after {
+    border-right-color: #dc3545;
+}
+
+/* Info tooltip */
+.tooltip.tooltip-info::before {
+    background: #17a2b8;
+}
+
+.tooltip.tooltip-info[data-tooltip-position="top"]::after {
+    border-top-color: #17a2b8;
+}
+
+.tooltip.tooltip-info[data-tooltip-position="bottom"]::after {
+    border-bottom-color: #17a2b8;
+}
+
+.tooltip.tooltip-info[data-tooltip-position="left"]::after {
+    border-left-color: #17a2b8;
+}
+
+.tooltip.tooltip-info[data-tooltip-position="right"]::after {
+    border-right-color: #17a2b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tooltip::before {
+        font-size: 11px;
+        padding: 6px 10px;
+        max-width: 250px;
+    }
+    
+    .tooltip::after {
+        border-width: 5px;
+    }
+    
+    /* Force all tooltips to bottom on mobile for better visibility */
+    .tooltip::before {
+        bottom: auto;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 8px;
+        margin-bottom: 0;
+    }
+    
+    .tooltip::after {
+        bottom: auto;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 2px;
+        margin-bottom: 0;
+        border-color: transparent transparent #333 transparent;
+    }
+}
+
+/* Loading state tooltip */
+.tooltip.tooltip-loading::before {
+    background: #6c757d;
+}
+
+.tooltip.tooltip-loading[data-tooltip-position="top"]::after {
+    border-top-color: #6c757d;
+}
+
+/* Prevent tooltip on disabled elements */
+.tooltip:disabled::before,
+.tooltip:disabled::after,
+.tooltip.disabled::before,
+.tooltip.disabled::after {
+    display: none;
+}
+
+/* Animation for tooltip appearance */
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.tooltip:hover::before {
+    animation: tooltipFadeIn 0.3s ease-out;
+}
+
+/* Multi-line tooltip support */
+.tooltip[data-tooltip*="\n"]::before {
+    white-space: pre-line;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .tooltip::before {
+        background: #f8f9fa;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+    
+    .tooltip::after {
+        border-top-color: #f8f9fa;
+    }
+}
+
+/* Accessibility improvements */
+.tooltip[role="tooltip"] {
+    cursor: help;
+}
+
+.tooltip:focus::before,
+.tooltip:focus::after {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Prevent text selection on tooltip */
+.tooltip::before {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}

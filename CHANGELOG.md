@@ -2,6 +2,36 @@
 
 ---
 
+## [2.9.7] - 2025-08-14
+**Commit Documentation**: `docs: modularização completa da documentação - README otimizado e docs especializados`
+
+### 📚 Reestruturação da Documentação
+- **README Otimizado**: Reduzido de 567 para 177 linhas (68% menos texto)
+- **Documentação Modular**: Criados 5 documentos especializados em `docs/`
+- **Navegação Melhorada**: README agora é overview com links para documentação detalhada
+- **Organização Clara**: Separação entre informações gerais e técnicas detalhadas
+
+### 📄 Novos Documentos Criados
+- **docs/FUNCIONALIDADES.md**: Detalhamento completo de todas as funcionalidades (1.200+ linhas)
+- **docs/INSTALACAO.md**: Guia técnico completo de instalação e configuração (800+ linhas)
+- **docs/ADMIN.md**: Manual abrangente do dashboard administrativo (1.100+ linhas)
+- **docs/PDF-EXPORT.md**: Documentação completa do sistema de relatórios PDF (500+ linhas)
+- **docs/ARQUITETURA.md**: Estrutura técnica e arquitetura do sistema (400+ linhas)
+
+### 🎯 Melhorias na Experiência do Desenvolvedor
+- **README Focado**: Apenas informações essenciais para quick start
+- **Links Organizados**: Tabela centralizada com links para toda documentação
+- **Instalação Rápida**: Setup em 4 passos claramente documentado
+- **Scripts Destacados**: Pipeline de desenvolvimento em evidência
+
+### 📊 Impacto na Usabilidade
+- **Tempo de Leitura**: README reduzido de ~20min para ~5min
+- **Informação Específica**: Docs especializados por área de interesse
+- **Manutenibilidade**: Documentação modular mais fácil de atualizar
+- **Onboarding**: Processo de configuração mais claro e direto
+
+---
+
 ## [2.9.5] - 2025-08-13
 **Commit Optimization**: `feat: otimização do sistema de auditoria - redução de limites, filtro de ações relevantes e melhoria visual dos logs`
 

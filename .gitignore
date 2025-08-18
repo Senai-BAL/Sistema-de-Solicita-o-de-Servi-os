@@ -11,6 +11,15 @@ firebase-debug.*.log*
 *debug.log
 pglite-debug.log
 
+# Planejamento local (não versionado)
+PLANOS-FUTUROS.md
+
+# Pipeline de desenvolvimento (guia local)
+PIPELINE-COMMIT.md
+
+# Scripts de automação (opcionalmente locais)
+# scripts/
+
 # Ambiente de teste (apenas na branch test-environment)
 # AMBIENTE-TESTE.md deve ficar apenas na branch de teste
 
