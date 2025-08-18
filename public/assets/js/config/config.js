@@ -20,8 +20,8 @@ if (firebase.apps.length === 0) {
   db = firebase.firestore();
 }
 
-// 🧪 CONFIGURAÇÃO DE AMBIENTE
-const ENVIRONMENT_CONFIG = {
+// 🧪 CONFIGURAÇÃO DE AMBIENTE - FORÇADA PARA PRODUÇÃO
+window.ENVIRONMENT_CONFIG = {
   // Altere para 'production' ou 'test' conforme necessário
   mode: 'production', // 'production' ou 'test'
   collections: {
@@ -30,9 +30,16 @@ const ENVIRONMENT_CONFIG = {
   }
 };
 
+// Garantir que não seja sobrescrita
+Object.freeze(window.ENVIRONMENT_CONFIG);
+
+const ENVIRONMENT_CONFIG = window.ENVIRONMENT_CONFIG;
 const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
 
-console.log(`📂 Coleção de fallback: ${collectionName}`);
+console.log(`🧪 [CONFIG.JS] Modo de ambiente: ${ENVIRONMENT_CONFIG.mode}`);
+console.log(`📂 [CONFIG.JS] Coleção de fallback: ${collectionName}`);
+console.log(`🔍 [CONFIG.JS] ENVIRONMENT_CONFIG:`, ENVIRONMENT_CONFIG);
+console.log(`🔒 [CONFIG.JS] Object.isFrozen(ENVIRONMENT_CONFIG):`, Object.isFrozen(ENVIRONMENT_CONFIG));
 
 // 🧪 TESTE DE CONECTIVIDADE (opcional)
 async function testFirebaseConnection() {

@@ -204,8 +204,9 @@ async function submitForm() {
     // Salvar no Firestore
     loadingText.textContent = '⏳ Salvando dados...';
     
-
-
+    console.log(`🔍 [FORM-LOGIC] Tentando salvar na coleção: ${collectionName}`);
+    console.log(`🔍 [FORM-LOGIC] ENVIRONMENT_CONFIG atual:`, ENVIRONMENT_CONFIG);
+    console.log(`🔍 [FORM-LOGIC] Modo atual: ${ENVIRONMENT_CONFIG.mode}`);
     
     try {
       const docRef = await db.collection(collectionName).add(formData);
