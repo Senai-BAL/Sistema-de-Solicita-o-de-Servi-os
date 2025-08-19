@@ -3,8 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SENAI Lab - Solicitação de Serviços</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="version" content="v2.10.0">
+  <title>SENAI Lab - Solicitação de Serviços v2.10.0</title>
   <meta name="description"
     content="Sistema de solicitação de serviços do SENAI Lab - Espaço Maker, Impressões, Manutenção e Empréstimos">
 
@@ -32,6 +33,7 @@
   <link rel="stylesheet" href="assets/css/index/status-indicator.css">
   <link rel="stylesheet" href="assets/css/index/usage-monitor.css">
   <link rel="stylesheet" href="assets/css/index/tooltips.css">
+  <link rel="stylesheet" href="assets/css/index/mobile-ux.css">
 </head>
 
 <body class="index-page">
@@ -50,17 +52,17 @@
         <!-- Dados Básicos -->
         <div class="form-group">
           <label for="colaborador">Colaborador <span class="required">*</span></label>
-          <input type="text" id="colaborador" name="colaborador" required>
+          <input type="text" id="colaborador" name="colaborador" autocomplete="name" autocapitalize="words" required>
         </div>
 
         <div class="form-group">
           <label for="email">Email <span class="required">*</span></label>
-          <input type="email" id="email" name="email" required>
+          <input type="email" id="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" required>
         </div>
 
         <div class="form-group">
           <label for="whatsapp">WhatsApp <span class="required">*</span></label>
-          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11)99999-9999" required>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11)99999-9999" autocomplete="tel" inputmode="tel" required>
         </div>
 
         <div class="form-group">
@@ -112,7 +114,7 @@
 
           <div class="form-group" id="qtdChromeBooks" style="display: none;">
             <label for="qtdChromeBooksInput">Quantos? (8 disponíveis)</label>
-            <input type="number" id="qtdChromeBooksInput" name="qtdChromeBooksInput" min="1" max="8">
+            <input type="number" id="qtdChromeBooksInput" name="qtdChromeBooksInput" min="1" max="8" inputmode="numeric" pattern="[0-9]*">
           </div>
 
           <div class="checkbox-group">
@@ -122,7 +124,7 @@
 
           <div class="form-group" id="qtdComputadores" style="display: none;">
             <label for="qtdComputadoresInput">Quantos? (2 disponíveis)</label>
-            <input type="number" id="qtdComputadoresInput" name="qtdComputadoresInput" min="1" max="2">
+            <input type="number" id="qtdComputadoresInput" name="qtdComputadoresInput" min="1" max="2" inputmode="numeric" pattern="[0-9]*">
           </div>
 
           <div class="form-group">
@@ -282,7 +284,7 @@
           <div class="form-group">
             <label for="fotoProblema">Anexar fotos do problema</label>
             <div class="file-upload">
-              <input type="file" id="fotoProblema" name="fotoProblema" accept="image/*" multiple>
+              <input type="file" id="fotoProblema" name="fotoProblema" accept="image/*" capture="environment" multiple>
               <label for="fotoProblema" class="file-upload-label">
                 <span>📷 Clique para tirar/selecionar fotos</span>
                 <small>Fotos ou imagens (máx. 100MB cada) - Múltiplas fotos permitidas</small>
@@ -319,7 +321,7 @@
           <div class="form-group">
             <label for="referenciaArte">Anexar referências (opcional)</label>
             <div class="file-upload">
-              <input type="file" id="referenciaArte" name="referenciaArte" accept="image/*,.pdf,.doc,.docx" multiple>
+              <input type="file" id="referenciaArte" name="referenciaArte" accept="image/*,.pdf,.doc,.docx" capture="environment" multiple>
               <label for="referenciaArte" class="file-upload-label">
                 <span>🖼️ Clique para selecionar referências</span>
                 <small>Imagens, PDF, DOC (máx. 100MB cada) - Múltiplas referências permitidas</small>
@@ -367,7 +369,7 @@
           <div class="form-group">
             <label for="fotoItem">Fotos do Item <span class="required">*</span></label>
             <div class="file-upload">
-              <input type="file" id="fotoItem" name="fotoItem" accept="image/*" multiple required>
+              <input type="file" id="fotoItem" name="fotoItem" accept="image/*" capture="environment" multiple required>
               <label for="fotoItem" class="file-upload-label">
                 <span>📷 Clique para tirar/selecionar fotos</span>
                 <small>Fotos obrigatórias (máx. 100MB cada) - Múltiplas fotos permitidas</small>
@@ -465,18 +467,21 @@
   <!-- Configurações -->
   <script src="config/firebase-config.js"></script>
 
-  <!-- Módulos JavaScript v2.9.8 -->
+  <!-- Módulos JavaScript v2.10.0 -->
   <script src="assets/js/shared/skeleton-manager.js"></script>
   <script src="assets/js/shared/micro-interactions.js"></script>
   <script src="assets/js/shared/ui-states.js"></script>
   <script src="assets/js/shared/tooltip-manager.js"></script>
   <script src="assets/js/shared/advanced-file-validator.js"></script>
+  <script src="assets/js/shared/rate-limiter.js"></script>
+  <script src="assets/js/shared/rate-limit-ui.js"></script>
   <script src="assets/js/config/config.js"></script>
   <script src="assets/js/frontend/monitor.js"></script>
   <script src="assets/js/frontend/upload.js"></script>
   <script src="assets/js/frontend/multi-file-manager.js"></script>
-  <script src="assets/js/frontend/form-logic.js"></script>
   <script src="assets/js/frontend/navigation.js"></script>
+  <script src="assets/js/frontend/mobile-ux.js"></script>
+  <script src="assets/js/frontend/form-logic.js"></script>
   <script src="assets/js/frontend/app.js"></script>
 
   <script>

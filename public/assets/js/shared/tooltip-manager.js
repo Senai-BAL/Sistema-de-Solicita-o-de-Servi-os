@@ -362,8 +362,6 @@ const TooltipManager = {
         tooltips.forEach(tooltip => {
             tooltip.style.pointerEvents = this.config.enabled ? 'auto' : 'none';
         });
-        
-        console.log(`🔄 Tooltips ${this.config.enabled ? 'habilitados' : 'desabilitados'}`);
     },
 
     /**
@@ -374,7 +372,6 @@ const TooltipManager = {
         tooltips.forEach(tooltip => {
             this.removeTooltip(tooltip);
         });
-        console.log('🧹 Todos os tooltips foram removidos');
     },
 
     /**

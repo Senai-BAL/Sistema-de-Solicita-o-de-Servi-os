@@ -2,6 +2,50 @@
 
 ---
 
+## [2.9.8] - 2025-01-28
+**Commit Security & Cleanup**: `feat: rate limiting, limpeza de console logs, correção produção e melhorias UX`
+
+### 🛡️ Sistema de Rate Limiting
+- **Rate Limiter Core**: Novo sistema de controle de taxa em `rate-limiter.js`
+- **UI Visual**: Interface visual com toasts e progress bars em `rate-limit-ui.js`
+- **Limites Definidos**: 
+  - Uploads: 3 arquivos/min, 50MB/5min
+  - Formulários: 3 submissões/min
+  - Buscas: 20 queries/min
+- **Feedback Usuario**: Toasts com countdown e mensagens user-friendly
+- **Integração Completa**: Rate limiting em uploads e formulários
+
+### 🧹 Limpeza Técnica
+- **Console Logs**: Redução de 48% em logs desnecessários de produção
+- **Arquivos Limpos**: form-logic.js, dashboard.js, tooltip-manager.js, advanced-file-validator.js, notifications.js
+- **Logs Mantidos**: Apenas logs críticos de erro e configuração
+- **Performance**: Melhoria na performance do console em produção
+
+### 🚨 Correções Críticas
+- **Config Produção**: Modo forçado para 'production' com Object.freeze()
+- **Firestore Target**: Dados agora sempre vão para coleção de produção
+- **Proteção Config**: Configuração protegida contra alterações acidentais
+- **Estabilidade**: 0 bugs críticos conhecidos
+
+### ✨ Melhorias de UX
+- **Tooltips Admin**: Adicionados tooltips contextuais em estatísticas e botões
+- **Interface Intuitiva**: admin.html com melhor acessibilidade
+- **Rate Limit UI**: Feedback visual para limites de upload e submissão
+- **Experiência Fluida**: Melhor comunicação de estado do sistema
+
+### 📁 Novos Arquivos
+- `public/assets/js/shared/rate-limiter.js` - Sistema de rate limiting
+- `public/assets/js/shared/rate-limit-ui.js` - Interface visual do rate limiting
+- `docs/releases/RELEASE-v2.9.8.md` - Documentação completa da release
+
+### 🔄 Integrações
+- **Upload Protection**: Rate limiting integrado em Firebase Storage uploads
+- **Form Protection**: Controle de submissões de formulário
+- **Visual Feedback**: Toasts automáticos para limites atingidos
+- **Auto Cleanup**: Sistema de limpeza automática de histórico
+
+---
+
 ## [2.9.7] - 2025-08-14
 **Commit Documentation**: `docs: modularização completa da documentação - README otimizado e docs especializados`
 

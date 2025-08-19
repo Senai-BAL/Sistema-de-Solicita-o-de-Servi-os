@@ -1455,35 +1455,6 @@ function switchTab(tabName) {
     // Adicionar classes ativas
     document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
-    
-    // Debug específico para aba de comentários
-    if (tabName === 'comments') {
-        console.log('🔍 Aba de comentários ativada');
-        
-        // Verificar se elementos existem
-        const commentsTab = document.getElementById('comments-tab');
-        const addCommentSection = document.querySelector('.add-comment-section');
-        const commentForm = document.querySelector('.comment-form');
-        const button = document.querySelector('.comment-form button');
-        
-        console.log('📋 Elementos encontrados:', {
-            commentsTab: commentsTab ? 'OK' : 'ERRO',
-            addCommentSection: addCommentSection ? 'OK' : 'ERRO',
-            commentForm: commentForm ? 'OK' : 'ERRO',
-            button: button ? 'OK' : 'ERRO'
-        });
-        
-        // Verificar dimensões
-        if (commentsTab) {
-            const rect = commentsTab.getBoundingClientRect();
-            console.log('📏 Dimensões da aba de comentários:', {
-                width: rect.width,
-                height: rect.height,
-                top: rect.top,
-                bottom: rect.bottom
-            });
-        }
-    }
 }
 
 console.log('📋 Admin Dashboard - Funções do dashboard carregadas');

@@ -20,9 +20,9 @@ if (firebase.apps.length === 0) {
   db = firebase.firestore();
 }
 
-// 🧪 CONFIGURAÇÃO DE AMBIENTE - FORÇADA PARA PRODUÇÃO
+// 🧪 CONFIGURAÇÃO DE AMBIENTE - PRODUÇÃO
 window.ENVIRONMENT_CONFIG = {
-  // Altere para 'production' ou 'test' conforme necessário
+  // Configuração para produção - v2.10.0
   mode: 'production', // 'production' ou 'test'
   collections: {
     production: 'solicitacoes',
@@ -37,19 +37,18 @@ const ENVIRONMENT_CONFIG = window.ENVIRONMENT_CONFIG;
 const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
 
 console.log(`🧪 [CONFIG.JS] Modo de ambiente: ${ENVIRONMENT_CONFIG.mode}`);
-console.log(`📂 [CONFIG.JS] Coleção de fallback: ${collectionName}`);
+console.log(`📂 [CONFIG.JS] Coleção: ${collectionName}`);
 console.log(`🔍 [CONFIG.JS] ENVIRONMENT_CONFIG:`, ENVIRONMENT_CONFIG);
-console.log(`🔒 [CONFIG.JS] Object.isFrozen(ENVIRONMENT_CONFIG):`, Object.isFrozen(ENVIRONMENT_CONFIG));
 
-// 🧪 TESTE DE CONECTIVIDADE (opcional)
+// 🧪 TESTE DE CONECTIVIDADE (opcional em produção)
 async function testFirebaseConnection() {
   try {
     // Teste simples de leitura
     const testDoc = await db.collection(collectionName).limit(1).get();
-    console.log('✅ Conexão Firebase OK - Regras funcionando');
+    console.log('✅ Conexão Firebase OK');
     return true;
   } catch (error) {
-    console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
+    console.warn('⚠️ Possível problema de conexão:', error.code);
     if (error.code === 'permission-denied') {
       console.warn('🔒 Verifique as regras do Firestore');
     }

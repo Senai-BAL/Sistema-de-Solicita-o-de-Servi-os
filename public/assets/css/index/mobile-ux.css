@@ -1,0 +1,356 @@
+/* 📱 Mobile UX Optimization v2.10.0 */
+
+/* ===== TOUCH-FRIENDLY INPUTS ===== */
+@media (max-width: 768px) {
+  /* Aumentar área de toque para inputs */
+  input, select, textarea, button {
+    min-height: 44px !important;
+    font-size: 16px !important; /* Previne zoom no iOS */
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Melhorar espaçamento entre elementos */
+  .form-group {
+    margin-bottom: 20px !important;
+  }
+
+  /* Labels maiores e mais legíveis */
+  .form-group label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+  }
+
+  /* Botões touch-friendly */
+  .btn {
+    min-height: 48px !important;
+    padding: 14px 24px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    margin: 8px 0 !important;
+  }
+
+  /* Upload area maior para toque */
+  .file-upload-label {
+    min-height: 80px !important;
+    padding: 20px !important;
+    border-radius: 12px !important;
+    border-width: 3px !important;
+  }
+
+  /* Checkboxes maiores */
+  input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    min-height: 20px !important;
+  }
+
+  .checkbox-group {
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .checkbox-group label {
+    margin-bottom: 0 !important;
+    cursor: pointer !important;
+  }
+}
+
+/* ===== MOBILE CAMERA UPLOAD ===== */
+@media (max-width: 768px) {
+  /* Otimizar inputs de arquivo para mobile */
+  input[type="file"] {
+    /* Habilitar captura de câmera */
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Visual melhorado para upload */
+  .file-upload-label {
+    background: linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(34,197,94,0.05) 100%) !important;
+    border: 2px dashed var(--success, #22c55e) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .file-upload-label:active {
+    transform: scale(0.98) !important;
+    background: rgba(34,197,94,0.15) !important;
+  }
+
+  /* Texto mais claro para mobile */
+  .file-upload-label span {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: var(--success, #22c55e) !important;
+  }
+
+  .file-upload-label small {
+    font-size: 13px !important;
+    color: var(--text-secondary, #666) !important;
+    margin-top: 4px !important;
+  }
+}
+
+/* ===== IMPROVED VISUAL FEEDBACK ===== */
+@media (max-width: 768px) {
+  /* Estados de foco melhorados */
+  input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: var(--primary, #007bff) !important;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1) !important;
+    transform: scale(1.02) !important;
+  }
+
+  /* Estados de validação mais visíveis */
+  input.valid, select.valid, textarea.valid {
+    border-color: var(--success, #22c55e) !important;
+    background: rgba(34,197,94,0.05) !important;
+  }
+
+  input.invalid, select.invalid, textarea.invalid {
+    border-color: var(--error, #dc3545) !important;
+    background: rgba(220,53,69,0.05) !important;
+    animation: shake 0.5s ease !important;
+  }
+
+  /* Feedback visual de carregamento */
+  .loading-input {
+    position: relative !important;
+    pointer-events: none !important;
+  }
+
+  .loading-input::after {
+    content: '' !important;
+    position: absolute !important;
+    right: 12px !important;
+    top: 50% !important;
+    width: 16px !important;
+    height: 16px !important;
+    border: 2px solid #ddd !important;
+    border-top: 2px solid var(--primary, #007bff) !important;
+    border-radius: 50% !important;
+    animation: spin 1s linear infinite !important;
+    transform: translateY(-50%) !important;
+  }
+}
+
+/* ===== MOBILE KEYBOARD OPTIMIZATION ===== */
+@media (max-width: 768px) {
+  /* Otimizar inputs por tipo */
+  input[type="email"] {
+    text-transform: none !important;
+    autocomplete: email !important;
+    autocapitalize: none !important;
+    spellcheck: false !important;
+  }
+
+  input[type="tel"] {
+    autocomplete: tel !important;
+    inputmode: tel !important;
+  }
+
+  input[type="number"] {
+    inputmode: numeric !important;
+    pattern: "[0-9]*" !important;
+  }
+
+  input[type="text"] {
+    autocomplete: name !important;
+  }
+
+  textarea {
+    resize: vertical !important;
+    min-height: 100px !important;
+  }
+}
+
+/* ===== MOBILE LAYOUT IMPROVEMENTS ===== */
+@media (max-width: 768px) {
+  /* Container principal */
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    min-height: 100vh !important;
+  }
+
+  /* Header otimizado */
+  .header {
+    padding: 20px 16px !important;
+    text-align: center !important;
+    background: var(--bg) !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  }
+
+  .header h1 {
+    font-size: 24px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .header p {
+    font-size: 14px !important;
+    margin: 0 !important;
+    opacity: 0.8 !important;
+  }
+
+  /* Form content */
+  .form-content {
+    padding: 20px 16px !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: var(--bg-secondary) !important;
+  }
+
+  /* Seções de serviço */
+  .service-section {
+    padding: 20px 16px !important;
+    margin: 0 -16px 24px -16px !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: var(--surface) !important;
+  }
+
+  /* Progress bar responsiva */
+  .progress-bar {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto 20px auto !important;
+    background: #e1e5e9 !important;
+    border-radius: 2px !important;
+    height: 6px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  }
+  
+  .progress-fill {
+    height: 100% !important;
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    transition: width 0.3s ease !important;
+    border-radius: 2px !important;
+  }
+}
+
+/* ===== MOBILE MICRO-INTERACTIONS ===== */
+@media (max-width: 768px) {
+  /* Ripple effect para botões */
+  .btn {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,0.3) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.3s, height 0.3s !important;
+  }
+
+  .btn:active::before {
+    width: 300px !important;
+    height: 300px !important;
+  }
+
+  /* Animação de tap para elementos interativos */
+  .form-group input, .form-group select, .form-group textarea,
+  .checkbox-group, .file-upload-label {
+    transition: transform 0.1s ease !important;
+  }
+
+  .form-group input:active, .form-group select:active, .form-group textarea:active,
+  .checkbox-group:active, .file-upload-label:active {
+    transform: scale(0.995) !important;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* ===== MOBILE SPECIFIC UTILITIES ===== */
+@media (max-width: 768px) {
+  /* Esconder elementos desnecessários em mobile */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Mostrar elementos só em mobile */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Spacing utilities para mobile */
+  .mobile-spacing-sm { margin: 8px 0 !important; }
+  .mobile-spacing-md { margin: 16px 0 !important; }
+  .mobile-spacing-lg { margin: 24px 0 !important; }
+
+  /* Text utilities para mobile */
+  .mobile-text-sm { font-size: 14px !important; }
+  .mobile-text-md { font-size: 16px !important; }
+  .mobile-text-lg { font-size: 18px !important; }
+}
+
+/* ===== SAFE AREA SUPPORT (iPhone X+) ===== */
+@media (max-width: 768px) {
+  .container {
+    padding-top: env(safe-area-inset-top) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    padding-left: env(safe-area-inset-left) !important;
+    padding-right: env(safe-area-inset-right) !important;
+  }
+
+  .header {
+    padding-top: calc(20px + env(safe-area-inset-top)) !important;
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+@media (max-width: 768px) {
+  /* Melhor contraste para texto */
+  .form-group label {
+    color: var(--text-primary, #000) !important;
+    contrast: high !important;
+  }
+
+  /* Indicadores visuais para campos obrigatórios */
+  .required {
+    color: var(--error, #dc3545) !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+  }
+
+  /* Focus indicators mais visíveis */
+  *:focus {
+    outline: 2px solid var(--primary, #007bff) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Melhor spacing para legibilidade */
+  p, .info-text {
+    line-height: 1.6 !important;
+    font-size: 15px !important;
+  }
+}
