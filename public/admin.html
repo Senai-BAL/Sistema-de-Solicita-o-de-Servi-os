@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="version" content="v2.9.8">
-  <title>SENAI Lab - Dashboard Administrativo v2.9.8</title>
+  <meta name="version" content="v2.10.0">
+  <title>SENAI Lab - Dashboard Administrativo v2.10.0</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml"
@@ -68,7 +68,7 @@
     <div class="login-box">
       <div class="login-header">
         <h1>🔧 SENAI Lab</h1>
-        <p>Dashboard Administrativo v2.9.8</p>
+        <p>Dashboard Administrativo v2.10.0</p>
         <small>Sistema Multiusuário</small>
       </div>
       <form id="loginForm">
@@ -95,7 +95,7 @@
     <nav class="navbar">
       <div class="navbar-brand">
         <span>🔧</span>
-        <h1>SENAI Lab - Admin v2.9.8</h1>
+        <h1>SENAI Lab - Admin v2.10.0</h1>
       </div>
       <div class="navbar-user">
         <div class="user-info" id="currentUserInfo">
@@ -115,7 +115,7 @@
 
     <!-- Conteúdo Principal -->
     <main class="main-content">
-      <!-- Cards de Estatísticas v2.9.8 - Layout Horizontal -->
+      <!-- Cards de Estatísticas v2.10.0 - Layout Horizontal -->
       <div class="stats-grid">
         <div class="stat-card" onclick="filterByStatus('')" title="Clique para visualizar todas as solicitações no sistema">
           <div class="stat-header">
@@ -172,6 +172,7 @@
             <button class="btn-export excel" onclick="exportToExcel()" title="Exportar dados para planilha Excel" data-tooltip="Baixar relatório em formato .xlsx">📊 Excel</button>
             <button class="btn-export pdf" onclick="openModal('pdfConfigModal')" title="Gerar relatório PDF personalizado" data-tooltip="Criar relatório em PDF com filtros">📄 Relatório PDF</button>
             <button class="btn-export cleanup" onclick="cleanupOrphanedFiles()" title="Remover arquivos órfãos do Firebase Storage" data-tooltip="Otimizar armazenamento removendo arquivos não utilizados">🧹 Limpeza</button>
+            <button class="btn-export backup-manual" onclick="createManualBackup()" title="Criar backup manual dos dados" data-tooltip="Gerar backup imediato de solicitações e metadados">💾 Backup</button>
           </div>
         </div>
 
@@ -513,7 +514,7 @@
   <script src="config/firebase-config.js"></script>
   <script src="shared/firebase-service.js"></script>
 
-  <!-- Módulos Compartilhados v2.9.8 -->
+  <!-- Módulos Compartilhados v2.10.0 -->
   <script src="assets/js/shared/loading-manager.js"></script>
   <script src="assets/js/shared/toast-manager.js"></script>
   <script src="assets/js/shared/skeleton-manager.js"></script>
