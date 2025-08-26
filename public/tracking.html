@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="assets/css/tracking/tracking-search.css">
   <link rel="stylesheet" href="assets/css/tracking/tracking-results.css">
   <link rel="stylesheet" href="assets/css/tracking/tracking-details.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-themes.css">
   <link rel="stylesheet" href="assets/css/index/mobile-ux.css">
 
   <!-- Firebase SDK -->
@@ -40,8 +41,7 @@
       <h1>🔍 SENAI Lab</h1>
       <p>Acompanhar Solicitação de Serviços</p>
       <div class="header-actions">
-        <a href="index.html" class="btn-link">📝 Nova Solicitação</a>
-        <a href="admin.html" class="btn-link">⚙️ Admin</a>
+        <a href="index.html" class="btn-link">📝 Voltar ao Início</a>
       </div>
     </div>
 
@@ -66,9 +66,14 @@
         </div>
 
         <div class="form-group">
-          <button type="button" onclick="searchSolicitation()" class="btn-primary search-btn">
-            🔍 Buscar Solicitação
-          </button>
+          <div class="button-group">
+            <button type="button" onclick="searchSolicitation()" class="btn-primary search-btn">
+              🔍 Buscar Solicitação
+            </button>
+            <button type="button" onclick="clearSearch()" class="btn-secondary clear-btn">
+              🗑️ Limpar
+            </button>
+          </div>
         </div>
       </div>
 
@@ -95,6 +100,11 @@
     </div>
   </div>
 
+  <!-- Botão de alternância de tema -->
+  <button class="toggle-theme" id="toggleThemeBtn" title="Alternar tema claro/escuro">
+    <span id="themeIcon">🌙</span>
+  </button>
+
   <!-- Loading Indicator -->
   <div class="loading-overlay" id="loadingOverlay" style="display: none;">
     <div class="loading-content">
@@ -103,13 +113,17 @@
     </div>
   </div>
 
+  <!-- Firebase Configuration -->
+  <script src="shared/firebase-config.js"></script>
+  
   <!-- Scripts Modulares -->
-  <script src="assets/js/config/tracking-config.js"></script>
+  <script src="assets/js/tracking/tracking-config.js"></script>
   <script src="assets/js/tracking/tracking-utils.js"></script>
   <script src="assets/js/tracking/tracking-search.js"></script>
   <script src="assets/js/tracking/tracking-display.js"></script>
   <script src="assets/js/tracking/tracking-hotfix.js"></script>
   <script src="assets/js/tracking/tracking-main.js"></script>
+  <script src="assets/js/tracking/tracking-globals.js"></script>
   <script src="assets/js/frontend/mobile-ux.js"></script>
 
 </body>

@@ -3,23 +3,30 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="version" content="v3.0.0">
-  <title>SENAI Lab - Solicitação de Serviços v3.0.0</title>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="version" content="v3.0.1">
+  <title>SENAI Lab - Solicitação de Serviços v3.0.1</title>
   <meta name="description"
     content="Sistema de solicitação de serviços do SENAI Lab - Espaço Maker, Impressões, Manutenção e Empréstimos">
 
-  <!-- Favicon -->
+  <!--       <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn" onclick="resetForm()">
+          📝 Nova Solicitação
+        </button>
+      </div>-->
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
-  <link rel="icon" type="image/png" sizes="32x32" 
+  <link rel="icon" type="image/png" sizes="32x32"
     href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEHRFWHRTb2Z0d2FyZQBTaHV0dGVyY4LQCQAAAAlwSFlzAAALEwAACxMBAJqcGAAAADhJREFUWIXt1kEKADAIA0D9/6e3FQQTK7TCDCiE5Y0bAJg7AAAAAPgfAAAAAAAAAAAAAAAAAMDPvgF0DQEB1w8a0wAAAABJRU5ErkJggg==">
-  <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA">
-  <link rel="apple-touch-icon" sizes="180x180" 
+  <link rel="shortcut icon"
+    href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA">
+  <link rel="apple-touch-icon" sizes="180x180"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
 
   <!-- Estilos CSS -->
   <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="stylesheet" href="assets/css/index/selection-cards.css">
   <link rel="stylesheet" href="assets/css/index/form.css">
   <link rel="stylesheet" href="assets/css/index/services.css">
   <link rel="stylesheet" href="assets/css/index/upload.css">
@@ -32,18 +39,50 @@
   <link rel="stylesheet" href="assets/css/index/messages.css">
   <link rel="stylesheet" href="assets/css/index/status-indicator.css">
   <link rel="stylesheet" href="assets/css/index/usage-monitor.css">
-  <link rel="stylesheet" href="assets/css/index/tooltips.css">
   <link rel="stylesheet" href="assets/css/index/mobile-ux.css">
 </head>
 
 <body class="index-page">
   <div class="container">
-    <div class="header">
-      <h1>🔧 SENAI Lab</h1>
-      <p>Formulário de Solicitação de Serviços</p>
+    <!-- Tela de Seleção Inicial -->
+    <div class="main-selection" id="mainSelection">
+      <div class="header">
+        <h1>🔧 SENAI Lab</h1>
+        <p>Sistema de Solicitação de Serviços</p>
+        <p class="subtitle">Escolha uma das opções abaixo:</p>
+      </div>
+
+      <div class="selection-cards">
+        <div class="selection-card" id="newRequestCard" onclick="showNewRequestForm()" tabindex="0" role="button"
+          aria-label="Criar nova solicitação de serviço"
+          onkeypress="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showNewRequestForm(); }">
+          <div class="card-icon">📝</div>
+          <h2>Solicitar Novo Serviço</h2>
+          <p>Criar uma nova solicitação de serviço: Espaço Maker, Impressões, Manutenção ou Empréstimos</p>
+          <div class="card-arrow">→</div>
+        </div>
+
+        <div class="selection-card" id="trackRequestCard" onclick="goToTracking()" tabindex="0" role="button"
+          aria-label="Acompanhar solicitação existente"
+          onkeypress="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); goToTracking(); }">
+          <div class="card-icon">🔍</div>
+          <h2>Acompanhar Solicitação</h2>
+          <p>Verificar o status de uma solicitação já enviada usando código, email ou telefone</p>
+          <div class="card-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="keyboard-shortcuts">
+        <small>💡 Dica: Use as teclas <kbd>1</kbd> ou <kbd>2</kbd> para seleção rápida</small>
+      </div>
     </div>
 
-    <div class="form-content" id="formContent">
+    <!-- Formulário (inicialmente oculto) -->
+    <div class="form-content" id="formContent" style="display: none;">
+      <div class="header">
+        <h1>🔧 SENAI Lab</h1>
+        <p>Formulário de Solicitação de Serviços</p>
+
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill"></div>
       </div>
@@ -57,12 +96,14 @@
 
         <div class="form-group">
           <label for="email">Email <span class="required">*</span></label>
-          <input type="email" id="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" required>
+          <input type="email" id="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false"
+            required>
         </div>
 
         <div class="form-group">
           <label for="whatsapp">WhatsApp <span class="required">*</span></label>
-          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11)99999-9999" autocomplete="tel" inputmode="tel" required>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11)99999-9999" autocomplete="tel"
+            inputmode="tel" required>
         </div>
 
         <div class="form-group">
@@ -114,7 +155,8 @@
 
           <div class="form-group" id="qtdChromeBooks" style="display: none;">
             <label for="qtdChromeBooksInput">Quantos? (8 disponíveis)</label>
-            <input type="number" id="qtdChromeBooksInput" name="qtdChromeBooksInput" min="1" max="8" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="qtdChromeBooksInput" name="qtdChromeBooksInput" min="1" max="8" inputmode="numeric"
+              pattern="[0-9]*">
           </div>
 
           <div class="checkbox-group">
@@ -124,7 +166,8 @@
 
           <div class="form-group" id="qtdComputadores" style="display: none;">
             <label for="qtdComputadoresInput">Quantos? (2 disponíveis)</label>
-            <input type="number" id="qtdComputadoresInput" name="qtdComputadoresInput" min="1" max="2" inputmode="numeric" pattern="[0-9]*">
+            <input type="number" id="qtdComputadoresInput" name="qtdComputadoresInput" min="1" max="2"
+              inputmode="numeric" pattern="[0-9]*">
           </div>
 
           <div class="form-group">
@@ -194,16 +237,18 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>📁 Upload automático:</strong> Arquivos enviados diretamente para o Firebase Storage. Nomenclatura: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
+              <strong>📁 Upload automático:</strong> Arquivos enviados diretamente para o Firebase Storage.
+              Nomenclatura: TIPO_DATA_SOLICITANTE_ARQUIVO. Máximo 100MB por arquivo.
             </div>
           </div>
 
           <div class="form-group">
             <label for="observacoesImpressao">Observações especiais (opcional)</label>
-            <textarea id="observacoesImpressao" name="observacoesImpressao" rows="3" 
+            <textarea id="observacoesImpressao" name="observacoesImpressao" rows="3"
               placeholder="Ex: Tipo de papel específico, cuidados especiais, orientações de impressão, etc."></textarea>
             <small style="color: #666; font-size: 0.9rem;">
-              💡 Informe qualquer cuidado especial, tipo de papel desejado, orientações específicas ou outras observações para sua impressão.
+              💡 Informe qualquer cuidado especial, tipo de papel desejado, orientações específicas ou outras
+              observações para sua impressão.
             </small>
           </div>
         </div>
@@ -264,10 +309,11 @@
 
           <div class="form-group">
             <label for="observacoes3d">Observações especiais (opcional)</label>
-            <textarea id="observacoes3d" name="observacoes3d" rows="3" 
+            <textarea id="observacoes3d" name="observacoes3d" rows="3"
               placeholder="Ex: Cores desejadas, acabamento especial, urgência, orientações específicas, etc."></textarea>
             <small style="color: #666; font-size: 0.9rem;">
-              💡 Informe qualquer cuidado especial, cor desejada, acabamento específico ou outras observações para sua impressão 3D.
+              💡 Informe qualquer cuidado especial, cor desejada, acabamento específico ou outras observações para sua
+              impressão 3D.
             </small>
           </div>
         </div>
@@ -303,7 +349,8 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura: MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
+              <strong>📷 Fotos automáticas:</strong> Tire múltiplas fotos ou selecione da galeria. Nomenclatura:
+              MANUTENCAO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
             </div>
           </div>
         </div>
@@ -321,7 +368,8 @@
           <div class="form-group">
             <label for="referenciaArte">Anexar referências (opcional)</label>
             <div class="file-upload">
-              <input type="file" id="referenciaArte" name="referenciaArte" accept="image/*,.pdf,.doc,.docx" capture="environment" multiple>
+              <input type="file" id="referenciaArte" name="referenciaArte" accept="image/*,.pdf,.doc,.docx"
+                capture="environment" multiple>
               <label for="referenciaArte" class="file-upload-label">
                 <span>🖼️ Clique para selecionar referências</span>
                 <small>Imagens, PDF, DOC (máx. 100MB cada) - Múltiplas referências permitidas</small>
@@ -340,7 +388,8 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>🖼️ Referências visuais:</strong> Envie imagens, designs ou documentos que possam servir de referência para o projeto. Upload automático para Firebase Storage.
+              <strong>🖼️ Referências visuais:</strong> Envie imagens, designs ou documentos que possam servir de
+              referência para o projeto. Upload automático para Firebase Storage.
             </div>
           </div>
 
@@ -388,16 +437,18 @@
               <div class="global-progress-text">Fazendo upload...</div>
             </div>
             <div class="storage-info">
-              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura: EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
+              <strong>📷 Fotos obrigatórias:</strong> Necessárias para identificação do item. Nomenclatura:
+              EMPRESTIMO_DATA_SOLICITANTE_FOTO. Upload automático para Firebase Storage.
             </div>
           </div>
 
           <div class="form-group">
             <label for="finalidadeEmprestimo">Finalidade do empréstimo (opcional)</label>
-            <textarea id="finalidadeEmprestimo" name="finalidadeEmprestimo" rows="3" 
+            <textarea id="finalidadeEmprestimo" name="finalidadeEmprestimo" rows="3"
               placeholder="Ex: Para qual projeto será usado, duração estimada de uso, cuidados especiais, etc."></textarea>
             <small style="color: #666; font-size: 0.9rem;">
-              💡 Explique para que será usado o item, isso nos ajuda a entender melhor a necessidade e oferecer suporte adequado.
+              💡 Explique para que será usado o item, isso nos ajuda a entender melhor a necessidade e oferecer suporte
+              adequado.
             </small>
           </div>
         </div>
@@ -409,13 +460,19 @@
       </form>
     </div>
 
+    <!-- Mensagem de sucesso FORA do formContent mas DENTRO do container -->
     <div class="success-message" id="successMessage">
       <h2>✅ Solicitação Enviada!</h2>
       <p>Sua solicitação foi registrada com sucesso. Em breve entraremos em contato.</p>
       <p id="submissionId" style="font-size: 0.9rem; color: #666; margin-top: 10px;"></p>
-      <button class="btn" onclick="resetForm()" style="margin-top: 20px;">
-        📝 Nova Solicitação
-      </button>
+      <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap;">
+        <button class="btn" onclick="resetForm()">
+          📝 Nova Solicitação
+        </button>
+        <a href="tracking.html" class="btn micro-hover" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+          🔍 Acompanhar Solicitação
+        </a>
+      </div>
     </div>
   </div>
 
@@ -471,7 +528,6 @@
   <script src="assets/js/shared/skeleton-manager.js"></script>
   <script src="assets/js/shared/micro-interactions.js"></script>
   <script src="assets/js/shared/ui-states.js"></script>
-  <script src="assets/js/shared/tooltip-manager.js"></script>
   <script src="assets/js/shared/advanced-file-validator.js"></script>
   <script src="assets/js/shared/rate-limiter.js"></script>
   <script src="assets/js/shared/rate-limit-ui.js"></script>
@@ -482,50 +538,10 @@
   <script src="assets/js/frontend/navigation.js"></script>
   <script src="assets/js/frontend/mobile-ux.js"></script>
   <script src="assets/js/frontend/form-logic.js"></script>
+  <script src="assets/js/frontend/theme-manager.js"></script>
+  <script src="assets/js/frontend/page-navigation.js"></script>
   <script src="assets/js/frontend/app.js"></script>
 
-  <script>
-    // Temas padrão
-    const THEMES = {
-      light: {
-        name: 'Light Professional',
-        class: 'theme-light-professional',
-        icon: '💼',
-      },
-      dark: {
-        name: 'Dark Slate',
-        class: 'theme-dark-slate',
-        icon: '🌚',
-      }
-    };
-
-    // Função segura para aplicar tema
-    function applyTheme(theme) {
-      // Só aceita 'light' ou 'dark'
-      const validTheme = theme === 'dark' ? 'dark' : 'light';
-      document.body.classList.remove(THEMES.light.class, THEMES.dark.class);
-      document.body.classList.add(THEMES[validTheme].class);
-      const icon = document.getElementById('themeIcon');
-      if (icon) icon.textContent = validTheme === 'light' ? '🌙' : '☀️';
-      localStorage.setItem('senai-theme', validTheme);
-    }
-
-    // Alterna entre claro e escuro
-    function toggleTheme() {
-      const current = localStorage.getItem('senai-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-    }
-
-    // Inicialização do tema
-    document.addEventListener('DOMContentLoaded', function() {
-      let saved = localStorage.getItem('senai-theme');
-      if (saved !== 'light' && saved !== 'dark') saved = 'light';
-      applyTheme(saved);
-      const btn = document.getElementById('toggleThemeBtn');
-      if (btn) btn.addEventListener('click', toggleTheme);
-    });
-  </script>
 </body>
 
 </html>

@@ -148,12 +148,14 @@ section, .section {
   --surface: #f9fafb;           /* Superfície clara */
   --surface-alt: #fff;          /* Superfície alternativa */
   --text: #111827;              /* Texto principal */
+  --text-secondary: #6b7280;    /* Texto secundário */
   --primary: #374151;           /* Botão/elemento primário */
   --secondary: #4b5563;         /* Botão/elemento secundário */
   --accent: #6b7280;            /* Bordas, detalhes */
-  --success: #4474db;           /* Sucesso (azul) */
+  --success: #22c55e;           /* Sucesso (verde moderno) */
   --highlight: #f59e0b;         /* Destaque */
-  --border: #e0e0e0;            /* Bordas */
+  --border: #e5e7eb;            /* Bordas */
+  --primary-rgb: 55, 65, 81;    /* RGB para transparências */
   background: var(--bg) !important;
   color: var(--text) !important;
 }
@@ -165,12 +167,14 @@ section, .section {
   --surface: #0f172a;           /* Superfície escura */
   --surface-alt: #1e293b;       /* Superfície alternativa */
   --text: #f8fafc;              /* Texto principal */
+  --text-secondary: #94a3b8;    /* Texto secundário */
   --primary: #64748b;           /* Botão/elemento primário */
   --secondary: #475569;         /* Botão/elemento secundário */
   --accent: #334155;            /* Bordas, detalhes */
   --success: #22c55e;           /* Sucesso */
   --highlight: #f59e0b;         /* Destaque (mantido para consistência) */
   --border: #334155;            /* Bordas */
+  --primary-rgb: 100, 116, 139; /* RGB para transparências */
   background: var(--bg) !important;
   color: var(--text) !important;
 }

@@ -3,9 +3,7 @@
    Estilos dos detalhes da solicitação
    ========================================== */
 
-.solicitation-details {
-  animation: slideInUp 0.5s ease-out;
-}
+/* Todas as animações removidas para melhor estética */
 
 .solicitation-card {
   background: white;
@@ -14,12 +12,6 @@
   margin: 25px 0;
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.solicitation-card:hover {
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
 }
 
 .card-header {
@@ -33,23 +25,6 @@
   gap: 15px;
   position: relative;
   overflow: hidden;
-}
-
-.card-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  animation: shine 3s infinite;
-}
-
-@keyframes shine {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: -100%; }
 }
 
 .card-header h2 {
@@ -75,21 +50,12 @@
 
 .detail-row {
   margin: 20px 0;
-  padding: 18px 0;
+  padding: 18px 10px;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   align-items: flex-start;
   gap: 15px;
-  transition: all 0.3s ease;
   border-radius: 8px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.detail-row:hover {
-  background: rgba(102, 126, 234, 0.03);
-  transform: translateX(5px);
-  border-color: #667eea;
 }
 
 .detail-row:last-child {
@@ -136,7 +102,6 @@
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -149,38 +114,20 @@
   border: 1px solid #a0aec0;
 }
 
-.btn-secondary:hover {
-  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
 .btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: 1px solid #667eea;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-.btn-secondary:active,
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-}
-
-/* Efeito de destaque para informações importantes */
+/* Efeito de destaque para informações importantes - bordas corrigidas */
 .detail-row:nth-child(1),  /* Código */
 .detail-row:nth-child(2) { /* Data */
   background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
   border: 1px solid #c7d2fe;
   border-radius: 12px;
   font-weight: 500;
+  border-bottom: 1px solid #c7d2fe !important; /* Força uma única borda */
 }
 
 /* Mobile responsive */
@@ -263,29 +210,20 @@
   }
 }
 
-/* Animações */
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Todas as animações foram removidas para melhor estética */
+
+/* Sobrescrever qualquer animação aplicada por outros arquivos */
+#solicitationDetails *,
+#solicitationDetails .solicitation-card,
+#solicitationDetails .detail-row,
+#solicitationDetails .card-actions button {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
 }
 
-.solicitation-card {
-  animation: slideInUp 0.6s ease-out;
+/* Manter apenas transições sutis para hover de botões */
+#solicitationDetails .btn-primary:hover,
+#solicitationDetails .btn-secondary:hover {
+  opacity: 0.9;
 }
-
-.detail-row {
-  animation: slideInUp 0.4s ease-out;
-}
-
-.detail-row:nth-child(1) { animation-delay: 0.1s; }
-.detail-row:nth-child(2) { animation-delay: 0.15s; }
-.detail-row:nth-child(3) { animation-delay: 0.2s; }
-.detail-row:nth-child(4) { animation-delay: 0.25s; }
-.detail-row:nth-child(5) { animation-delay: 0.3s; }
-.detail-row:nth-child(6) { animation-delay: 0.35s; }

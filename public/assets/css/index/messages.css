@@ -1,16 +1,53 @@
 /* Módulo de estilos de mensagens */
 .success-message {
-  display: none;
+  display: none !important;
   text-align: center;
   padding: 40px;
-  color: #27ae60;
+  color: var(--success, #22c55e);
+  background: var(--bg-secondary, white);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(52, 64, 84, 0.15);
+  border: 2px solid var(--success, #22c55e);
+  margin: 20px 0;
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
 .success-message.show {
-  display: block;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  animation: successSlideIn 0.5s ease-out;
+}
+
+@keyframes successSlideIn {
+  0% {
+    transform: translateY(-30px) scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .success-message h2 {
   font-size: 2rem;
   margin-bottom: 15px;
+  color: var(--success, #22c55e);
+  font-weight: 600;
+}
+
+.success-message p {
+  color: var(--text, #333);
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+/* Adaptação para tema escuro */
+.theme-dark-slate .success-message {
+  background: var(--bg-secondary, #0f172a);
+  color: var(--success, #22c55e);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }

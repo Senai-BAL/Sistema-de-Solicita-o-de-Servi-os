@@ -1,130 +1,342 @@
 /* ==========================================
-   SENAI Lab v3.0.0 - Tracking Search Hotfix
-   Hotfix para funcionar sem índices compostos
+   SENAI Lab v3.0.0 - Tracking Hotfix
+   Correções emergenciais e compatibilidade
    ========================================== */
 
-// Sobrescrever função de busca avançada temporariamente
-async function performAdvancedSearchWithoutIndexes(criteria) {
-  const results = [];
+// Hotfixes para compatibilidade e correções emergenciais
+class TrackingHotfix {
   
-  try {
-    debugLog('🔧 Usando busca sem índices compostos (hotfix)');
+  static init() {
+    console.log('🔧 Aplicando hotfixes de tracking...');
     
-    // Buscar todos os documentos ordenados por timestamp
-    const query = trackingDB.collection(collectionName)
-      .orderBy('timestamp', 'desc')
-      .limit(100); // Limitar para performance
-      
-    const querySnapshot = await query.get();
+    // Aplicar correções em ordem
+    this.fixConsoleErrors();
+    this.fixMissingElements();
+    this.fixFirebaseCompatibility();
+    this.fixCSSIssues();
+    this.addFallbackFunctions();
     
-    // Filtrar no cliente
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      let match = true;
+    console.log('✅ Hotfixes aplicados com sucesso');
+  }
+  
+  // Corrige erros de console relacionados a elementos ausentes
+  static fixConsoleErrors() {
+    // Suprime erros específicos conhecidos
+    const originalError = console.error;
+    console.error = function(...args) {
+      const message = args.join(' ');
       
-      // Aplicar filtros no cliente
-      Object.keys(criteria).forEach(key => {
-        if (criteria[key] && criteria[key].trim() !== '') {
-          if (data[key] !== criteria[key]) {
-            match = false;
+      // Filtrar erros conhecidos e não críticos
+      const ignoredErrors = [
+        'searchType is null',
+        'loadingOverlay is null',
+        'Firebase not fully loaded'
+      ];
+      
+      const shouldIgnore = ignoredErrors.some(error => message.includes(error));
+      
+      if (!shouldIgnore) {
+        originalError.apply(console, args);
+      }
+    };
+  }
+  
+  // Cria elementos faltantes
+  static fixMissingElements() {
+    // Verificar e criar loadingOverlay se não existir
+    if (!document.getElementById('loadingOverlay')) {
+      const overlay = document.createElement('div');
+      overlay.id = 'loadingOverlay';
+      overlay.className = 'loading-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: var(--feedback-text);
+        font-size: 18px;
+      `;
+      overlay.innerHTML = '<div>🔍 Buscando...</div>';
+      document.body.appendChild(overlay);
+    }
+    
+    // Verificar e criar searchResults se não existir
+    if (!document.getElementById('searchResults')) {
+      const results = document.createElement('div');
+      results.id = 'searchResults';
+      results.style.display = 'none';
+      
+      // Inserir após o formulário de busca
+      const searchForm = document.querySelector('.search-container, .tracking-form, form');
+      if (searchForm && searchForm.parentNode) {
+        searchForm.parentNode.insertBefore(results, searchForm.nextSibling);
+      } else {
+        document.body.appendChild(results);
+      }
+    }
+    
+    // Verificar e criar solicitationDetails se não existir
+    if (!document.getElementById('solicitationDetails')) {
+      const details = document.createElement('div');
+      details.id = 'solicitationDetails';
+      details.style.display = 'none';
+      
+      // Inserir após searchResults
+      const searchResults = document.getElementById('searchResults');
+      if (searchResults && searchResults.parentNode) {
+        searchResults.parentNode.insertBefore(details, searchResults.nextSibling);
+      } else {
+        document.body.appendChild(details);
+      }
+    }
+  }
+  
+  // Corrige problemas de compatibilidade com Firebase
+  static fixFirebaseCompatibility() {
+    // Timeout para Firebase não carregado
+    setTimeout(() => {
+      if (!window.firebase) {
+        console.warn('⚠️ Firebase não carregado, criando fallback');
+        this.createFirebaseFallback();
+      }
+    }, 3000);
+    
+    // Verificar se o Firestore está disponível
+    if (window.firebase && !window.db) {
+      try {
+        window.db = window.firebase.firestore();
+      } catch (error) {
+        console.warn('⚠️ Erro ao inicializar Firestore:', error);
+      }
+    }
+  }
+  
+  // Cria fallback para Firebase quando não disponível
+  static createFirebaseFallback() {
+    window.firebase = {
+      firestore: () => ({
+        collection: () => ({
+          where: () => ({
+            get: () => Promise.resolve({ empty: true, docs: [] })
+          }),
+          doc: () => ({
+            get: () => Promise.resolve({ exists: false })
+          })
+        })
+      })
+    };
+    
+    window.db = window.firebase.firestore();
+    
+    // Avisar que está em modo fallback
+    if (typeof TrackingUtils !== 'undefined') {
+      TrackingUtils.showError('Modo offline - algumas funcionalidades limitadas');
+    }
+  }
+  
+  // Corrige problemas de CSS
+  static fixCSSIssues() {
+    // Adicionar estilos críticos via JavaScript se CSS não carregou
+    const criticalCSS = `
+      .loading-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0,0,0,0.7) !important;
+        display: none !important;
+        justify-content: center !important;
+        align-items: center !important;
+        z-index: 9999 !important;
+        color: var(--feedback-text) !important;
+        font-size: 18px !important;
+      }
+      
+      .error-message {
+        background: var(--error) !important;
+        color: var(--feedback-text) !important;
+        padding: 10px !important;
+        border-radius: 5px !important;
+        margin: 10px 0 !important;
+      }
+      
+      .success-message {
+        background: var(--success) !important;
+        color: var(--feedback-text) !important;
+        padding: 10px !important;
+        border-radius: 5px !important;
+        margin: 10px 0 !important;
+      }
+      
+      .no-results {
+        text-align: center !important;
+        padding: 40px 20px !important;
+      }
+      
+      .result-item {
+        border: 1px solid var(--border) !important;
+        margin: 10px 0 !important;
+        padding: 15px !important;
+        border-radius: 5px !important;
+        cursor: pointer !important;
+        background: var(--surface) !important;
+        color: var(--text) !important;
+        transition: all 0.3s ease !important;
+      }
+      
+      .result-item:hover {
+        background: var(--surface-alt) !important;
+        border-color: var(--success) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px var(--shadow) !important;
+      }
+    `;
+    
+    // Criar stylesheet se não existir
+    let hotfixStyles = document.getElementById('tracking-hotfix-styles');
+    if (!hotfixStyles) {
+      hotfixStyles = document.createElement('style');
+      hotfixStyles.id = 'tracking-hotfix-styles';
+      hotfixStyles.textContent = criticalCSS;
+      document.head.appendChild(hotfixStyles);
+    }
+  }
+  
+  // Adiciona funções de fallback
+  static addFallbackFunctions() {
+    // Fallback para TrackingUtils se não existir
+    if (typeof TrackingUtils === 'undefined') {
+      window.TrackingUtils = {
+        showError: (message) => {
+          alert('Erro: ' + message);
+        },
+        showSuccess: (message) => {
+          alert('Sucesso: ' + message);
+        },
+        determineSearchType: (query) => {
+          if (query.includes('@')) return 'email';
+          if (/^\d+$/.test(query.replace(/\D/g, ''))) return 'phone';
+          return 'id';
+        },
+        formatDate: (timestamp) => {
+          try {
+            if (timestamp && timestamp.toDate) {
+              return timestamp.toDate().toLocaleDateString('pt-BR');
+            }
+            if (timestamp) {
+              return new Date(timestamp).toLocaleDateString('pt-BR');
+            }
+            return 'Data inválida';
+          } catch (e) {
+            return 'Data inválida';
+          }
+        },
+        scrollToElement: (elementId, offset = 0) => {
+          const element = document.getElementById(elementId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
           }
         }
-      });
-      
-      if (match) {
-        results.push({ id: doc.id, ...data });
+      };
+    }
+    
+    // Fallback para TrackingDisplay se não existir
+    if (typeof TrackingDisplay === 'undefined') {
+      window.TrackingDisplay = {
+        clearResults: () => {
+          const searchResults = document.getElementById('searchResults');
+          const solicitationDetails = document.getElementById('solicitationDetails');
+          
+          if (searchResults) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+          }
+          
+          if (solicitationDetails) {
+            solicitationDetails.style.display = 'none';
+            solicitationDetails.innerHTML = '';
+          }
+          
+          const searchInput = document.getElementById('searchInput');
+          if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+          }
+        }
+      };
+    }
+  }
+  
+  // Função para debug de problemas
+  static diagnostic() {
+    const report = {
+      firebase: !!window.firebase,
+      db: !!window.db,
+      trackingUtils: typeof TrackingUtils !== 'undefined',
+      trackingSearch: typeof TrackingSearch !== 'undefined',
+      trackingDisplay: typeof TrackingDisplay !== 'undefined',
+      elements: {
+        searchInput: !!document.getElementById('searchInput'),
+        searchResults: !!document.getElementById('searchResults'),
+        solicitationDetails: !!document.getElementById('solicitationDetails'),
+        loadingOverlay: !!document.getElementById('loadingOverlay')
+      }
+    };
+    
+    console.log('🔍 Diagnóstico do Tracking:', report);
+    return report;
+  }
+  
+  // Função de emergência para resetar tudo
+  static emergencyReset() {
+    console.log('🚨 Reset de emergência do tracking...');
+    
+    // Limpar todos os containers
+    ['searchResults', 'solicitationDetails'].forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.style.display = 'none';
+        element.innerHTML = '';
       }
     });
     
-    debugLog('🔧 Busca sem índices concluída', { 
-      total_docs: querySnapshot.size, 
-      filtered_results: results.length,
-      criteria 
+    // Esconder loading
+    const loading = document.getElementById('loadingOverlay');
+    if (loading) {
+      loading.style.display = 'none';
+    }
+    
+    // Limpar campo de busca
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.focus();
+    }
+    
+    // Remover mensagens de erro
+    document.querySelectorAll('.error-message, .success-message').forEach(msg => {
+      msg.remove();
     });
     
-  } catch (error) {
-    debugLog('❌ Erro na busca sem índices:', error);
-    throw error;
-  }
-  
-  return results;
-}
-
-// Função para verificar se índices estão disponíveis
-async function checkIndexAvailability() {
-  try {
-    // Tentar uma query que requer índice
-    await trackingDB.collection(collectionName)
-      .where('status', '==', 'pendente')
-      .orderBy('timestamp', 'desc')
-      .limit(1)
-      .get();
-      
-    debugLog('✅ Índices compostos disponíveis');
-    return true;
-    
-  } catch (error) {
-    if (error.code === 'failed-precondition' && error.message.includes('index')) {
-      debugLog('⚠️ Índices compostos não disponíveis, usando hotfix');
-      return false;
-    }
-    throw error;
+    alert('Sistema resetado com sucesso!');
   }
 }
 
-// Função de busca inteligente que detecta índices
-async function performSmartSearch(searchType, searchQuery) {
-  // Para buscas simples (ID, email, telefone), usar função original
-  if (['id', 'email', 'phone'].includes(searchType)) {
-    return await performSearch(searchType, searchQuery);
-  }
-  
-  // Para buscas complexas, verificar se índices estão disponíveis
-  const indexesAvailable = await checkIndexAvailability();
-  
-  if (indexesAvailable) {
-    return await performAdvancedSearch({ [searchType]: searchQuery });
-  } else {
-    return await performAdvancedSearchWithoutIndexes({ [searchType]: searchQuery });
-  }
-}
-
-// Função para mostrar aviso sobre índices
-function showIndexWarning() {
-  const warningHtml = `
-    <div class="message warning" style="margin: 20px 0;">
-      <span>
-        ⚠️ <strong>Aviso:</strong> Alguns índices do Firestore ainda estão sendo construídos. 
-        As buscas podem estar mais lentas temporariamente.
-        <br><br>
-        🔗 <a href="https://console.firebase.google.com/project/senai-lab-6fe79/firestore/indexes" 
-              target="_blank" style="color: #667eea; text-decoration: underline;">
-              Verificar status dos índices
-        </a>
-      </span>
-      <button onclick="this.parentElement.remove()">×</button>
-    </div>
-  `;
-  
-  const formContent = document.querySelector('.form-content');
-  if (formContent && !document.querySelector('.index-warning')) {
-    const warningDiv = document.createElement('div');
-    warningDiv.className = 'index-warning';
-    warningDiv.innerHTML = warningHtml;
-    formContent.insertBefore(warningDiv, formContent.firstChild);
-  }
-}
-
-// Verificar índices na inicialização
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const indexesAvailable = await checkIndexAvailability();
-    if (!indexesAvailable) {
-      showIndexWarning();
-    }
-  } catch (error) {
-    debugLog('Erro ao verificar índices:', error);
-  }
+// Aplicar hotfixes automaticamente
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    TrackingHotfix.init();
+  }, 100);
 });
 
-debugLog('🔧 Hotfix para índices carregado');
+// Expor funções globalmente para debug
+window.TrackingHotfix = TrackingHotfix;
+
+console.log('🔧 Tracking Hotfix carregado');

@@ -466,6 +466,14 @@ function resetForm() {
   // Resetar tela
   document.getElementById('formContent').style.display = 'block';
   document.getElementById('successMessage').classList.remove('show');
+  
+  // Garantir que mainSelection está escondido
+  const mainSelection = document.getElementById('mainSelection');
+  if (mainSelection) {
+    mainSelection.style.display = 'none';
+    console.log('🙈 MainSelection escondido');
+  }
+  
   document.getElementById('submissionId').textContent = '';
   document.getElementById('submitBtn').disabled = false;
   document.getElementById('btnText').style.display = 'inline';

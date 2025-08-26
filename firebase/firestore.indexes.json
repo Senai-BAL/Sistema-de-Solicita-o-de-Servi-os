@@ -9,13 +9,13 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "timestamp",
+          "fieldPath": "d",
           "order": "DESCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "solicitacoes",
+      "collectionGroup": "solicitations",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -23,13 +23,13 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "timestamp",
+          "fieldPath": "d",
           "order": "DESCENDING"
         }
       ]
     },
     {
-      "collectionGroup": "solicitacoes",
+      "collectionGroup": "solicitations",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -37,7 +37,7 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "timestamp",
+          "fieldPath": "d",
           "order": "DESCENDING"
         }
       ]
@@ -51,7 +51,63 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "timestamp",
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "e",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "e",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "w",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "w",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
           "order": "DESCENDING"
         }
       ]

@@ -1,149 +1,179 @@
 /* ==========================================
    SENAI Lab v3.0.0 - Tracking Search
-   Funções de busca do sistema
+   Lógica de busca no Firebase
    ========================================== */
 
-// Função principal de busca
-async function searchSolicitation() {
-  const searchType = document.getElementById('searchType')?.value;
-  const searchQuery = document.getElementById('searchInput')?.value?.trim();
+// Lógica de busca no Firebase
+class TrackingSearch {
   
-  debugLog(`Iniciando busca: ${searchType} = "${searchQuery}"`);
-  
-  // Validar entrada
-  if (!validateSearchInput(searchType, searchQuery)) {
-    return;
-  }
-  
-  // Mostrar loading e limpar resultados
-  showLoading(true);
-  hideResults();
-  
-  try {
-    const results = await performSearch(searchType, searchQuery);
-    
-    showLoading(false);
-    
-    if (results.length === 0) {
-      showMessage('Nenhuma solicitação encontrada. Verifique os dados e tente novamente.', 'error');
-      debugLog('Nenhum resultado encontrado');
-    } else if (results.length === 1) {
-      debugLog(`Resultado único encontrado: ${results[0].id}`);
-      showSolicitationDetails(results[0]);
-    } else {
-      debugLog(`${results.length} resultados encontrados`);
-      showSearchResults(results);
-    }
-    
-  } catch (error) {
-    console.error('❌ Erro na busca:', error);
-    showLoading(false);
-    showMessage('Erro ao buscar solicitação. Tente novamente.', 'error');
-    debugLog('Erro na busca:', error);
-  }
-}
-
-// Função para executar a busca no Firestore
-async function performSearch(searchType, searchQuery) {
-  const results = [];
-  
-  try {
-    switch (searchType) {
-      case 'id':
-        // Busca direta por ID do documento
-        const docRef = trackingDB.collection(collectionName).doc(searchQuery);
-        const docSnap = await docRef.get();
-        
-        if (docSnap.exists) {
-          const data = docSnap.data();
-          results.push({ id: docSnap.id, ...data });
-          debugLog('Busca por ID realizada', { id: docSnap.id });
-        }
-        break;
-        
-      case 'email':
-        // Busca por email (case insensitive)
-        const emailQuery = await trackingDB.collection(collectionName)
-          .where('email', '==', searchQuery.toLowerCase())
-          .get();
-          
-        emailQuery.forEach(doc => {
-          const data = doc.data();
-          results.push({ id: doc.id, ...data });
-        });
-        
-        debugLog('Busca por email realizada', { 
-          email: searchQuery.toLowerCase(), 
-          count: results.length 
-        });
-        break;
-        
-      case 'phone':
-        // Busca por telefone (remover formatação)
-        const cleanPhone = searchQuery.replace(/\D/g, '');
-        const phoneQuery = await trackingDB.collection(collectionName)
-          .where('telefone', '==', cleanPhone)
-          .get();
-          
-        phoneQuery.forEach(doc => {
-          const data = doc.data();
-          results.push({ id: doc.id, ...data });
-        });
-        
-        debugLog('Busca por telefone realizada', { 
-          telefone: cleanPhone, 
-          count: results.length 
-        });
-        break;
-        
-      default:
-        throw new Error(`Tipo de busca inválido: ${searchType}`);
-    }
-    
-  } catch (error) {
-    console.error('❌ Erro ao executar busca no Firestore:', error);
-    throw error;
-  }
-  
-  return results;
-}
-
-// Função para busca avançada (múltiplos critérios)
-async function performAdvancedSearch(criteria) {
-  const results = [];
-  
-  try {
-    let query = trackingDB.collection(collectionName);
-    
-    // Aplicar filtros
-    Object.keys(criteria).forEach(key => {
-      if (criteria[key] && criteria[key].trim() !== '') {
-        query = query.where(key, '==', criteria[key]);
+  // Busca por ID específico
+  static async searchById(id) {
+    try {
+      const doc = await trackingDB.collection(collectionName).doc(id).get();
+      
+      if (doc.exists) {
+        const data = doc.data();
+        return [{ id: doc.id, ...data }];
+      } else {
+        // Nenhum documento encontrado
       }
-    });
-    
-    const querySnapshot = await query.get();
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      results.push({ id: doc.id, ...data });
-    });
-    
-    debugLog('Busca avançada realizada', { criteria, count: results.length });
-    
-  } catch (error) {
-    console.error('❌ Erro na busca avançada:', error);
-    throw error;
+      return [];
+    } catch (error) {
+      console.error('Erro busca por ID:', error);
+      throw new Error('Erro ao buscar por código');
+    }
   }
   
-  return results;
+  // Busca por email
+  static async searchByEmail(email) {
+    try {
+      console.log(`🔍 Iniciando busca por email: "${email}"`);
+      
+      // Normalizar email
+      const normalizedEmail = email.toLowerCase().trim();
+      console.log(`📧 Email normalizado: "${normalizedEmail}"`);
+      
+      // Primeira tentativa: com orderBy (requer índice) - CAMPO CORRETO: 'e'
+      try {
+        console.log('📊 Tentando busca com orderBy...');
+        const query = await trackingDB.collection(collectionName)
+          .where('e', '==', normalizedEmail)
+          .orderBy('d', 'desc')
+          .limit(TRACKING_CONFIG.maxResults)
+          .get();
+        
+        console.log(`✅ Busca com orderBy bem-sucedida: ${query.size} resultado(s)`);
+        return query.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } catch (indexError) {
+        // Se falhar por falta de índice, fazer busca simples
+        if (indexError.code === 'failed-precondition') {
+          console.warn('⚠️ Índice não disponível, usando busca simples por email');
+          
+          const query = await trackingDB.collection(collectionName)
+            .where('e', '==', normalizedEmail)
+            .limit(TRACKING_CONFIG.maxResults)
+            .get();
+          
+          console.log(`✅ Busca simples bem-sucedida: ${query.size} resultado(s)`);
+          
+          // Ordenar no cliente
+          const results = query.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          return results.sort((a, b) => {
+            const timeA = a.d || 0;
+            const timeB = b.d || 0;
+            return timeB - timeA;
+          });
+        }
+        throw indexError;
+      }
+    } catch (error) {
+      console.error('❌ Erro busca por email:', error);
+      
+      // Tentar busca de debug
+      try {
+        console.log('🔧 Executando busca de debug...');
+        const debugQuery = await trackingDB.collection(collectionName)
+          .limit(5)
+          .get();
+        
+        console.log(`📊 Total de documentos na coleção: ${debugQuery.size}`);
+        debugQuery.docs.forEach((doc, index) => {
+          const data = doc.data();
+          console.log(`📄 Doc ${index + 1}: email="${data.e}", id="${doc.id}"`);
+        });
+      } catch (debugError) {
+        console.error('❌ Erro na busca de debug:', debugError);
+      }
+      
+      throw new Error('Erro ao buscar por email');
+    }
+  }
+  
+  // Busca por telefone
+  static async searchByPhone(phone) {
+    try {
+      console.log(`📱 Iniciando busca por telefone: "${phone}"`);
+      
+      // Normalizar telefone (remover caracteres não numéricos)
+      const normalizedPhone = phone.replace(/\D/g, '');
+      console.log(`📱 Telefone normalizado: "${normalizedPhone}"`);
+      
+      // Tentar diferentes formatos de telefone
+      const phoneVariations = [
+        normalizedPhone,              // 11999887766
+        phone.trim(),                 // formato original
+        `+55${normalizedPhone}`,      // +5511999887766
+        `55${normalizedPhone}`        // 5511999887766
+      ];
+      
+      console.log('📱 Variações de telefone a testar:', phoneVariations);
+      
+      // Primeira tentativa: com orderBy (requer índice) - CAMPO CORRETO: 'w'
+      for (const phoneVar of phoneVariations) {
+        try {
+          console.log(`📊 Tentando busca com orderBy para: "${phoneVar}"`);
+          const query = await trackingDB.collection(collectionName)
+            .where('w', '==', phoneVar)
+            .orderBy('d', 'desc')
+            .limit(TRACKING_CONFIG.maxResults)
+            .get();
+          
+          if (!query.empty) {
+            console.log(`✅ Busca com orderBy bem-sucedida: ${query.size} resultado(s) para "${phoneVar}"`);
+            return query.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          }
+        } catch (indexError) {
+          // Se falhar por falta de índice, fazer busca simples
+          if (indexError.code === 'failed-precondition') {
+            console.warn(`⚠️ Índice não disponível, usando busca simples para: "${phoneVar}"`);
+            
+            const query = await trackingDB.collection(collectionName)
+              .where('w', '==', phoneVar)
+              .limit(TRACKING_CONFIG.maxResults)
+              .get();
+            
+            if (!query.empty) {
+              console.log(`✅ Busca simples bem-sucedida: ${query.size} resultado(s) para "${phoneVar}"`);
+              
+              // Ordenar no cliente
+              const results = query.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              return results.sort((a, b) => {
+                const timeA = a.d || 0;
+                const timeB = b.d || 0;
+                return timeB - timeA;
+              });
+            }
+          } else {
+            throw indexError;
+          }
+        }
+      }
+      
+      console.log('📱 Nenhuma variação de telefone encontrou resultados');
+      return [];
+      
+    } catch (error) {
+      console.error('❌ Erro busca por telefone:', error);
+      
+      // Tentar busca de debug
+      try {
+        console.log('🔧 Executando busca de debug para telefones...');
+        const debugQuery = await trackingDB.collection(collectionName)
+          .limit(5)
+          .get();
+        
+        console.log(`📊 Total de documentos na coleção: ${debugQuery.size}`);
+        debugQuery.docs.forEach((doc, index) => {
+          const data = doc.data();
+          console.log(`📄 Doc ${index + 1}: whatsapp="${data.w}", id="${doc.id}"`);
+        });
+      } catch (debugError) {
+        console.error('❌ Erro na busca de debug:', debugError);
+      }
+      
+      throw new Error('Erro ao buscar por telefone');
+    }
+  }
 }
 
-// Função para busca por palavra-chave (futuro)
-async function performKeywordSearch(keyword) {
-  // Para implementar no futuro quando Firestore suportar full-text search
-  // ou quando integrarmos com Algolia/Elasticsearch
-  console.log('Busca por palavra-chave ainda não implementada:', keyword);
-  return [];
-}
-
-debugLog('Módulo de busca carregado');
+console.log('🔍 Tracking Search carregado - Modo Produção');

@@ -105,6 +105,21 @@
   background: var(--primary-hover);
 }
 
+.btn-navigation {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.btn-navigation:hover {
+  background: #2ecc71;
+}
+
 .audit-info-banner {
   background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
   border: 1px solid #2196F3;

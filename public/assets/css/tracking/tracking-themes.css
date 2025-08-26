@@ -1,0 +1,816 @@
+/* ==========================================
+   SENAI Lab v3.0.0 - Tracking Themes CSS
+   Temas claro e escuro padronizados
+   ========================================== */
+
+/* Light Professional - Padrão do sistema */
+.theme-light-professional {
+  --bg: #f9fafb;                /* Fundo principal */
+  --bg-secondary: #fff;         /* Fundo de cards/áreas centrais */
+  --surface: #f9fafb;           /* Superfície clara */
+  --surface-alt: #fff;          /* Superfície alternativa */
+  --text: #111827;              /* Texto principal */
+  --text-secondary: #6b7280;    /* Texto secundário */
+  --primary: #374151;           /* Botão/elemento primário */
+  --secondary: #4b5563;         /* Botão/elemento secundário */
+  --accent: #6b7280;            /* Bordas, detalhes */
+  --success: #4474db;           /* Sucesso (azul) */
+  --warning: #f59e0b;           /* Aviso */
+  --error: #ef4444;             /* Erro */
+  --highlight: #f59e0b;         /* Destaque */
+  --border: #e0e0e0;            /* Bordas */
+  --input-bg: #ffffff;          /* Fundo de inputs */
+  --shadow: rgba(52, 64, 84, 0.1); /* Sombras */
+  --feedback-text: #ffffff;     /* Texto em feedbacks */
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Dark Slate - Padrão do sistema */
+.theme-dark-slate {
+  --bg: #020617;                /* Fundo principal */
+  --bg-secondary: #0f172a;      /* Fundo de cards/áreas centrais */
+  --surface: #0f172a;           /* Superfície escura */
+  --surface-alt: #1e293b;       /* Superfície alternativa */
+  --text: #f8fafc;              /* Texto principal */
+  --text-secondary: #94a3b8;    /* Texto secundário */
+  --primary: #64748b;           /* Botão/elemento primário */
+  --secondary: #475569;         /* Botão/elemento secundário */
+  --accent: #334155;            /* Bordas, detalhes */
+  --success: #22c55e;           /* Sucesso */
+  --warning: #f59e0b;           /* Aviso */
+  --error: #ef4444;             /* Erro */
+  --highlight: #f59e0b;         /* Destaque */
+  --border: #334155;            /* Bordas */
+  --input-bg: #1e293b;          /* Fundo de inputs */
+  --shadow: rgba(0, 0, 0, 0.3); /* Sombras */
+  --feedback-text: #ffffff;     /* Texto em feedbacks */
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Aplicação dos temas na página tracking */
+.tracking-page {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Header padronizado */
+.header {
+  background: var(--bg);
+  color: var(--primary);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 30px 20px 20px 20px;
+  margin-bottom: 30px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.header h1 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: var(--text-secondary);
+}
+
+/* Conteúdo principal */
+.form-content {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px var(--shadow);
+  padding: 30px 20px;
+  border: 2px solid var(--border);
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* Seções */
+.search-section,
+.search-tips,
+.search-results {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px var(--shadow);
+  border: 1.5px solid var(--accent);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+/* Solicitation details sem padding nem bordas para permitir controle interno */
+.solicitation-details {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px var(--shadow);
+  margin-bottom: 20px;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Labels */
+.form-group label {
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Inputs e selects */
+.form-group input,
+.form-group select {
+  background: var(--input-bg);
+  border: 2px solid var(--border);
+  color: var(--text);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px rgba(68, 116, 219, 0.15);
+  background: var(--input-bg);
+  color: var(--text);
+  outline: none;
+}
+
+/* Tema escuro - inputs */
+.theme-dark-slate .form-group input:focus,
+.theme-dark-slate .form-group select:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+/* Avisos de validação */
+.input-type-warning {
+  background: var(--warning) !important;
+  border: 1px solid var(--warning) !important;
+  color: var(--feedback-text) !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  font-size: 0.9rem !important;
+  margin-top: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  animation: slideInDown 0.3s ease-out !important;
+}
+
+.theme-dark-slate .input-type-warning {
+  background: var(--warning) !important;
+  border-color: var(--warning) !important;
+  color: var(--bg) !important;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botões */
+.button-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-primary {
+  background: var(--success);
+  border: 2px solid var(--success);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  flex: 1;
+  justify-content: center;
+  min-width: 160px;
+}
+
+.btn-primary:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  border: 2px solid var(--secondary);
+  color: white;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* Links */
+.btn-link {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-link:hover {
+  background: var(--surface-alt);
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Resultados de busca - Sobrescrever tracking-results.css */
+.tracking-page .search-results .result-item {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: 0 2px 4px var(--shadow) !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+  margin-bottom: 12px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.tracking-page .search-results .result-item:hover {
+  border-color: var(--success) !important;
+  box-shadow: 0 6px 20px var(--shadow) !important;
+  transform: translateY(-2px) !important;
+  background: var(--surface-alt) !important;
+}
+
+/* Sobrescrever cores dos elementos internos */
+.tracking-page .search-results .result-item * {
+  color: var(--text) !important;
+}
+
+.tracking-page .search-results .result-item strong {
+  color: var(--text) !important;
+}
+
+.tracking-page .search-results .result-item p {
+  color: var(--text-secondary) !important;
+}
+
+.tracking-page .search-results .result-header {
+  color: var(--text) !important;
+}
+
+/* Garantir que nenhum background branco escape */
+.tracking-page .search-results .result-item,
+.tracking-page .search-results .result-item:hover,
+.tracking-page .search-results .result-item:active,
+.tracking-page .search-results .result-item:focus {
+  background: var(--surface-alt) !important;
+  color: var(--text) !important;
+}
+
+/* Resultados de busca - Headers */
+.tracking-page .search-results h2 {
+  color: var(--text) !important;
+  margin-bottom: 20px !important;
+  padding: 15px !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  text-align: center !important;
+}
+
+.tracking-page .results-list {
+  display: grid !important;
+  gap: 15px !important;
+}
+
+.tracking-page .result-header h3 {
+  color: var(--text) !important;
+  margin: 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+}
+
+.tracking-page .result-info p {
+  margin: 8px 0 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.4 !important;
+}
+
+.tracking-page .result-info strong {
+  color: var(--text) !important;
+  font-weight: 600 !important;
+}
+
+/* Detalhes da solicitação */
+.solicitation-details .detail-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 4px var(--shadow);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.solicitation-details .detail-section:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--shadow);
+  background: var(--surface-alt);
+}
+
+.solicitation-details .status-badge {
+  color: white;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.solicitation-details .detail-label {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.solicitation-details .detail-value {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Status específicos com cores padronizadas */
+.status-pendente { 
+  background: var(--warning) !important; 
+  color: #111827 !important;
+}
+.status-em_andamento { 
+  background: var(--success) !important; 
+  color: white !important;
+}
+.status-aprovado { 
+  background: var(--success) !important; 
+  color: white !important;
+}
+.status-concluido { 
+  background: var(--success) !important; 
+  color: white !important;
+}
+.status-cancelado { 
+  background: var(--error) !important; 
+  color: white !important;
+}
+.status-rejeitado { 
+  background: var(--error) !important; 
+  color: white !important;
+}
+
+/* Dicas de busca */
+.search-tips h3 {
+  color: var(--success);
+  margin-bottom: 12px;
+}
+
+.search-tips li {
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.search-tips strong {
+  color: var(--text);
+}
+
+/* Botão de tema */
+.toggle-theme {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 12px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.toggle-theme:hover {
+  background: var(--surface-alt);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* Loading overlay */
+.loading-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.theme-dark-slate .loading-overlay {
+  background: rgba(2, 6, 23, 0.8);
+}
+
+.loading-content {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+/* Spinner personalizado para tracking */
+.loading-content .spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border);
+  border-radius: 50%;
+  border-top-color: var(--success);
+  animation: loading 1s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes loading {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Transições suaves */
+.tracking-page,
+.form-content,
+.search-section,
+.search-tips,
+.search-results,
+.solicitation-details,
+.btn-link,
+.toggle-theme,
+.button-group,
+.result-item,
+.detail-section {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transições específicas para evitar flashes */
+.tracking-page * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Suavizar mudanças de tema */
+body.theme-light-professional,
+body.theme-dark-slate {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Animações para feedback */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.clear-feedback {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  .header {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+  
+  .form-content {
+    padding: 20px 15px;
+  }
+  
+  .search-section,
+  .search-tips,
+  .search-results {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .solicitation-details {
+    margin-bottom: 15px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .search-btn,
+  .clear-btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    min-width: auto;
+  }
+  
+  .btn-primary {
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .clear-feedback {
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+  
+  .search-tips ul {
+    padding-left: 20px;
+  }
+  
+  .search-tips li {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+}
+
+/* Scrollbar personalizada */
+.theme-dark-slate ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.theme-dark-slate ::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+.theme-dark-slate ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.theme-dark-slate ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ==========================================
+   CORREÇÕES PARA DETALHES DA SOLICITAÇÃO
+   Sobrescrever tracking-details.css
+   ========================================== */
+
+/* Card principal */
+.tracking-page .solicitation-card {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 10px 40px var(--shadow) !important;
+}
+
+.tracking-page .solicitation-card:hover {
+  box-shadow: 0 15px 50px var(--shadow) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Header do card */
+.tracking-page .card-header {
+  background: var(--primary) !important;
+  color: var(--feedback-text) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.tracking-page .card-header h2 {
+  color: var(--feedback-text) !important;
+  text-shadow: 0 2px 4px var(--shadow) !important;
+}
+
+.tracking-page .card-header .status-badge {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Conteúdo do card */
+.tracking-page .card-content {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+/* Linhas de detalhes */
+.tracking-page .detail-row {
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+.tracking-page .detail-row:hover {
+  background: var(--surface-alt) !important;
+  border-color: var(--success) !important;
+}
+
+.tracking-page .detail-row strong {
+  color: var(--text) !important;
+}
+
+.tracking-page .detail-row span,
+.tracking-page .detail-row:not(:has(strong)) {
+  color: var(--text-secondary) !important;
+}
+
+/* Linhas destacadas */
+.tracking-page .detail-row:nth-child(1),
+.tracking-page .detail-row:nth-child(2) {
+  background: var(--surface-alt) !important;
+  border: 1px solid var(--accent) !important;
+  color: var(--text) !important;
+}
+
+/* Ações do card */
+.tracking-page .card-actions {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+.tracking-page .card-actions .btn-secondary {
+  background: var(--secondary) !important;
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--secondary) !important;
+}
+
+.tracking-page .card-actions .btn-secondary:hover {
+  background: var(--accent) !important;
+  color: var(--feedback-text) !important;
+  border-color: var(--accent) !important;
+}
+
+.tracking-page .card-actions .btn-primary {
+  background: var(--success) !important;
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--success) !important;
+}
+
+.tracking-page .card-actions .btn-primary:hover {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 15px var(--shadow) !important;
+}
+
+/* Sobrescrever gradientes fixos */
+.tracking-page .card-header::before {
+  background: linear-gradient(90deg, transparent, var(--surface-alt), transparent) !important;
+}
+
+/* Garantir que todos os elementos internos usem cores corretas */
+.tracking-page .solicitation-card *,
+.tracking-page .card-header *,
+.tracking-page .card-content *,
+.tracking-page .card-actions * {
+  color: inherit !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Títulos específicos dentro dos detalhes */
+.tracking-page .card-content h3 {
+  color: var(--primary) !important;
+  border-bottom: 2px solid var(--border) !important;
+  padding-bottom: 8px !important;
+  margin: 25px 0 15px 0 !important;
+  font-weight: 700 !important;
+}
+
+/* Elementos copiáveis */
+.tracking-page .copyable {
+  color: var(--success) !important;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+}
+
+.tracking-page .copyable:hover {
+  color: var(--primary) !important;
+  background: var(--surface-alt) !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
+}
+
+/* Action spans nos resultados */
+.tracking-page .result-action span {
+  color: var(--text-secondary) !important;
+  font-style: italic !important;
+  font-size: 0.9rem !important;
+}
+
+/* Status dos resultados */
+.tracking-page .result-status {
+  background: var(--success) !important;
+  color: var(--feedback-text) !important;
+  padding: 4px 12px !important;
+  border-radius: 16px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+}
+
+/* Status badges específicos nos detalhes */
+.tracking-page .status-badge {
+  padding: 8px 16px !important;
+  border-radius: 20px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.tracking-page .status-badge.status-pendente { 
+  background: var(--warning) !important; 
+  color: var(--bg) !important;
+  border: 1px solid var(--warning) !important;
+}
+
+.tracking-page .status-badge.status-em_andamento { 
+  background: var(--success) !important; 
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--success) !important;
+}
+
+.tracking-page .status-badge.status-aprovado { 
+  background: var(--success) !important; 
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--success) !important;
+}
+
+.tracking-page .status-badge.status-concluido { 
+  background: var(--success) !important; 
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--success) !important;
+}
+
+.tracking-page .status-badge.status-cancelado { 
+  background: var(--error) !important; 
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--error) !important;
+}
+
+.tracking-page .status-badge.status-rejeitado { 
+  background: var(--error) !important; 
+  color: var(--feedback-text) !important;
+  border: 1px solid var(--error) !important;
+}
