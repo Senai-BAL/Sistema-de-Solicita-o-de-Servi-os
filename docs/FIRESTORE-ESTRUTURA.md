@@ -1,4 +1,4 @@
-# 📊 Estrutura de Dados do Firestore - SENAI Lab v3.0.0
+# 📊 Estrutura de Dados do Firestore - SENAI Lab v3.0.1
 
 Este documento descreve a organização completa dos dados no Firebase Firestore do sistema SENAI Lab.
 
@@ -72,7 +72,7 @@ Este documento descreve a organização completa dos dados no Firebase Firestore
   // Metadados
   lastModified: Timestamp,
   modifiedBy: "usuario-id" | "system",
-  version: "3.0.0"
+  version: "3.0.1"
 }
 ```
 
@@ -287,4 +287,4 @@ db.collection('audit_logs')
 
 ---
 
-*Última atualização: 20 de agosto de 2025 - v3.0.0*
+*Última atualização: 20 de agosto de 2025 - v3.0.1*

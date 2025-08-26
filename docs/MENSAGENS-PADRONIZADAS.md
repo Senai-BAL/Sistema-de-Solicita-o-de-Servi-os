@@ -1,4 +1,4 @@
-# 💬 Padronização de Mensagens - SENAI Lab v3.0.0
+# 💬 Padronização de Mensagens - SENAI Lab v3.0.1
 
 Este documento define as mensagens padronizadas usadas em todo o sistema para garantir consistência na experiência do usuário.
 
@@ -281,4 +281,4 @@ ToastManager.show("ℹ️ Informação relevante", "info");
 
 ---
 
-*Última atualização: 20 de agosto de 2025 - v3.0.0*
+*Última atualização: 20 de agosto de 2025 - v3.0.1*

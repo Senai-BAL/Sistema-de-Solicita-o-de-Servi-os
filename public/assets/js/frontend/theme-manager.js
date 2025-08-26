@@ -1,5 +1,5 @@
 /* ==========================================
-   SENAI Lab v3.0.0 - Theme Manager
+   SENAI Lab v3.0.1 - Theme Manager
    Sistema de gerenciamento de temas
    ========================================== */
 

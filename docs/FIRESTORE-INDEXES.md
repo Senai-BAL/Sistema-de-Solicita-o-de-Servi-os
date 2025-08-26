@@ -196,7 +196,7 @@ const sorted = statusQuery.docs
 
 ### Após Correção dos Índices:
 - ✅ **Query Complexa**: < 100ms
-- ✅ **Tracking v3.0.0**: Totalmente funcional
+- ✅ **Tracking v3.0.1**: Totalmente funcional
 - ✅ **Admin Dashboard**: Filtros operacionais
 - ✅ **Relatórios**: Geração automática habilitada
 

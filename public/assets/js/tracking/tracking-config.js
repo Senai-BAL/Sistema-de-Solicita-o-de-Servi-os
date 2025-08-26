@@ -1,5 +1,5 @@
 /* ==========================================
-   SENAI Lab v3.0.0 - Tracking Configuration
+   SENAI Lab v3.0.1 - Tracking Configuration
    Configurações específicas para tracking
    ========================================== */
 
@@ -72,11 +72,11 @@ const TRACKING_CONFIG = {
   },
   
   collections: {
-    production: 'solicitations',
+    production: 'solicitacoes',
     test: 'solicitacoes_test'
   },
-  mode: 'test',
-  version: 'v3.0.0'
+  mode: 'production',
+  version: 'v3.0.1'
 };
 
 // Nome da coleção ativa
@@ -91,8 +91,7 @@ function debugLog(message, data = null) {
 
 // Verificar se está tudo configurado
 if (trackingDB) {
-  debugLog('Firebase Firestore inicializado com sucesso');
-  console.log(`🔍 SENAI Lab Tracking ${TRACKING_CONFIG.version} iniciado`);
+  console.log(`🔍 SENAI Lab Tracking ${TRACKING_CONFIG.version} iniciado - Modo: ${TRACKING_CONFIG.mode.toUpperCase()}`);
   console.log(`📊 Usando coleção: ${collectionName}`);
 } else {
   console.error('❌ Erro ao inicializar Firebase Firestore');

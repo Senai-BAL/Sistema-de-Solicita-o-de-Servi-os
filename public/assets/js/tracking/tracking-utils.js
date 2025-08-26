@@ -1,5 +1,5 @@
 /* ==========================================
-   SENAI Lab v3.0.0 - Tracking Utilities
+   SENAI Lab v3.0.1 - Tracking Utilities
    Utilitários para tracking
    ========================================== */
 
