@@ -3,14 +3,17 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.95));
   border-radius: 12px;
   padding: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
   font-size: 0.8rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border, #e1e5e9);
   min-width: 200px;
   display: none;
+  color: var(--text, #333);
+  backdrop-filter: blur(10px);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .usage-monitor.show {
@@ -31,11 +34,12 @@
 
 .usage-header {
   font-weight: 600;
-  color: #1e3c72;
+  color: var(--primary, #1e3c72);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: color 0.3s ease;
 }
 
 .usage-item {
@@ -43,25 +47,57 @@
   justify-content: space-between;
   margin-bottom: 5px;
   font-size: 0.75rem;
+  color: var(--text, #333);
+}
+
+.usage-item span {
+  color: var(--secondary, #666);
 }
 
 .toggle-monitor {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #667eea;
+  background: linear-gradient(135deg, var(--primary, #667eea), var(--secondary, #764ba2));
   color: white;
   border: none;
   border-radius: 50%;
   width: 50px;
   height: 50px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb, 102, 126, 234), 0.3);
   font-size: 1.2rem;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, transform 0.2s ease;
   z-index: 1000;
 }
 
 .toggle-monitor:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(var(--primary-rgb, 102, 126, 234), 0.4);
+}
+
+/* Adaptações para tema escuro */
+.theme-dark-slate .usage-monitor {
+  background: var(--bg-secondary, rgba(15, 23, 42, 0.95));
+  border-color: var(--border, #334155);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .usage-monitor {
+    bottom: 15px;
+    right: 15px;
+    min-width: 180px;
+    font-size: 0.75rem;
+  }
+  
+  .toggle-monitor {
+    bottom: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
 }

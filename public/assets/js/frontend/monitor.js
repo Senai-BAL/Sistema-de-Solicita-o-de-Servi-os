@@ -48,9 +48,40 @@ function updateUsageMonitor() {
 
 // 🎉 TELA DE SUCESSO
 function showSuccessScreen(docId) {
-  document.getElementById('formContent').style.display = 'none';
-  document.getElementById('successMessage').classList.add('show');
-  document.getElementById('submissionId').textContent = `ID: ${docId}`;
+  const formContentEl = document.getElementById('formContent');
+  const successMessageEl = document.getElementById('successMessage');
+  const submissionIdEl = document.getElementById('submissionId');
+  
+  if (!formContentEl || !successMessageEl) {
+    console.error('❌ Elementos não encontrados!');
+    return;
+  }
+  
+  // GARANTIR que success-message está fora do formContent
+  const container = document.querySelector('.container');
+  if (container && successMessageEl.parentElement === formContentEl) {
+    container.appendChild(successMessageEl);
+  }
+  
+  formContentEl.style.display = 'none';
+  successMessageEl.classList.add('show');
+  
+  // Forçar display via JavaScript como fallback
+  successMessageEl.style.display = 'block';
+  successMessageEl.style.visibility = 'visible';
+  successMessageEl.style.opacity = '1';
+  
+  if (submissionIdEl) {
+    submissionIdEl.textContent = `ID: ${docId}`;
+  }
+  
+  // Scroll até o elemento
+  setTimeout(() => {
+    successMessageEl.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'center' 
+    });
+  }, 100);
 
   const stats = JSON.parse(localStorage.getItem('senaiStats') || '{}');
   stats.totalSubmissions = (stats.totalSubmissions || 0) + 1;

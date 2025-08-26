@@ -19,18 +19,20 @@
 /* Tooltip content */
 .tooltip::before {
     content: attr(data-tooltip);
-    background: #333;
-    color: white;
+    background: var(--bg-secondary, #333);
+    color: var(--text, white);
+    border: 1px solid var(--border, #555);
     font-size: 12px;
     font-weight: normal;
     line-height: 1.4;
     padding: 8px 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     white-space: nowrap;
     max-width: 300px;
     white-space: normal;
     word-wrap: break-word;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 /* Tooltip arrow */
@@ -84,34 +86,36 @@
 
 /* Success tooltip */
 .tooltip.tooltip-success::before {
-    background: #28a745;
+    background: var(--success, #22c55e);
+    color: white;
 }
 
 .tooltip.tooltip-success[data-tooltip-position="top"]::after {
-    border-top-color: #28a745;
+    border-top-color: var(--success, #22c55e);
 }
 
 .tooltip.tooltip-success[data-tooltip-position="bottom"]::after {
-    border-bottom-color: #28a745;
+    border-bottom-color: var(--success, #22c55e);
 }
 
 /* Warning tooltip */
 .tooltip.tooltip-warning::before {
-    background: #ffc107;
-    color: #212529;
+    background: var(--highlight, #f59e0b);
+    color: var(--text, #212529);
 }
 
 .tooltip.tooltip-warning[data-tooltip-position="top"]::after {
-    border-top-color: #ffc107;
+    border-top-color: var(--highlight, #f59e0b);
 }
 
 .tooltip.tooltip-warning[data-tooltip-position="bottom"]::after {
-    border-bottom-color: #ffc107;
+    border-bottom-color: var(--highlight, #f59e0b);
 }
 
 /* Error tooltip */
 .tooltip.tooltip-error::before {
     background: #dc3545;
+    color: white;
 }
 
 .tooltip.tooltip-error[data-tooltip-position="top"]::after {
@@ -124,15 +128,16 @@
 
 /* Info tooltip */
 .tooltip.tooltip-info::before {
-    background: #17a2b8;
+    background: var(--primary, #374151);
+    color: white;
 }
 
 .tooltip.tooltip-info[data-tooltip-position="top"]::after {
-    border-top-color: #17a2b8;
+    border-top-color: var(--primary, #374151);
 }
 
 .tooltip.tooltip-info[data-tooltip-position="bottom"]::after {
-    border-bottom-color: #17a2b8;
+    border-bottom-color: var(--primary, #374151);
 }
 
 /* Responsive adjustments for mobile */

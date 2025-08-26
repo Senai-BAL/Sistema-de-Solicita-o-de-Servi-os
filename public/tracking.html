@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="version" content="v3.0.0">
+  <title>SENAI Lab - Acompanhar Solicitação v3.0.0</title>
+  <meta name="description" content="Sistema de acompanhamento de solicitações do SENAI Lab - Busque por código, email ou telefone">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+  <link rel="icon" type="image/png" sizes="32x32" 
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEHRFWHRTb2Z0d2FyZQBTaHV0dGVyY4LQCQAAAAlwSFlzAAALEwAACxMBAJqcGAAAADhJREFUWIXt1kEKADAIA0D9/6e3FQQTK7TCDCiE5Y0bAJg7AAAAAPgfAAAAAAAAAAAAAAAAAMDPvgF0DQEB1w8a0wAAAABJRU5ErkJggg==">
+
+  <!-- Estilos CSS Modulares -->
+  <link rel="stylesheet" href="assets/css/common.css">
+  <link rel="stylesheet" href="assets/css/index/layout.css">
+  <link rel="stylesheet" href="assets/css/index/form.css">
+  <link rel="stylesheet" href="assets/css/index/buttons.css">
+  <link rel="stylesheet" href="assets/css/index/messages.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-layout.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-search.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-results.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-details.css">
+  <link rel="stylesheet" href="assets/css/tracking/tracking-themes.css">
+  <link rel="stylesheet" href="assets/css/index/mobile-ux.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Configurações Firebase -->
+  <script src="config/firebase-config.js"></script>
+</head>
+
+<body class="tracking-page">
+  <div class="container">
+    <div class="header">
+      <h1>🔍 SENAI Lab</h1>
+      <p>Acompanhar Solicitação de Serviços</p>
+      <div class="header-actions">
+        <a href="index.html" class="btn-link">📝 Voltar ao Início</a>
+      </div>
+    </div>
+
+    <div class="form-content" id="trackingContent">
+      
+      <!-- Seção de Busca -->
+      <div class="search-section">
+        <div class="form-group">
+          <label for="searchType">Buscar por:</label>
+          <select id="searchType" name="searchType" onchange="updateSearchPlaceholder()">
+            <option value="id">🆔 Código da Solicitação</option>
+            <option value="email">📧 Email</option>
+            <option value="phone">📱 Telefone</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="searchInput">Digite os dados:</label>
+          <input type="text" id="searchInput" name="searchInput" 
+                 placeholder="Digite o código da solicitação..." 
+                 required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <div class="button-group">
+            <button type="button" onclick="searchSolicitation()" class="btn-primary search-btn">
+              🔍 Buscar Solicitação
+            </button>
+            <button type="button" onclick="clearSearch()" class="btn-secondary clear-btn">
+              🗑️ Limpar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dicas de busca -->
+      <div class="search-tips">
+        <h3>💡 Dicas de busca:</h3>
+        <ul>
+          <li><strong>Código:</strong> Use o ID que apareceu após criar a solicitação</li>
+          <li><strong>Email:</strong> Digite o email exato usado na solicitação</li>
+          <li><strong>Telefone:</strong> Digite com DDD (ex: 11999887766)</li>
+        </ul>
+      </div>
+
+      <!-- Resultados da busca -->
+      <div id="searchResults" class="search-results" style="display: none;">
+        <!-- Aqui aparecerão os resultados múltiplos -->
+      </div>
+
+      <!-- Detalhes da solicitação -->
+      <div id="solicitationDetails" class="solicitation-details" style="display: none;">
+        <!-- Aqui aparecerão os detalhes da solicitação -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Botão de alternância de tema -->
+  <button class="toggle-theme" id="toggleThemeBtn" title="Alternar tema claro/escuro">
+    <span id="themeIcon">🌙</span>
+  </button>
+
+  <!-- Loading Indicator -->
+  <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Buscando solicitação...</p>
+    </div>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="shared/firebase-config.js"></script>
+  
+  <!-- Scripts Modulares -->
+  <script src="assets/js/tracking/tracking-config.js"></script>
+  <script src="assets/js/tracking/tracking-utils.js"></script>
+  <script src="assets/js/tracking/tracking-search.js"></script>
+  <script src="assets/js/tracking/tracking-display.js"></script>
+  <script src="assets/js/tracking/tracking-hotfix.js"></script>
+  <script src="assets/js/tracking/tracking-main.js"></script>
+  <script src="assets/js/tracking/tracking-globals.js"></script>
+  <script src="assets/js/frontend/mobile-ux.js"></script>
+
+</body>
+</html>

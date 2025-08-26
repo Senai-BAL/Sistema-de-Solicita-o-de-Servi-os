@@ -46,12 +46,20 @@ window.selectTheme = function(theme) {
   }
 }
 
-// Aplica o tema salvo ao carregar
+// ====== NAVEGAÇÃO ADMIN ======
 
+window.goToIndex = function() {
+  if (confirm('Tem certeza que deseja sair da área administrativa?')) {
+    window.location.href = 'index.html';
+  }
+}
+
+// Aplica o tema salvo ao carregar
 document.addEventListener('DOMContentLoaded', function() {
   const saved = localStorage.getItem('admin-theme') || 'light';
   applyAdminTheme(saved);
 });
+
 /* 🔧 SENAI Lab Admin - Carregador Principal
  * Arquivo: public/assets/js/admin/main.js
  * Descrição: Carregamento principal, event listeners e inicialização do dashboard

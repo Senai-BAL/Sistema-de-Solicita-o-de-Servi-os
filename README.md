@@ -4,7 +4,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Version](https://img.shields.io/badge/Version-2.9.8-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.1-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Produção-success?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
@@ -60,10 +60,10 @@ O projeto possui scripts automatizados para padronizar commits e deploys:
 
 ```powershell
 # Windows - Commit básico
-.\scripts\pipeline.ps1 -NovaVersao "2.9.8" -Descricao "nova funcionalidade"
+.\scripts\pipeline.ps1 -NovaVersao "3.0.0" -Descricao "nova funcionalidade"
 
 # Linux/Mac - Commit básico  
-./scripts/pipeline.sh -v 2.9.8 -d "nova funcionalidade"
+./scripts/pipeline.sh -v 3.0.0 -d "nova funcionalidade"
 
 # Deploy para produção (adicionar -Producao ou -p)
 ```

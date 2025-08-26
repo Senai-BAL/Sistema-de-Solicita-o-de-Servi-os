@@ -1,4 +1,117 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "servicoSelecionado",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "servicoSelecionado",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "e",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "e",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitacoes_test",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "w",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "solicitations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "w",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "d",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
