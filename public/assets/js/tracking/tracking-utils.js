@@ -331,4 +331,4 @@ class TrackingUtils {
 // Função global para compatibilidade com HTML inline
 window.updateSearchPlaceholder = () => TrackingUtils.updateSearchPlaceholder();
 
-console.log('🛠️ Tracking Utils carregado');
+// Debug removido para produção - v3.0.2

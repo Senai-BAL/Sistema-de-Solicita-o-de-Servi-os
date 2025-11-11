@@ -27,22 +27,22 @@ class TrackingSearch {
   // Busca por email
   static async searchByEmail(email) {
     try {
-      console.log(`🔍 Iniciando busca por email: "${email}"`);
+      // Debug: Busca por email iniciada
       
       // Normalizar email
       const normalizedEmail = email.toLowerCase().trim();
-      console.log(`📧 Email normalizado: "${normalizedEmail}"`);
+      // Debug: Email normalizado
       
       // Primeira tentativa: com orderBy (requer índice) - CAMPO CORRETO: 'e'
       try {
-        console.log('📊 Tentando busca com orderBy...');
+        // Debug: Tentativa de busca otimizada
         const query = await trackingDB.collection(collectionName)
           .where('e', '==', normalizedEmail)
           .orderBy('d', 'desc')
           .limit(TRACKING_CONFIG.maxResults)
           .get();
         
-        console.log(`✅ Busca com orderBy bem-sucedida: ${query.size} resultado(s)`);
+        // Debug: Busca otimizada bem-sucedida
         return query.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       } catch (indexError) {
         // Se falhar por falta de índice, fazer busca simples
@@ -54,7 +54,7 @@ class TrackingSearch {
             .limit(TRACKING_CONFIG.maxResults)
             .get();
           
-          console.log(`✅ Busca simples bem-sucedida: ${query.size} resultado(s)`);
+          // Debug: Busca simples bem-sucedida
           
           // Ordenar no cliente
           const results = query.docs.map(doc => ({ id: doc.id, ...doc.data() }));

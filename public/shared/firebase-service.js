@@ -366,7 +366,7 @@ class FirebaseService {
         admin: author
       });
 
-      console.log('✅ Comentário adicionado:', requestId);
+      // Log removido para produção - v3.0.2
       return true;
     } catch (error) {
       console.error('❌ Erro ao adicionar comentário:', error);
@@ -438,7 +438,7 @@ class FirebaseService {
         totalFiles: requestData.arq ? requestData.arq.length : 0
       });
 
-      console.log(`✅ Solicitação deletada: ${requestId} (${deletedFilesCount} arquivos removidos)`);
+      // Log removido para produção - v3.0.2
       return {
         success: true,
         filesDeleted: deletedFilesCount,
@@ -593,14 +593,14 @@ class FirebaseService {
             try {
               await fileRef.delete();
               orphanedCount++;
-              console.log(`🗑️ Arquivo órfão deletado: ${fullPath}`);
+              // Log removido para produção - v3.0.2
             } catch (deleteError) {
               console.warn(`⚠️ Falha ao deletar arquivo órfão ${fullPath}:`, deleteError.message);
             }
           }
         }
         
-        console.log(`✅ Limpeza concluída: ${orphanedCount} arquivos órfãos removidos`);
+        // Log removido para produção - v3.0.2
         return { orphanedFilesDeleted: orphanedCount };
         
       } catch (listError) {
@@ -752,5 +752,5 @@ if (typeof window !== 'undefined') {
     }
   };
   
-  console.log('✅ Firebase Service disponível globalmente');
+  // Debug removido para produção - v3.0.2
 }

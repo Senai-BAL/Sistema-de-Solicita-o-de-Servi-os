@@ -788,4 +788,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   setTimeout(waitForFirebase, 2000);
 });
 
-console.log('💾 Storage Monitor carregado');
+// Debug removido para produção - v3.0.2
