@@ -1,6 +1,6 @@
 # 🏗️ Arquitetura do Sistema - SENAI Lab
 
-![Version](https://img.shields.io/badge/Version-2.9.7-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.2-success?style=for-the-badge)
 ![Architecture](https://img.shields.io/badge/Architecture-Firebase-orange?style=for-the-badge)
 ![Frontend](https://img.shields.io/badge/Frontend-Vanilla_JS-yellow?style=for-the-badge)
 

@@ -1,34 +1,23 @@
-# � SENAI Lab - Índices do Firestore
+# 📊 SENAI Lab - Índices do Firestore
 
-## 📊 Status Atual dos Testes (19/08/2025)
-- ✅ **Conexão Básica**: 257.50ms - Conectado com sucesso
-- ✅ **Operação de Escrita**: 1187.40ms - Escrita e remoção funcionando
-- ❌ **Query Complexa**: Erro - Índice necessário
+## 🎯 **Índices Essenciais para Performance**
 
-## 🚨 Problema Identificado
-A query complexa falhou porque o Firestore precisa de um índice composto para consultas que combinam:
-- `where('status', '==', 'pendente')`
-- `orderBy('timestamp', 'desc')`
+> **Última atualização**: 29/08/2025  
+> **Versão**: v3.0.2
 
-**URL de criação do índice**:
-```
-https://console.firebase.google.com/v1/r/project/senai-lab-6fe79/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zZW5haS1sYWItNmZlNzkvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3NvbGljaXRhY29lc190ZXN0L2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCXRpbWVzdGFtcBACGgwKCF9fbmFtZV9fEAI
-```
+### ⚡ **Problema de Performance Identificado**
+O Firestore exige índices compostos para consultas que combinam filtros e ordenação:
+- `where('status', '==', 'pendente')` + `orderBy('timestamp', 'desc')`
 
-## 🔧 Índices Obrigatórios
+### 🔧 **Índices Obrigatórios**
 
-### 1. Índice Composto Principal (URGENTE)
-**Collection**: `solicitacoes_test`
+#### **1. Índice Principal - Status + Timestamp**
+**Coleções**: `solicitacoes` e `solicitacoes_test`
 **Campos**:
 - `status` (Ascending)
 - `timestamp` (Descending)
 
-**Collection**: `solicitacoes`
-**Campos**:
-- `status` (Ascending) 
-- `timestamp` (Descending)
-
-### 2. Índices Adicionais Recomendados
+**Como criar**: Firebase Console → Firestore → Índices → Criar índice composto
 
 #### Para Admin Dashboard
 **Collection**: `solicitacoes`

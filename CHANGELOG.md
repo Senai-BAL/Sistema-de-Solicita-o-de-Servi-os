@@ -2,6 +2,35 @@
 
 ---
 
+## [3.0.2] - 2025-08-29
+**Cleanup & Optimization**: `feat: limpeza de arquivos obsoletos, otimização de logs e documentação consolidada`
+
+### 🧹 Limpeza de Arquivos Obsoletos
+- **Logs Removidos**: `pglite-debug.log` e cache do Firebase hosting
+- **Releases Antigas**: Consolidação de docs v1.0.0 - v2.5.0 em `HISTORICO-RELEASES.md`
+- **Documentação**: Remoção de arquivos de release muito antigos
+- **Cache Limpo**: Remoção de arquivos temporários e cache desnecessário
+
+### ⚡ Otimização de Performance
+- **Console Logs**: Redução drástica em logs de debug para produção
+- **Production Logger**: Novo sistema inteligente de logs (`production-logger.js`)
+- **Debug Condicional**: Logs de debug apenas em desenvolvimento/localhost
+- **Auditoria Otimizada**: Mantidos apenas logs críticos de erro e auditoria
+
+### 📚 Documentação Consolidada
+- **Histórico Limpo**: Releases antigas agrupadas em arquivo único
+- **Estrutura Clara**: Documentação reorganizada e otimizada
+- **Versioning**: README atualizado para v3.0.2
+- **Compatibilidade**: Mantida retrocompatibilidade total
+
+### 🔧 Melhorias Técnicas
+- **Logger Inteligente**: Sistema que detecta ambiente automaticamente
+- **Aliases de Log**: Funções globais para compatibilidade (`logDebug`, `logError`, etc.)
+- **Auditoria Automática**: Integração com sistema de auditoria existente
+- **Zero Breaking Changes**: Todas as funcionalidades mantidas
+
+---
+
 ## [2.9.8] - 2025-01-28
 **Commit Security & Cleanup**: `feat: rate limiting, limpeza de console logs, correção produção e melhorias UX`
 

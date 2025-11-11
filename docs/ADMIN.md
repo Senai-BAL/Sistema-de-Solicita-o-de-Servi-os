@@ -1,7 +1,7 @@
 # 🔐 Dashboard Administrativo - SENAI Lab
 
 > **Guia completo do painel administrativo**  
-> **Versão:** v2.9.7 | **Atualizado:** 14/08/2025
+> **Versão:** v3.0.2 | **Atualizado:** 29/08/2025
 
 ---
 
