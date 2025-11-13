@@ -116,15 +116,6 @@ function initializeManagers() {
     }
 }
 
-// 🍞 HELPER PARA TOASTS COM VERIFICAÇÃO
-function showToast(message, type = 'info', duration = 3000) {
-    if (typeof ToastManager !== 'undefined') {
-        ToastManager.show(message, type, duration);
-    } else {
-        console.log(`[${type.toUpperCase()}] ${message}`);
-    }
-}
-
 // 🔄 INICIALIZAÇÃO DE VARIÁVEIS GLOBAIS
 function initializeGlobalVariables() {
     window.firebaseService = window.firebaseService || null;
@@ -197,7 +188,7 @@ async function loadDashboard() {
         }
 
         LoadingManager.hide();
-        showToast(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
+        ToastManager.show(`Dashboard atualizado! ${filteredRequests.length} solicitações carregadas.`, 'success');
 
         // ✨ INICIALIZAR SISTEMA DE BACKUP COMPLETO (apenas uma vez)
         setTimeout(() => {
@@ -209,7 +200,7 @@ async function loadDashboard() {
             LoadingManager.hide();
         }
         console.error('❌ Erro ao carregar dashboard:', error);
-        showToast('Erro ao carregar dashboard', 'error');
+        ToastManager.show('Erro ao carregar dashboard', 'error');
     }
 }
 
@@ -227,28 +218,6 @@ function updateStatsDisplay(stats) {
     document.getElementById('completedChange').textContent = 'Finalizadas';
 }
 
-// 🔄 REFRESH COMPLETO DO DASHBOARD (incluindo storage)
-async function refreshDashboard() {
-    try {
-        LoadingManager.show('Atualizando dashboard e storage...');
-        
-        // Recarregar dados principais
-        await loadDashboard();
-        
-        // Forçar atualização dos dados de storage
-        if (typeof storageMonitor !== 'undefined' && storageMonitor) {
-            const data = await storageMonitor.analyzeStorage();
-            updateStorageDashboardCard(data);
-        }
-        
-        showToast('Dashboard e storage atualizados!', 'success');
-    } catch (error) {
-        console.error('❌ Erro no refresh completo:', error);
-        showToast('Erro ao atualizar dados', 'error');
-    } finally {
-        LoadingManager.hide();
-    }
-}
 
 // �🎛️ INTEGRAÇÃO COM O DASHBOARD (Backup)
 function addCompleteBackupButton() {
@@ -302,7 +271,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
             
             if (success) {
                 const currentUser = AdminAuth.getCurrentUser();
-                showToast(`${currentUser.avatar} Bem-vindo, ${currentUser.name}!`, 'success');
+                ToastManager.show(`${currentUser.avatar} Bem-vindo, ${currentUser.name}!`, 'success');
                 showDashboard();
             }
         } catch (error) {
@@ -360,7 +329,7 @@ function logout() {
         }
 
         AdminAuth.logout();
-        showToast('Logout realizado com sucesso!', 'success');
+        ToastManager.show('Logout realizado com sucesso!', 'success');
         showLogin();
     }
 }
