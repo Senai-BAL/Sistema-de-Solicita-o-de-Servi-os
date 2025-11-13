@@ -1,7 +1,7 @@
 # ⚙️ Configurações do SENAI Lab
 
-**Versão Atual**: v2.9.5 (Documentação simplificada e versões corrigidas)  
-**Data de Deploy**: 14 de agosto de 2025  
+**Versão Atual**: v3.0.2 (Documentação otimizada e consolidada)  
+**Data de Deploy**: 29 de agosto de 2025  
 **Branch Produção**: `main`
 
 ## 🌐 URLs de Acesso

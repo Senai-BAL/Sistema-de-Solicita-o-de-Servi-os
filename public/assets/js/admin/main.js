@@ -46,6 +46,41 @@ window.selectTheme = function(theme) {
   }
 }
 
+window.applyThemeCustom = function() {
+  try {
+    const primaryColor = document.getElementById('primaryColor')?.value;
+    const successColor = document.getElementById('successColor')?.value;
+    const bgColor = document.getElementById('bgColor')?.value;
+    const textColor = document.getElementById('textColor')?.value;
+
+    if (!primaryColor || !successColor || !bgColor || !textColor) {
+      ToastManager && ToastManager.show('Preencha todas as cores personalizadas', 'warning');
+      return;
+    }
+
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--success-color', successColor);
+    document.documentElement.style.setProperty('--background-color', bgColor);
+    document.documentElement.style.setProperty('--text-color', textColor);
+
+    localStorage.setItem('admin-theme', 'custom');
+    localStorage.setItem('custom-theme-colors', JSON.stringify({
+      primary: primaryColor,
+      success: successColor,
+      background: bgColor,
+      text: textColor
+    }));
+
+    ToastManager && ToastManager.show('Tema personalizado aplicado!', 'success');
+    closeThemeModal();
+  } catch (error) {
+    if (window.Logger) {
+      window.Logger.error('Erro ao aplicar tema customizado:', error);
+    }
+    ToastManager && ToastManager.show('Erro ao aplicar tema personalizado', 'error');
+  }
+}
+
 // ====== NAVEGAÇÃO ADMIN ======
 
 window.goToIndex = function() {

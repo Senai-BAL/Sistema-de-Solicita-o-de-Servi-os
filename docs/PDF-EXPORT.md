@@ -1,6 +1,6 @@
 # 📊 Sistema de Exportação PDF - SENAI Lab
 
-![Version](https://img.shields.io/badge/Version-2.9.7-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.2-success?style=for-the-badge)
 ![Feature](https://img.shields.io/badge/Feature-PDF_Export-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Produção-success?style=for-the-badge)
 

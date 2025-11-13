@@ -7,16 +7,12 @@
 class TrackingHotfix {
   
   static init() {
-    console.log('🔧 Aplicando hotfixes de tracking...');
-    
     // Aplicar correções em ordem
     this.fixConsoleErrors();
     this.fixMissingElements();
     this.fixFirebaseCompatibility();
     this.fixCSSIssues();
     this.addFallbackFunctions();
-    
-    console.log('✅ Hotfixes aplicados com sucesso');
   }
   
   // Corrige erros de console relacionados a elementos ausentes
@@ -102,7 +98,9 @@ class TrackingHotfix {
     // Timeout para Firebase não carregado
     setTimeout(() => {
       if (!window.firebase) {
-        console.warn('⚠️ Firebase não carregado, criando fallback');
+        if (window.Logger) {
+          window.Logger.warn('Firebase não carregado, criando fallback');
+        }
         this.createFirebaseFallback();
       }
     }, 3000);
@@ -112,7 +110,9 @@ class TrackingHotfix {
       try {
         window.db = window.firebase.firestore();
       } catch (error) {
-        console.warn('⚠️ Erro ao inicializar Firestore:', error);
+        if (window.Logger) {
+          window.Logger.warn('Erro ao inicializar Firestore:', error);
+        }
       }
     }
   }
@@ -338,5 +338,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expor funções globalmente para debug
 window.TrackingHotfix = TrackingHotfix;
-
-console.log('🔧 Tracking Hotfix carregado');

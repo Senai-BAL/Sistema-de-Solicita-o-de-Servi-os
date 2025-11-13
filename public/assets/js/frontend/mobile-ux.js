@@ -9,8 +9,6 @@ class MobileUX {
   }
 
   init() {
-    console.log('🚀 Iniciando Mobile UX v2.10.0...');
-    
     // Detectar dispositivo mobile
     this.isMobile = window.innerWidth <= 768;
     this.isTouch = 'ontouchstart' in window;
@@ -49,8 +47,6 @@ class MobileUX {
     
     // Feedback tátil (se disponível)
     this.setupHapticFeedback();
-    
-    console.log('✅ Mobile enhancements configurados');
   }
 
   preventIOSZoom() {
@@ -153,7 +149,6 @@ class MobileUX {
       }, { passive: true });
     });
     
-    console.log('✅ Touch feedback configurado');
   }
 
   addRippleEffect(element, event) {
@@ -215,7 +210,6 @@ class MobileUX {
       });
     });
     
-    console.log('✅ Validação em tempo real configurada');
   }
 
   validateField(field) {
@@ -363,7 +357,6 @@ class MobileUX {
       }
     });
     
-    console.log('✅ Teclados mobile otimizados');
   }
 
   // ===== ACESSIBILIDADE =====
@@ -390,7 +383,6 @@ class MobileUX {
       }
     });
     
-    console.log('✅ Acessibilidade mobile configurada');
   }
 
   // ===== MELHORIAS PROGRESSIVAS =====
@@ -398,7 +390,6 @@ class MobileUX {
     // Service Worker para cache (futuro)
     if ('serviceWorker' in navigator) {
       // Preparar para PWA futuro
-      console.log('📱 Service Worker disponível para futuras melhorias');
     }
     
     // Web Share API para compartilhar solicitações
@@ -413,7 +404,6 @@ class MobileUX {
   setupWebShare() {
     // Adicionar botão de compartilhar no sucesso (futuro)
     document.addEventListener('form-success', () => {
-      console.log('📤 Web Share API disponível para compartilhamento');
     });
   }
 
@@ -477,7 +467,6 @@ class MobileUX {
           header.parentNode.insertBefore(container, header.nextSibling);
         }
         
-        console.log('✅ Botão de backup manual adicionado');
       }
     }
   }
@@ -505,7 +494,9 @@ class MobileUX {
       }
       
     } catch (error) {
-      console.error('Erro no backup manual:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro no backup manual:', error);
+      }
       
       const btn = document.querySelector('.mobile-backup-btn');
       btn.innerHTML = '❌ Erro no backup';
@@ -539,7 +530,6 @@ class MobileUX {
     // Scroll para topo para reorientar usuário
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    console.log('📱 Orientação alterada, interface reajustada');
   }
 
   handleResize() {
@@ -552,7 +542,6 @@ class MobileUX {
       if (this.isMobile) {
         this.setupMobileEnhancements();
       }
-      console.log(`📱 Modo alterado: ${this.isMobile ? 'Mobile' : 'Desktop'}`);
     }
   }
 }

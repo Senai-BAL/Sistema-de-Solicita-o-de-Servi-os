@@ -47,20 +47,6 @@ class FirebaseService {
     this.mockData = this.generateMockData();
   }
 
-  // 🧪 TESTE DE CONECTIVIDADE
-  async testConnection() {
-    try {
-      const testDoc = await this.db.collection(this.collectionName).limit(1).get();
-      return true;
-    } catch (error) {
-      console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
-      if (error.code === 'permission-denied') {
-        console.warn('🔒 ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
-      }
-      return false;
-    }
-  }
-
   // 📊 GERAR DADOS FICTÍCIOS
   generateMockData() {
     const services = ['impressao', 'formatacao', 'instalacao', 'manutencao'];
@@ -110,18 +96,19 @@ class FirebaseService {
   // 🧪 TESTE DE CONECTIVIDADE
   async testConnection() {
     try {
-      const testDoc = await this.db.collection(this.collectionName).limit(1).get();
+      await this.db.collection(this.collectionName).limit(1).get();
       return true;
     } catch (error) {
-      console.warn('⚠️ Possível problema de conexão/permissão:', error.code);
-      if (error.code === 'permission-denied') {
-        console.warn('🔒 ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
+      if (window.Logger) {
+        window.Logger.warn('Possível problema de conexão/permissão:', error.code);
+        if (error.code === 'permission-denied') {
+          window.Logger.warn('ATENÇÃO: Verifique as regras do Firestore no Console Firebase');
+        }
       }
       return false;
     }
   }
 
-  // 🔧 CONFIGURAÇÃO INICIAL
   // 📊 OPERAÇÕES DE LEITURA
   async getAllRequests() {
     if (this.isMockMode) {
@@ -148,7 +135,9 @@ class FirebaseService {
     }
 
     // 🚨 Todas as tentativas falharam
-    console.error('❌ Erro em todas as coleções tentadas:', lastError);
+    if (window.Logger) {
+      window.Logger.error('Erro em todas as coleções tentadas:', lastError);
+    }
     throw new Error(`Falha ao acessar dados: ${lastError.message}`);
   }
 
@@ -201,7 +190,9 @@ class FirebaseService {
         ...doc.data()
       }));
     } catch (error) {
-      console.error('❌ Erro ao buscar solicitações com filtro:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao buscar solicitações com filtro:', error);
+      }
       throw error;
     }
   }
@@ -230,7 +221,9 @@ class FirebaseService {
       
       return docRef.id;
     } catch (error) {
-      console.error('❌ Erro ao criar solicitação:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao criar solicitação:', error);
+      }
       throw error;
     }
   }
@@ -341,10 +334,12 @@ class FirebaseService {
         admin: adminData.responsavel || adminData.admin || 'Administrador'
       });
 
-      
+
       return true;
     } catch (error) {
-      console.error('❌ Erro ao atualizar status:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao atualizar status:', error);
+      }
       throw error;
     }
   }
@@ -366,10 +361,11 @@ class FirebaseService {
         admin: author
       });
 
-      console.log('✅ Comentário adicionado:', requestId);
       return true;
     } catch (error) {
-      console.error('❌ Erro ao adicionar comentário:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao adicionar comentário:', error);
+      }
       throw error;
     }
   }
@@ -387,10 +383,12 @@ class FirebaseService {
         admin: author
       });
 
-      
+
       return true;
     } catch (error) {
-      console.error('❌ Erro ao definir prioridade:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao definir prioridade:', error);
+      }
       throw error;
     }
   }
@@ -422,7 +420,9 @@ class FirebaseService {
 
             }
           } catch (fileError) {
-            console.warn(`⚠️ Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+            if (window.Logger) {
+              window.Logger.warn(`Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+            }
             // Continuar mesmo se um arquivo falhar
           }
         }
@@ -438,14 +438,15 @@ class FirebaseService {
         totalFiles: requestData.arq ? requestData.arq.length : 0
       });
 
-      console.log(`✅ Solicitação deletada: ${requestId} (${deletedFilesCount} arquivos removidos)`);
       return {
         success: true,
         filesDeleted: deletedFilesCount,
         totalFiles: requestData.arq ? requestData.arq.length : 0
       };
     } catch (error) {
-      console.error('❌ Erro ao deletar solicitação:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao deletar solicitação:', error);
+      }
       throw error;
     }
   }
@@ -478,7 +479,9 @@ class FirebaseService {
                   totalFilesDeleted++;
                 }
               } catch (fileError) {
-                console.warn(`⚠️ Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+                if (window.Logger) {
+              window.Logger.warn(`Falha ao deletar arquivo ${arquivo.n}:`, fileError.message);
+            }
               }
             }
           }
@@ -507,7 +510,9 @@ class FirebaseService {
         totalFiles: totalFiles
       };
     } catch (error) {
-      console.error('❌ Erro ao deletar solicitações em batch:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao deletar solicitações em batch:', error);
+      }
       throw error;
     }
   }
@@ -523,7 +528,9 @@ class FirebaseService {
         admin: details.admin || 'Administrador'
       });
     } catch (error) {
-      console.warn('⚠️ Erro ao registrar log:', error);
+      if (window.Logger) {
+        window.Logger.warn('Erro ao registrar log:', error);
+      }
       // Não falhar a operação principal por causa do log
     }
   }
@@ -554,7 +561,9 @@ class FirebaseService {
       
       return results;
     } catch (error) {
-      console.error('❌ Erro ao buscar logs:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao buscar logs:', error);
+      }
       return [];
     }
   }
@@ -593,23 +602,27 @@ class FirebaseService {
             try {
               await fileRef.delete();
               orphanedCount++;
-              console.log(`🗑️ Arquivo órfão deletado: ${fullPath}`);
             } catch (deleteError) {
-              console.warn(`⚠️ Falha ao deletar arquivo órfão ${fullPath}:`, deleteError.message);
+              if (window.Logger) {
+                window.Logger.warn(`Falha ao deletar arquivo órfão ${fullPath}:`, deleteError.message);
+              }
             }
           }
         }
-        
-        console.log(`✅ Limpeza concluída: ${orphanedCount} arquivos órfãos removidos`);
+
         return { orphanedFilesDeleted: orphanedCount };
-        
+
       } catch (listError) {
-        console.warn('⚠️ Não foi possível listar arquivos do Storage:', listError.message);
+        if (window.Logger) {
+          window.Logger.warn('Não foi possível listar arquivos do Storage:', listError.message);
+        }
         return { orphanedFilesDeleted: 0, error: 'Lista não disponível' };
       }
-      
+
     } catch (error) {
-      console.error('❌ Erro na limpeza de arquivos órfãos:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro na limpeza de arquivos órfãos:', error);
+      }
       throw error;
     }
   }
@@ -654,7 +667,9 @@ class FirebaseService {
         avg_response_time: this.calculateAverageResponseTime(periodRequests)
       };
     } catch (error) {
-      console.error('❌ Erro ao calcular estatísticas:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao calcular estatísticas:', error);
+      }
       throw error;
     }
   }
@@ -707,7 +722,9 @@ class FirebaseService {
         }));
         callback(requests);
       }, error => {
-        console.error('❌ Erro no listener:', error);
+        if (window.Logger) {
+          window.Logger.error('Erro no listener:', error);
+        }
       });
   }
 
@@ -719,7 +736,9 @@ class FirebaseService {
           callback({ id: doc.id, ...doc.data() });
         }
       }, error => {
-        console.error('❌ Erro no listener:', error);
+        if (window.Logger) {
+          window.Logger.error('Erro no listener:', error);
+        }
       });
   }
 
@@ -744,13 +763,13 @@ if (typeof window !== 'undefined') {
       
       // Aguardar teste de conectividade
       await service.testConnection();
-      
+
       return service;
     } catch (error) {
-      console.error('❌ Erro ao inicializar Firebase Service:', error);
+      if (window.Logger) {
+        window.Logger.error('Erro ao inicializar Firebase Service:', error);
+      }
       throw error;
     }
   };
-  
-  console.log('✅ Firebase Service disponível globalmente');
 }

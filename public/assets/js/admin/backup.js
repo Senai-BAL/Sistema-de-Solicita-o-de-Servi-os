@@ -141,7 +141,7 @@ class CompleteBackupManager {
     // 📥 BAIXAR TODOS OS ARQUIVOS DO GITHUB
     async downloadAllGitHubFiles(filesList) {
         if (filesList.length === 0) {
-            console.log('🔍 Nenhum arquivo para baixar do GitHub');
+            // Debug removido - v3.0.2: Nenhum arquivo encontrado
             return [];
         }
 
@@ -189,7 +189,7 @@ class CompleteBackupManager {
         }
 
         const successCount = downloadedFiles.filter(f => f.downloaded).length;
-        console.log(`📥 Download concluído: ${successCount}/${filesList.length} arquivos`);
+        // Debug removido - v3.0.2: Download concluído
 
         return downloadedFiles;
     }

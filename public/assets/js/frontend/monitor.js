@@ -45,6 +45,14 @@ function updateUsageMonitor() {
   document.getElementById('uploadsCount').textContent = `${usageMonitor.dailyUploads} uploads`;
 }
 
+// 🔄 TOGGLE MONITOR DE USO
+window.toggleUsageMonitor = function() {
+  const monitor = document.getElementById('usageMonitor');
+  if (monitor) {
+    monitor.style.display = monitor.style.display === 'none' ? 'block' : 'none';
+  }
+};
+
 
 // 🎉 TELA DE SUCESSO
 function showSuccessScreen(docId) {

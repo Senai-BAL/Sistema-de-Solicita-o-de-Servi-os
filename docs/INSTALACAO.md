@@ -1,7 +1,7 @@
 # 🛠️ Instalação e Configuração - SENAI Lab
 
 > **Guia completo de instalação e configuração do sistema**  
-> **Versão:** v2.9.7 | **Atualizado:** 14/08/2025
+> **Versão:** v3.0.2 | **Atualizado:** 29/08/2025
 
 ---
 
@@ -319,6 +319,35 @@ console.log('Firebase Config:', firebase.app().options);
   gtag('config', 'GA_TRACKING_ID');
 </script>
 ```
+
+---
+
+## 🌐 **URLs de Produção e Configurações**
+
+### **🚀 URLs de Acesso**
+- **App Principal**: https://senai-lab-6fe79.web.app
+- **Dashboard Admin**: https://senai-lab-6fe79.web.app/admin.html
+- **Firebase Console**: https://console.firebase.google.com/project/senai-lab-6fe79
+
+### **🔧 Configurações do Firebase**
+- **Projeto**: senai-lab-6fe79
+- **Região**: nam5 (North America)
+- **Coleção Produção**: `solicitacoes`
+- **Coleção Teste**: `solicitacoes_test`
+
+### **🌍 Ambientes**
+- **Produção (main)**: Modo `production` → coleção `solicitacoes`
+- **Teste (test-environment-v2)**: Modo `test` → coleção `solicitacoes_test`
+
+### **📊 Limites Firebase (Free Tier)**
+- **Leituras**: 50.000/dia | **Escritas**: 20.000/dia
+- **Storage**: 1GB | **Bandwidth**: 10GB/mês
+
+### **🔐 Autenticação Admin**
+- **Arquivo**: `public/admin.html` (linha ~1075)
+- **Configuração**: `ADMIN_CONFIG.password`
+- **Sessão**: 24 horas
+- **⚠️ Importante**: Alterar senha padrão em produção
 
 ---
 
