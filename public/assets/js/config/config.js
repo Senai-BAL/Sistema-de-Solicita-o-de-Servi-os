@@ -36,9 +36,10 @@ Object.freeze(window.ENVIRONMENT_CONFIG);
 const ENVIRONMENT_CONFIG = window.ENVIRONMENT_CONFIG;
 const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
 
-console.log(`🧪 [CONFIG.JS] Modo de ambiente: ${ENVIRONMENT_CONFIG.mode}`);
-console.log(`📂 [CONFIG.JS] Coleção: ${collectionName}`);
-console.log(`🔍 [CONFIG.JS] ENVIRONMENT_CONFIG:`, ENVIRONMENT_CONFIG);
+if (window.Logger) {
+  window.Logger.debug(`Modo de ambiente: ${ENVIRONMENT_CONFIG.mode}`);
+  window.Logger.debug(`Coleção: ${collectionName}`);
+}
 
 // 🧪 TESTE DE CONECTIVIDADE (opcional em produção)
 async function testFirebaseConnection() {

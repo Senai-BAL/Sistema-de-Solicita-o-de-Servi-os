@@ -3,7 +3,9 @@
  * Descrição: Controle de navegação do formulário, máscaras e eventos de interface
  */
 
-// NAVEGAÇÃO DO FORMULÁRIO
+/**
+ * Configura navegação condicional do formulário baseado no serviço selecionado
+ */
 function setupFormNavigation() {
   document.getElementById('servico').addEventListener('change', function () {
     const value = this.value;

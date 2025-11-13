@@ -134,5 +134,3 @@ window.AdminAuth = AdminAuth;
 window.ToastManager = ToastManager;
 window.LoadingManager = LoadingManager;
 window.DashboardManager = DashboardManager;
-
-console.log('🔧 Admin UI - Classes de interface carregadas');

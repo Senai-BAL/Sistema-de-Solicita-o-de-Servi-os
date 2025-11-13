@@ -7,35 +7,35 @@
 const ADMIN_USERS = {
   'presidentinho': {
     name: 'Getulio',
-    passwordHash: '8f7d8e7c5a3b2d1e9f6a4c7b8e5d2a1f', // Hash de 'Senai@presidentinho'
+    passwordHash: '8f7d8e7c5a3b2d1e9f6a4c7b8e5d2a1f',
     avatar: '💻',
     role: 'interlocutor',
     department: 'Desenvolvedor'
   },
   'dr.chaguinha': {
     name: 'Chagas',
-    passwordHash: '3b2d1e9f6a4c7b8e5d2a1f8f7d8e7c5a', // Hash de 'Senai@dr.chaguinha'
+    passwordHash: '3b2d1e9f6a4c7b8e5d2a1f8f7d8e7c5a',
     avatar: '🎮',
     role: 'interlocutor',
     department: 'Programador de Jogos'
   },
   'rainha.cat': {
     name: 'Catarina',
-    passwordHash: '6a4c7b8e5d2a1f8f7d8e7c5a3b2d1e9f', // Hash de 'Senai@rainha.cat'
+    passwordHash: '6a4c7b8e5d2a1f8f7d8e7c5a3b2d1e9f',
     avatar: '🤖',
     role: 'interlocutor',
     department: 'Mecatrônica'
   },
   'brunete.designer': {
     name: 'Bruna',
-    passwordHash: '5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b8e', // Hash de 'Senai@brunete.designer'
+    passwordHash: '5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b8e',
     avatar: '🎨',
     role: 'interlocutor',
     department: 'Designer 3D'
   },
   'luy.jedi': {
     name: 'Luy',
-    passwordHash: '8e5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b', // Hash de 'Senai@luy.jedi'
+    passwordHash: '8e5d2a1f8f7d8e7c5a3b2d1e9f6a4c7b',
     avatar: '🖌️',
     role: 'interlocutor',
     department: 'Designer 2D'
@@ -312,6 +312,3 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tentar restaurar sessão existente
   AdminAuth.restoreSession();
 });
-
-
-console.log('👥 Usuários disponíveis:', AdminAuth.getUserList().map(u => `${u.avatar} ${u.name} (${u.username})`).join(', '));

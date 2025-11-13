@@ -1,4 +1,7 @@
-// Validação simples do formulário SENAI Lab
+/**
+ * Valida campos obrigatórios do formulário SENAI Lab
+ * @returns {boolean} true se todos os campos obrigatórios visíveis estão preenchidos
+ */
 function validateForm() {
     const form = document.getElementById('senaiForm');
     if (!form) return false;

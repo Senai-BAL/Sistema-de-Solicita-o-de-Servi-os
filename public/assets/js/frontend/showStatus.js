@@ -1,4 +1,8 @@
-// Função global para exibir mensagens de status no SENAI Lab
+/**
+ * Exibe mensagem de status temporária na tela
+ * @param {string} message - Mensagem a ser exibida
+ * @param {string} type - Tipo da mensagem (info, success, error, warning)
+ */
 function showStatus(message, type = 'info') {
     // Cria ou seleciona o container de status
     let statusContainer = document.getElementById('statusContainer');
