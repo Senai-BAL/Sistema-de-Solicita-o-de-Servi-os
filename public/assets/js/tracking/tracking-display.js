@@ -27,7 +27,9 @@ class TrackingDisplay {
           serviceLabel = '⚙️ Serviço';
         }
       } catch (error) {
-        console.error('Erro ao gerar service label:', error);
+        if (window.Logger) {
+          window.Logger.error('Erro ao gerar service label:', error);
+        }
         serviceLabel = '⚙️ Serviço';
       }
       
@@ -35,18 +37,7 @@ class TrackingDisplay {
       const formattedDate = TrackingUtils.formatDate(solicitation.d) || 'Data inválida';
       const solicitante = solicitation.c || 'N/A';
       const email = solicitation.e || 'N/A';
-      
-      // Debug temporário  
-      console.log(`🔍 Resultado ${index + 1}:`, {
-        servicoField: solicitation.s,
-        tipoServicoField: solicitation.ts,
-        statusField: solicitation.st,
-        statusFieldFull: solicitation.status,
-        adminStatus: solicitation.admin?.status,
-        serviceLabel: serviceLabel,
-        statusLabel: statusLabel
-      });
-      
+
       return `
       <div class="result-item" onclick="TrackingDisplay.selectResult(${index})" data-index="${index}">
         <div class="result-header">
@@ -188,17 +179,7 @@ class TrackingDisplay {
     const specificService = solicitation.ts; // Tipo específico de serviço
     const actualService = specificService || service; // Usar tipo específico se disponível
     const serviceLabel = TrackingUtils.getServiceLabel(service, specificService);
-    
-    // Debug para ver todos os campos da solicitação
-    console.log('🔍 Debug - Campos da solicitação:', {
-      service: service,
-      specificService: specificService,
-      actualService: actualService,
-      serviceLabel: serviceLabel,
-      allFields: Object.keys(solicitation),
-      fullSolicitation: solicitation
-    });
-    
+
     let serviceHtml = `
       <h3>⚙️ Detalhes do Serviço</h3>
     `;
@@ -223,23 +204,6 @@ class TrackingDisplay {
         ${descricao ? `<div class="detail-row"><strong>Descrição:</strong> <span>${descricao}</span></div>` : ''}
       `;
     } else if (actualService === 'impressao') {
-      // Debug específico para impressão - verificar dados e dados.tf, dados.qc etc.
-      console.log('🖨️ Debug impressão completo:', {
-        // Campos diretos (antigos)
-        tamanhoFolha: solicitation.tamanhoFolha,
-        qtdCopias: solicitation.qtdCopias,
-        frenteVerso: solicitation.frenteVerso,
-        colorido: solicitation.colorido,
-        // Campos abreviados no objeto dados
-        dados: solicitation.dados,
-        dadosTf: solicitation.dados?.tf,
-        dadosQc: solicitation.dados?.qc,
-        dadosFv: solicitation.dados?.fv,
-        dadosCo: solicitation.dados?.co,
-        // Estrutura completa
-        allKeys: Object.keys(solicitation)
-      });
-      
       // Buscar valores nos lugares corretos (dados.tf, dados.qc etc.)
       const tamanho = solicitation.dados?.tf || solicitation.tamanhoFolha || solicitation.tamanho;
       const quantidade = solicitation.dados?.qc || solicitation.qtdCopias || solicitation.quantidade || solicitation.copias;
@@ -295,11 +259,12 @@ class TrackingDisplay {
       serviceHtml += `
         <div class="detail-row"><strong>Tipo:</strong> <span>${serviceLabel}</span></div>
       `;
-      
-      // Mostrar todos os campos disponíveis se não reconhecer o serviço
-      console.log('🔍 Serviço não reconhecido, campos disponíveis:', solicitation);
+
+      if (window.Logger) {
+        window.Logger.debug('Serviço não reconhecido:', actualService);
+      }
     }
-    
+
     return serviceHtml;
   }
   
@@ -345,8 +310,10 @@ class TrackingDisplay {
       await navigator.clipboard.writeText(text);
       TrackingUtils.showSuccess('Código copiado para a área de transferência!');
     } catch (error) {
-      console.error('Erro ao copiar:', error);
-      
+      if (window.Logger) {
+        window.Logger.error('Erro ao copiar:', error);
+      }
+
       // Fallback para navegadores mais antigos
       const textArea = document.createElement('textarea');
       textArea.value = text;
@@ -356,12 +323,12 @@ class TrackingDisplay {
         document.execCommand('copy');
         TrackingUtils.showSuccess('Código copiado para a área de transferência!');
       } catch (fallbackError) {
-        console.error('Erro no fallback:', fallbackError);
+        if (window.Logger) {
+          window.Logger.error('Erro no fallback:', fallbackError);
+        }
         TrackingUtils.showError('Não foi possível copiar automaticamente. Código: ' + text);
       }
       document.body.removeChild(textArea);
     }
   }
 }
-
-console.log('📊 Tracking Display carregado');
