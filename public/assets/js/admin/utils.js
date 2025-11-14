@@ -627,5 +627,3 @@ function resetUsageCounters() {
         console.warn('⚠️ Erro ao resetar contadores:', error);
     }
 }
-
-console.log('🛠️ Admin Utils - Funções utilitárias carregadas');

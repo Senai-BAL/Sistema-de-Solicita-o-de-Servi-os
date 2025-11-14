@@ -3,7 +3,11 @@
  * Descrição: Funções principais do dashboard com UX melhorado
  */
 
-// 🎨 SISTEMA DE INTERFACE
+/**
+ * Formata timestamp para string de data/hora em pt-BR
+ * @param {number} timestamp - Timestamp em milissegundos
+ * @returns {string} Data formatada em pt-BR ou data atual se timestamp inválido
+ */
 function formatDate(timestamp) {
     try {
         const date = new Date(timestamp);
@@ -16,6 +20,12 @@ function formatDate(timestamp) {
     }
 }
 
+/**
+ * Obtém nome legível do serviço/subserviço
+ * @param {string} service - Código do serviço
+ * @param {string} subService - Código do subserviço
+ * @returns {string} Nome formatado do serviço
+ */
 function getServiceName(service, subService) {
     const names = {
         'espaco_maker': 'Espaço Maker',
@@ -96,9 +106,6 @@ async function renderRequestsList(requests) {
         container.innerHTML = '<div class="empty-state"><p>Nenhuma solicitação encontrada</p></div>';
         return;
     }
-
-    // Simular delay para demonstrar skeleton (remover em produção)
-    await new Promise(resolve => setTimeout(resolve, 500));
 
     let html = `
         <div class="table-container">
@@ -1456,5 +1463,3 @@ function switchTab(tabName) {
     document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
 }
-
-console.log('📋 Admin Dashboard - Funções do dashboard carregadas');

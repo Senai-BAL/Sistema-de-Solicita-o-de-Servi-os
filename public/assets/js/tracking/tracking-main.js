@@ -406,5 +406,3 @@ window.searchSolicitation = async () => {
     alert('Sistema ainda não carregou. Aguarde um momento e tente novamente.');
   }
 };
-
-console.log('🎯 Tracking Main carregado');

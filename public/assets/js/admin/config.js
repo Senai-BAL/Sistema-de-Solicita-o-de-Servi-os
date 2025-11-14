@@ -5,7 +5,6 @@
 
 // 🔐 CONFIGURAÇÃO DE AUTENTICAÇÃO
 const ADMIN_CONFIG = {
-    password: 'senai@admin2025', // ⚠️ ALTERE ESTA SENHA!
     sessionDuration: 24 * 60 * 60 * 1000, // 24 horas
     sessionKey: 'senai_admin_session'
 };
@@ -24,5 +23,3 @@ window.firebaseService = firebaseService;
 window.currentRequests = currentRequests;
 window.filteredRequests = filteredRequests;
 window.currentViewMode = currentViewMode;
-
-console.log('🔧 Admin Config - Configurações carregadas');
