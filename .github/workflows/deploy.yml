@@ -65,20 +65,19 @@ jobs:
       - name: Criar release notes
         if: success()
         run: |
-          cat > DEPLOY_NOTES.md << 'EOF'
-          # 🚀 Deploy Automático
-
-          **Versão:** v${{ steps.get_version.outputs.version }}
-          **Data:** $(date +"%d/%m/%Y %H:%M")
-          **Branch:** ${{ github.ref_name }}
-          **Commit:** ${{ github.sha }}
-
-          ## Últimos commits:
-          $(git log -3 --pretty=format:"- %s (%h)")
-
-          ---
-          Gerado automaticamente por GitHub Actions
-          EOF
+          echo "# 🚀 Deploy Automático" > DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "**Versão:** v${{ steps.get_version.outputs.version }}" >> DEPLOY_NOTES.md
+          echo "**Data:** $(date +'%d/%m/%Y %H:%M')" >> DEPLOY_NOTES.md
+          echo "**Branch:** ${{ github.ref_name }}" >> DEPLOY_NOTES.md
+          echo "**Commit:** ${{ github.sha }}" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "## Últimos commits:" >> DEPLOY_NOTES.md
+          git log -3 --pretty=format:"- %s (%h)" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "---" >> DEPLOY_NOTES.md
+          echo "Gerado automaticamente por GitHub Actions" >> DEPLOY_NOTES.md
 
           cat DEPLOY_NOTES.md
 
