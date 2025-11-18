@@ -14,19 +14,41 @@ const ENVIRONMENT_CONFIG = {
 class FirebaseService {
   constructor() {
     this.isMockMode = ENVIRONMENT_CONFIG.mode === 'mock';
-    
+
     if (this.isMockMode) {
       this.initMockMode();
       return;
     }
-    
-    if (!window.firebaseConfig) {
-      throw new Error('Firebase configuration not found');
-    }
-    
-    if (!firebase.apps.length) {
+
+    // Debug: verificar estado do Firebase
+    console.log('🔍 Verificando Firebase:', {
+      firebaseExists: typeof firebase !== 'undefined',
+      apps: typeof firebase !== 'undefined' ? firebase.apps : 'N/A',
+      appsLength: typeof firebase !== 'undefined' && firebase.apps ? firebase.apps.length : 'N/A'
+    });
+
+    // Firebase Hosting auto-inicializa via /__/firebase/init.js
+    // Se window.firebaseConfig existir (dev local), usar ela
+    if (window.firebaseConfig && typeof firebase !== 'undefined' && (!firebase.apps || firebase.apps.length === 0)) {
+      console.log('🔧 Inicializando Firebase com config local...');
       firebase.initializeApp(window.firebaseConfig);
     }
+
+    // Verificar se Firebase foi inicializado (hosting ou local)
+    // init.js já deve ter inicializado, então firebase.apps.length > 0
+    if (typeof firebase === 'undefined') {
+      throw new Error('Firebase SDK not loaded. Make sure Firebase scripts are included before firebase-service.js');
+    }
+
+    if (!firebase.apps || firebase.apps.length === 0) {
+      console.error('❌ Firebase not initialized!');
+      console.error('- firebase.apps:', firebase.apps);
+      console.error('- typeof firebase:', typeof firebase);
+      console.error('- Make sure /__/firebase/init.js is loaded and executed before FirebaseService');
+      throw new Error('Firebase not initialized. Make sure /__/firebase/init.js loaded or firebase-config.js exists.');
+    }
+
+    console.log('✅ Firebase inicializado com sucesso, apps:', firebase.apps.length);
     
     // Configuração moderna do Firestore 
     this.db = firebase.firestore();
