@@ -14,18 +14,21 @@ const ENVIRONMENT_CONFIG = {
 class FirebaseService {
   constructor() {
     this.isMockMode = ENVIRONMENT_CONFIG.mode === 'mock';
-    
+
     if (this.isMockMode) {
       this.initMockMode();
       return;
     }
-    
-    if (!window.firebaseConfig) {
-      throw new Error('Firebase configuration not found');
-    }
-    
-    if (!firebase.apps.length) {
+
+    // Firebase Hosting auto-inicializa via /__/firebase/init.js
+    // Se window.firebaseConfig existir (dev local), usar ela
+    if (window.firebaseConfig && !firebase.apps.length) {
       firebase.initializeApp(window.firebaseConfig);
+    }
+
+    // Verificar se Firebase foi inicializado (hosting ou local)
+    if (!firebase.apps.length) {
+      throw new Error('Firebase not initialized. Make sure /__/firebase/init.js loaded or firebase-config.js exists.');
     }
     
     // Configuração moderna do Firestore 
