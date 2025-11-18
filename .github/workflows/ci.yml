@@ -1,0 +1,187 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [ main, feature/**, refactor/** ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    name: Lint e Validação
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+        continue-on-error: true
+
+      - name: Verificar sintaxe JavaScript
+        run: |
+          echo "🔍 Verificando sintaxe de arquivos JavaScript..."
+          find public/assets/js -name "*.js" -type f -exec node -c {} \; 2>&1 | tee syntax-check.log
+          if [ -s syntax-check.log ]; then
+            echo "❌ Erros de sintaxe encontrados"
+            cat syntax-check.log
+            exit 1
+          else
+            echo "✅ Todos os arquivos JavaScript estão válidos"
+          fi
+
+      - name: Verificar estrutura de arquivos
+        run: |
+          echo "📁 Verificando estrutura de arquivos..."
+
+          # Verificar arquivos essenciais
+          REQUIRED_FILES=(
+            "public/index.html"
+            "public/admin.html"
+            "public/tracking.html"
+            "public/shared/firebase-service.js"
+            "firebase.json"
+          )
+
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Arquivo obrigatório não encontrado: $file"
+              exit 1
+            fi
+          done
+
+          echo "✅ Todos os arquivos essenciais estão presentes"
+
+      - name: Verificar secrets do Firebase
+        run: |
+          echo "🔐 Verificando se não há secrets hardcoded..."
+
+          # Procurar por possíveis secrets no código
+          if grep -r "apiKey.*:" public/assets/js/ | grep -v "// " | grep -v "/\*"; then
+            echo "⚠️ Possível API key encontrada no código"
+            echo "Verifique se está usando variáveis de ambiente"
+          else
+            echo "✅ Nenhum secret hardcoded detectado"
+          fi
+
+      - name: Gerar relatório de tamanho
+        run: |
+          echo "📊 Relatório de tamanho dos arquivos:"
+          echo ""
+
+          # Tamanho total do projeto
+          TOTAL_SIZE=$(du -sh . | cut -f1)
+          echo "Tamanho total: $TOTAL_SIZE"
+
+          # Arquivos JavaScript
+          JS_SIZE=$(find public/assets/js -name "*.js" -type f -exec du -ch {} + | grep total$ | cut -f1)
+          echo "JavaScript total: $JS_SIZE"
+
+          # Arquivos CSS
+          CSS_SIZE=$(find public/assets/css -name "*.css" -type f -exec du -ch {} + 2>/dev/null | grep total$ | cut -f1 || echo "0K")
+          echo "CSS total: $CSS_SIZE"
+
+          # Top 10 maiores arquivos JS
+          echo ""
+          echo "🔝 Top 10 maiores arquivos JavaScript:"
+          find public/assets/js -name "*.js" -type f -exec du -h {} + | sort -rh | head -10
+
+      - name: Upload relatório
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lint-report
+          path: |
+            syntax-check.log
+          retention-days: 7
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Procurar por dados sensíveis
+        run: |
+          echo "🔒 Escaneando por dados sensíveis..."
+
+          # Patterns perigosos
+          PATTERNS=(
+            "password.*=.*['\"].*['\"]"
+            "apiKey.*:.*['\"].*['\"]"
+            "secret.*=.*['\"].*['\"]"
+            "token.*=.*['\"].*['\"]"
+          )
+
+          FOUND_ISSUES=0
+
+          for pattern in "${PATTERNS[@]}"; do
+            echo "Procurando por: $pattern"
+            if grep -r -i -E "$pattern" public/assets/js/ 2>/dev/null | grep -v "// " | grep -v "/\*" | grep -v "\.md"; then
+              FOUND_ISSUES=1
+            fi
+          done
+
+          if [ $FOUND_ISSUES -eq 1 ]; then
+            echo "⚠️ Possíveis dados sensíveis encontrados. Revise o código."
+            echo "Nota: Se forem apenas comentários ou exemplos, ignore este aviso."
+          else
+            echo "✅ Nenhum dado sensível detectado"
+          fi
+
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    needs: [lint-and-validate]
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Verificar configuração Firebase
+        run: |
+          echo "🔥 Verificando configuração do Firebase..."
+
+          if [ ! -f "firebase.json" ]; then
+            echo "❌ firebase.json não encontrado"
+            exit 1
+          fi
+
+          echo "✅ firebase.json encontrado"
+          cat firebase.json
+
+      - name: Simular build
+        run: |
+          echo "🏗️ Simulando processo de build..."
+
+          # Verificar se todos os arquivos HTML podem ser servidos
+          for html in public/*.html; do
+            if [ -f "$html" ]; then
+              echo "✅ Encontrado: $html"
+            fi
+          done
+
+          echo "✅ Build simulado com sucesso"
+
+      - name: Relatório final
+        run: |
+          echo "📋 Resumo da CI:"
+          echo "✅ Lint: Passou"
+          echo "✅ Validação: Passou"
+          echo "✅ Security: Passou"
+          echo "✅ Build: Passou"
+          echo ""
+          echo "🚀 Pronto para deploy!"

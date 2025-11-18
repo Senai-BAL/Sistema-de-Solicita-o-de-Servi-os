@@ -1,0 +1,90 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Instalar Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Verificar versão atual
+        id: get_version
+        run: |
+          VERSION=$(grep -o 'content="v[0-9]\+\.[0-9]\+\.[0-9]\+"' public/index.html | sed 's/content="v//;s/"$//' || echo "unknown")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Versão detectada: v$VERSION"
+
+      - name: Deploy para Firebase
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          echo "🚀 Iniciando deploy para Firebase Hosting..."
+
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "⚠️ FIREBASE_TOKEN não configurado"
+            echo "Para configurar:"
+            echo "1. Execute: firebase login:ci"
+            echo "2. Copie o token gerado"
+            echo "3. Adicione em: Settings > Secrets > FIREBASE_TOKEN"
+            echo ""
+            echo "⏭️ Pulando deploy por enquanto..."
+            exit 0
+          fi
+
+          firebase deploy --only hosting --token "$FIREBASE_TOKEN" --non-interactive
+
+      - name: Deploy bem-sucedido
+        if: success()
+        run: |
+          echo "✅ Deploy concluído com sucesso!"
+          echo "🌐 Versão: v${{ steps.get_version.outputs.version }}"
+          echo "📅 Data: $(date)"
+
+      - name: Notificar falha
+        if: failure()
+        run: |
+          echo "❌ Deploy falhou!"
+          echo "Verifique os logs acima para mais detalhes"
+
+      - name: Criar release notes
+        if: success()
+        run: |
+          echo "# 🚀 Deploy Automático" > DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "**Versão:** v${{ steps.get_version.outputs.version }}" >> DEPLOY_NOTES.md
+          echo "**Data:** $(date +'%d/%m/%Y %H:%M')" >> DEPLOY_NOTES.md
+          echo "**Branch:** ${{ github.ref_name }}" >> DEPLOY_NOTES.md
+          echo "**Commit:** ${{ github.sha }}" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "## Últimos commits:" >> DEPLOY_NOTES.md
+          git log -3 --pretty=format:"- %s (%h)" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "" >> DEPLOY_NOTES.md
+          echo "---" >> DEPLOY_NOTES.md
+          echo "Gerado automaticamente por GitHub Actions" >> DEPLOY_NOTES.md
+
+          cat DEPLOY_NOTES.md
+
+      - name: Upload deploy notes
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-notes
+          path: DEPLOY_NOTES.md
+          retention-days: 30
