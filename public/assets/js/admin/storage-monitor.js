@@ -605,6 +605,16 @@ function updateCostAlerts(data, usagePercent) {
 
 // 📊 ATUALIZAR CARD DO DASHBOARD
 function updateStorageDashboardCard(data) {
+  // Verificação defensiva
+  if (!data || typeof data.totalSize === 'undefined') {
+    console.warn('⚠️ Dados de storage inválidos:', data);
+    const element = document.getElementById('storageUsed');
+    const changeElement = document.getElementById('storageChange');
+    if (element) element.textContent = 'N/A';
+    if (changeElement) changeElement.textContent = 'Carregando...';
+    return;
+  }
+
   const usagePercent = ((data.totalSize / storageMonitor.storageLimit) * 100).toFixed(1);
   const element = document.getElementById('storageUsed');
   const changeElement = document.getElementById('storageChange');

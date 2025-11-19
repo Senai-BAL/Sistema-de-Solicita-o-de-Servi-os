@@ -3,20 +3,30 @@
  * Descrição: Configurações gerais e validação de dependências
  */
 
-// 🔥 VERIFICAR SE A CONFIGURAÇÃO FIREBASE FOI CARREGADA
-if (!window.firebaseConfig) {
-  alert('⚠️ Erro: Arquivo firebase-config.js não encontrado!\n\nPor favor:\n1. Copie shared/firebase-config.example.js para shared/firebase-config.js\n2. Substitua pelas suas credenciais Firebase');
-  throw new Error('Firebase configuration not found');
+// 🔥 VERIFICAR E INICIALIZAR FIREBASE
+// Firebase Hosting auto-inicializa via /__/firebase/init.js
+// Se window.firebaseConfig existir (dev local), usar ela
+let db;
+
+if (typeof firebase === 'undefined') {
+  alert('⚠️ Erro: Firebase SDK não carregado!\n\nVerifique se os scripts do Firebase estão sendo carregados corretamente.');
+  throw new Error('Firebase SDK not loaded');
 }
 
-// Verificar se Firebase já foi inicializado pelo firebase-service.js
-let db;
 if (firebase.apps.length === 0) {
-  // Inicializar Firebase apenas se não foi inicializado
-  firebase.initializeApp(window.firebaseConfig);
-  db = firebase.firestore();
+  // Tentar inicializar com config local se existir
+  if (window.firebaseConfig) {
+    console.log('🔧 Inicializando Firebase com configuração local...');
+    firebase.initializeApp(window.firebaseConfig);
+    db = firebase.firestore();
+  } else {
+    // Em produção, /__/firebase/init.js já deve ter inicializado
+    alert('⚠️ Erro: Firebase não foi inicializado!\n\nEm desenvolvimento: copie firebase-config.example.js para firebase-config.js\nEm produção: verifique se /__/firebase/init.js está carregando');
+    throw new Error('Firebase not initialized');
+  }
 } else {
-  // Usar instância existente
+  // Firebase já inicializado (por init.js ou firebase-config.js)
+  console.log('✅ Firebase já inicializado');
   db = firebase.firestore();
 }
 
