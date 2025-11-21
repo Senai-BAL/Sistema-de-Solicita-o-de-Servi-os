@@ -209,8 +209,10 @@ async function submitForm() {
     loadingText.textContent = '⏳ Salvando dados...';
     
     console.log(`🔍 [FORM-LOGIC] Tentando salvar na coleção: ${collectionName}`);
-    console.log(`🔍 [FORM-LOGIC] ENVIRONMENT_CONFIG atual:`, ENVIRONMENT_CONFIG);
-    console.log(`🔍 [FORM-LOGIC] Modo atual: ${ENVIRONMENT_CONFIG.mode}`);
+    if (window.ENV) {
+      console.log(`🔍 [FORM-LOGIC] Ambiente: ${window.ENV.environment}`);
+      console.log(`🔍 [FORM-LOGIC] Collection: ${window.ENV.getCollectionName()}`);
+    }
     
     try {
       const docRef = await db.collection(collectionName).add(formData);
@@ -228,9 +230,11 @@ async function submitForm() {
       
       // Tentar salvar com regras mais permissivas
       if (firestoreError.code === 'permission-denied') {
-        // Tentar na coleção principal
+        // Tentar na coleção configurada (já tentou collectionName acima)
+        console.warn('⚠️ Permission denied - Em desenvolvimento local, isso é esperado sem Firebase conectado');
         try {
-          const docRef = await db.collection(ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode]).add(formData);
+          // Usar collectionName novamente (mesma collection)
+          const docRef = await db.collection(collectionName).add(formData);
           usageMonitor.addWrite();
           
           // Estados de sucesso UX v2.7.4

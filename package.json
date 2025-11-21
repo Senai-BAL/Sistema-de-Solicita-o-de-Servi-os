@@ -1,16 +1,19 @@
 {
   "name": "senai-lab-webapp",
-  "version": "3.0.2",
-  "description": "Sistema de Solicitação de Serviços do SENAI Lab",
+  "version": "3.1.0",
+  "description": "Sistema de Solicitação de Serviços do SENAI Lab - Serverless Free Tier Optimized",
   "scripts": {
     "test": "node scripts/test.js",
     "validate": "node scripts/validate-syntax.js",
     "lint": "npm run validate",
     "check": "npm run validate && npm test",
     "deploy": "firebase deploy --only hosting",
+    "deploy:prod": "firebase deploy --only hosting",
     "serve": "firebase serve",
-    "build": "echo 'No build step needed for vanilla JS project'",
-    "dev": "firebase serve"
+    "emulators": "firebase emulators:start",
+    "emulators:ui": "firebase emulators:start --only hosting,firestore,storage",
+    "dev": "firebase emulators:start",
+    "build": "echo 'No build step needed for vanilla JS project'"
   },
   "repository": {
     "type": "git",

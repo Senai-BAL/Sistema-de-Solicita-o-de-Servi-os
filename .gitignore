@@ -23,8 +23,14 @@ PIPELINE-COMMIT.md
 # Ambiente de teste (apenas na branch test-environment)
 # AMBIENTE-TESTE.md deve ficar apenas na branch de teste
 
+# Pasta de desenvolvimento (documentação interna privada)
+.dev/
+
 # Firebase cache
 .firebase/
+
+# Firebase Emulators (arquivo gerado automaticamente)
+firebase.emulators.json
 
 # Firebase config - CREDENCIAIS SENSÍVEIS
 public/shared/netlify-config.js
