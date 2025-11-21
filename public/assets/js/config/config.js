@@ -30,21 +30,21 @@ if (firebase.apps.length === 0) {
   db = firebase.firestore();
 }
 
-// 🧪 CONFIGURAÇÃO DE AMBIENTE - PRODUÇÃO
-window.ENVIRONMENT_CONFIG = {
-  // Configuração para produção - v2.10.0
-  mode: 'production', // 'production' ou 'test'
-  collections: {
-    production: 'solicitacoes',
-    test: 'solicitacoes_test'
-  }
-};
-
-// Garantir que não seja sobrescrita
-Object.freeze(window.ENVIRONMENT_CONFIG);
+// 🧪 CONFIGURAÇÃO DE AMBIENTE - Agora gerenciada por environment-config.js (v3.1.0)
+// Usar ENV.getCollectionName() ao invés de ENVIRONMENT_CONFIG
+// Mantendo para compatibilidade com código antigo
+if (!window.ENVIRONMENT_CONFIG) {
+  window.ENVIRONMENT_CONFIG = {
+    mode: 'production',
+    collections: {
+      production: 'solicitacoes',
+      test: 'solicitacoes_test'
+    }
+  };
+}
 
 const ENVIRONMENT_CONFIG = window.ENVIRONMENT_CONFIG;
-const collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
+const collectionName = window.ENV ? window.ENV.getCollectionName() : ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
 
 if (window.Logger) {
   window.Logger.debug(`Modo de ambiente: ${ENVIRONMENT_CONFIG.mode}`);

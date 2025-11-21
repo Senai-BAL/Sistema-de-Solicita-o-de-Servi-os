@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Storage Rules para Firebase Emulators
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Permitir leitura e escrita em desenvolvimento
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

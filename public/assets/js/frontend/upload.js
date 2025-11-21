@@ -117,8 +117,9 @@ async function uploadToFirebaseStorage(file, serviceInfo, progressCallback) {
   const extension = file.name.split('.').pop();
   const fileName = `${serviceInfo.tipo}_${timestamp}_${cleanSolicitante}_${originalName}.${extension}`;
 
-  // Caminho no Storage
-  const storagePath = `uploads/${fileName}`;
+  // Caminho no Storage (usar path do ambiente)
+  const storageBasePath = window.ENV ? window.ENV.getStoragePath() : 'uploads';
+  const storagePath = `${storageBasePath}/${fileName}`;
 
   // Inicializar Firebase Storage
   const storage = firebase.storage();

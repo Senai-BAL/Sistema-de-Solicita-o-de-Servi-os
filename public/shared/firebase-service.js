@@ -50,16 +50,25 @@ class FirebaseService {
 
     console.log('✅ Firebase inicializado com sucesso, apps:', firebase.apps.length);
     
-    // Configuração moderna do Firestore 
+    // Configuração moderna do Firestore
     this.db = firebase.firestore();
-    
+
     // Configurar settings básicas (sem cache persistente para evitar warnings)
+    // IMPORTANTE: usar merge: true para não sobrescrever configurações dos emulators
     this.db.settings({
-      ignoreUndefinedProperties: true
+      ignoreUndefinedProperties: true,
+      merge: true
     });
     
-    this.collectionName = ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
-    
+    // Usar collection name do Environment Config se disponível
+    this.collectionName = window.ENV ? window.ENV.getCollectionName() : ENVIRONMENT_CONFIG.collections[ENVIRONMENT_CONFIG.mode];
+
+    // Inicializar Backup System se habilitado
+    if (window.ENV && window.ENV.config.enableBackup && window.BackupSystem) {
+      window.backupSystem = new window.BackupSystem(this);
+      console.log('💾 Backup System integrado ao FirebaseService');
+    }
+
     // Teste de conectividade automático
     this.testConnection();
   }
@@ -136,7 +145,7 @@ class FirebaseService {
     if (this.isMockMode) {
       return Promise.resolve([...this.mockData]);
     }
-    
+
     // 🎯 ESTRATÉGIA UNIFICADA: Lista de coleções para tentar em ordem
     const collectionsToTry = [this.collectionName];
 
@@ -144,15 +153,37 @@ class FirebaseService {
 
     for (const collection of collectionsToTry) {
       try {
+        // Tentar com orderBy primeiro
         const snapshot = await this.db.collection(collection).orderBy('d', 'desc').get();
-        
+
         return snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
       } catch (error) {
-        lastError = error;
-        continue; // Tentar próxima coleção
+        // Se falhar com orderBy, tentar sem (pode ser índice faltando ou permissão)
+        try {
+          console.log(`⚠️ orderBy falhou, tentando sem ordenação...`);
+          const snapshot = await this.db.collection(collection).get();
+
+          // Ordenar manualmente por data
+          const docs = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+
+          // Ordenar por 'd' (data) se existir
+          docs.sort((a, b) => {
+            const dateA = a.d ? new Date(a.d).getTime() : 0;
+            const dateB = b.d ? new Date(b.d).getTime() : 0;
+            return dateB - dateA; // desc
+          });
+
+          return docs;
+        } catch (error2) {
+          lastError = error2;
+          continue; // Tentar próxima coleção
+        }
       }
     }
 

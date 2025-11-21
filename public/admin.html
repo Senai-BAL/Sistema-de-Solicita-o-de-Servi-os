@@ -506,7 +506,14 @@
   <script src="/__/firebase/9.22.0/firebase-app-compat.js"></script>
   <script src="/__/firebase/9.22.0/firebase-firestore-compat.js"></script>
   <script src="/__/firebase/9.22.0/firebase-storage-compat.js"></script>
-  <script src="/__/firebase/init.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
+
+  <!-- 🌍 Novos Módulos v3.1.0 - Otimização Serverless -->
+  <script src="shared/environment-config.js"></script>
+  <script src="shared/quota-monitor.js"></script>
+  <script src="shared/firestore-cache.js"></script>
+  <script src="shared/image-compressor.js"></script>
+  <script src="shared/backup-system.js"></script>
 
   <!-- jsPDF para exportação PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
