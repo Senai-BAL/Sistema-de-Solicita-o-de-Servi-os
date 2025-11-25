@@ -333,13 +333,21 @@ async function handleDrop(e, newStatus) {
 // 📋 MODAL HÍBRIDO - FUNÇÕES DE VISUALIZAÇÃO
 async function viewDetails(requestId) {
     try {
+        console.log(`🔍 [viewDetails] Solicitação ID recebido: ${requestId}`);
+        console.log(`🔍 [viewDetails] Tipo do ID: ${typeof requestId}`);
+
         // Buscar dados atualizados do Firestore
         const request = await firebaseService.getRequestById(requestId);
+
+        console.log(`🔍 [viewDetails] Resultado do getRequestById:`, request);
+
         if (!request) {
-            console.error('Solicitação não encontrada:', requestId);
+            console.error('❌ [viewDetails] Solicitação não encontrada:', requestId);
             ToastManager.show('Solicitação não encontrada!', 'error');
             return;
         }
+
+        console.log(`✅ [viewDetails] Solicitação encontrada com sucesso`);
 
         // Armazenar o ID da solicitação atual para uso global
         currentRequestId = requestId;
@@ -1355,14 +1363,38 @@ function addComment(requestId) {
     }
 }
 
-// Função para forçar download do arquivo anexado
+// Função para download/visualização de arquivo anexado (v3.1.1)
 function downloadArquivo(url, nome) {
+    // Detectar tipo de arquivo pela extensão
+    const extension = nome.split('.').pop().toLowerCase();
+    const isPDF = extension === 'pdf';
+    const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(extension);
+
+    console.log(`📥 [downloadArquivo] Arquivo: ${nome}, Tipo: ${extension}, isPDF: ${isPDF}, isImage: ${isImage}`);
+
+    // PDF: Abrir em nova aba
+    if (isPDF) {
+        console.log(`📄 Abrindo PDF em nova aba: ${nome}`);
+        window.open(url, '_blank');
+        ToastManager.show('📄 PDF aberto em nova aba', 'info');
+        return;
+    }
+
+    // Imagem ou outros arquivos: Download direto
+    console.log(`📥 Fazendo download: ${nome}`);
     const link = document.createElement('a');
     link.href = url;
     link.download = nome || '';
+    link.target = '_blank'; // Fallback para abrir em nova aba se download falhar
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    if (isImage) {
+        ToastManager.show('🖼️ Imagem baixada com sucesso', 'success');
+    } else {
+        ToastManager.show('📥 Arquivo baixado com sucesso', 'success');
+    }
 }
 
 // �🔄 FUNÇÕES DE INTERAÇÃO
