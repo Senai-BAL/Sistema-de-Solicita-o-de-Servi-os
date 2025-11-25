@@ -199,24 +199,60 @@ class FirebaseService {
       const request = this.mockData.find(req => req.id === id);
       return Promise.resolve(request || null);
     }
-    
-    // 🎯 USAR MESMA ESTRATÉGIA DE FALLBACK
-    const collectionsToTry = this.collectionName === 'solicitacoes_test' 
-      ? ['solicitacoes_test', 'solicitacoes'] 
-      : ['solicitacoes'];
 
-    for (const collection of collectionsToTry) {
+    // 🎯 USAR COLLECTION DO AMBIENTE ATUAL (v3.1.1)
+    const primaryCollection = window.ENV ? window.ENV.getCollectionName() : this.collectionName;
+
+    console.log(`🔍 [getRequestById] Buscando documento: ${id}`);
+    console.log(`🔍 [getRequestById] Collection primária: ${primaryCollection}`);
+    console.log(`🔍 [getRequestById] ENV disponível: ${!!window.ENV}`);
+    if (window.ENV) {
+      console.log(`🔍 [getRequestById] Ambiente: ${window.ENV.environment}`);
+    }
+
+    // Tentar primeiro na collection do ambiente atual
+    try {
+      console.log(`🔍 [getRequestById] Tentando em: ${primaryCollection}`);
+      const doc = await this.db.collection(primaryCollection).doc(id).get();
+      console.log(`🔍 [getRequestById] Documento existe em ${primaryCollection}: ${doc.exists}`);
+      if (doc.exists) {
+        if (window.quotaMonitor) {
+          window.quotaMonitor.trackRead(1);
+        }
+        console.log(`✅ [getRequestById] Documento encontrado em ${primaryCollection}`);
+        return { id: doc.id, ...doc.data() };
+      }
+    } catch (error) {
+      console.warn(`⚠️ [getRequestById] Erro ao buscar em ${primaryCollection}:`, error);
+    }
+
+    // 🎯 FALLBACK: Tentar em outras collections conhecidas
+    const fallbackCollections = ['solicitacoes', 'solicitacoes_dev', 'solicitacoes_staging', 'solicitacoes_test']
+      .filter(col => col !== primaryCollection);
+
+    console.log(`🔍 [getRequestById] Tentando fallback em: ${fallbackCollections.join(', ')}`);
+
+    for (const collection of fallbackCollections) {
       try {
+        console.log(`🔍 [getRequestById] Tentando em fallback: ${collection}`);
         const doc = await this.db.collection(collection).doc(id).get();
+        console.log(`🔍 [getRequestById] Documento existe em ${collection}: ${doc.exists}`);
         if (doc.exists) {
+          console.log(`✅ [getRequestById] Documento encontrado em fallback: ${collection}`);
+          if (window.quotaMonitor) {
+            window.quotaMonitor.trackRead(1);
+          }
           return { id: doc.id, ...doc.data() };
         }
       } catch (error) {
+        console.warn(`⚠️ [getRequestById] Erro ao buscar em ${collection}:`, error);
         continue;
       }
     }
 
     // Não encontrado em nenhuma coleção
+    console.error(`❌ [getRequestById] Documento ${id} não encontrado em nenhuma collection`);
+    console.error(`❌ [getRequestById] Collections tentadas: ${primaryCollection}, ${fallbackCollections.join(', ')}`);
     return null;
   }
 

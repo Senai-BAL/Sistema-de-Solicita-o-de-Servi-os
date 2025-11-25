@@ -1,6 +1,6 @@
 {
   "name": "senai-lab-webapp",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Sistema de Solicitação de Serviços do SENAI Lab - Serverless Free Tier Optimized",
   "scripts": {
     "test": "node scripts/test.js",
