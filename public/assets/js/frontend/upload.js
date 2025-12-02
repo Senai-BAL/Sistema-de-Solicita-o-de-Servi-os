@@ -101,7 +101,7 @@ async function uploadToFirebaseStorage(file, serviceInfo, progressCallback) {
   if (!serviceInfo || !serviceInfo.tipo || !serviceInfo.solicitante) {
     throw new Error('Informações de serviço incompletas');
   }
-  if (!window.firebaseConfig) throw new Error('Configuração do Firebase não encontrada');
+  if (!firebase || !firebase.storage) throw new Error('Firebase Storage não inicializado');
 
   // Comprimir imagem se necessário (usando novo sistema v3.1.0)
   const fileToUpload = window.imageCompressor
