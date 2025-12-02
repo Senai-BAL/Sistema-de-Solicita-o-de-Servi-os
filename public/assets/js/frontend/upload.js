@@ -103,14 +103,10 @@ async function uploadToFirebaseStorage(file, serviceInfo, progressCallback) {
   }
   if (!window.firebaseConfig) throw new Error('Configuração do Firebase não encontrada');
 
-  console.log(`📤 Iniciando upload: ${file.name} (${file.type}, ${(file.size / 1024).toFixed(2)} KB)`);
-
   // Comprimir imagem se necessário (usando novo sistema v3.1.0)
   const fileToUpload = window.imageCompressor
     ? await window.imageCompressor.compressImage(file)
     : await compressImage(file); // Fallback para função antiga
-
-  console.log(`📦 Arquivo processado: ${fileToUpload.name} (${fileToUpload.type}, ${(fileToUpload.size / 1024).toFixed(2)} KB)`);
   if (progressCallback) progressCallback(20);
 
   // Gerar nome padronizado

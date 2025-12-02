@@ -333,21 +333,14 @@ async function handleDrop(e, newStatus) {
 // 📋 MODAL HÍBRIDO - FUNÇÕES DE VISUALIZAÇÃO
 async function viewDetails(requestId) {
     try {
-        console.log(`🔍 [viewDetails] Solicitação ID recebido: ${requestId}`);
-        console.log(`🔍 [viewDetails] Tipo do ID: ${typeof requestId}`);
-
         // Buscar dados atualizados do Firestore
         const request = await firebaseService.getRequestById(requestId);
 
-        console.log(`🔍 [viewDetails] Resultado do getRequestById:`, request);
-
         if (!request) {
-            console.error('❌ [viewDetails] Solicitação não encontrada:', requestId);
+            console.error('Solicitação não encontrada:', requestId);
             ToastManager.show('Solicitação não encontrada!', 'error');
             return;
         }
-
-        console.log(`✅ [viewDetails] Solicitação encontrada com sucesso`);
 
         // Armazenar o ID da solicitação atual para uso global
         currentRequestId = requestId;
@@ -1370,18 +1363,14 @@ function downloadArquivo(url, nome) {
     const isPDF = extension === 'pdf';
     const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'].includes(extension);
 
-    console.log(`📥 [downloadArquivo] Arquivo: ${nome}, Tipo: ${extension}, isPDF: ${isPDF}, isImage: ${isImage}`);
-
     // PDF: Abrir em nova aba
     if (isPDF) {
-        console.log(`📄 Abrindo PDF em nova aba: ${nome}`);
         window.open(url, '_blank');
         ToastManager.show('📄 PDF aberto em nova aba', 'info');
         return;
     }
 
     // Imagem ou outros arquivos: Download direto
-    console.log(`📥 Fazendo download: ${nome}`);
     const link = document.createElement('a');
     link.href = url;
     link.download = nome || '';
