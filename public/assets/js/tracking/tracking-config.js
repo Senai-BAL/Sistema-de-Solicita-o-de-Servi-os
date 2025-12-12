@@ -7,13 +7,15 @@
 let trackingDB;
 
 // Inicializar Firebase
-if (!window.firebaseConfig) {
-  console.error('⚠️ Erro: Configuração Firebase não encontrada!');
-  alert('⚠️ Erro: Configuração Firebase não encontrada!');
-  throw new Error('Firebase configuration not found');
+if (!firebase || !firebase.firestore) {
+  console.error('⚠️ Erro: Firebase não inicializado!');
+  alert('⚠️ Erro: Firebase não inicializado! Recarregue a página.');
+  throw new Error('Firebase not initialized');
 }
 
-if (firebase.apps.length === 0) {
+// Firebase já foi inicializado pelo /__/firebase/init.js em produção
+// ou por firebase-config.js em desenvolvimento
+if (firebase.apps.length === 0 && window.firebaseConfig) {
   firebase.initializeApp(window.firebaseConfig);
 }
 trackingDB = firebase.firestore();
